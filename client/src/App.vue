@@ -50,6 +50,17 @@
             :disabled="!bottleType"
           >Bottle</multiselect>
         </div>
+        <multiselect 
+          v-model="labels" 
+          placeholder="Select the labels you want" 
+          label="name"
+          :options="options" 
+          :multiple="true" 
+          :taggable="true" 
+          max=4
+          @select='addLabel'
+          @remove='removeLabel'
+        >Label choice</multiselect>
         <div class="row">
           <div class='col-lg-12'>
             <button class="clear" v-if='!help' v-on:click="clearForm()">Clear all</button>
@@ -75,7 +86,7 @@
             <measurements-form
               :bottleSpec="bottleSpec"
               :globalPositions="globalPositions"
-              v-if='labelStatuses.front.enabled'
+              v-show='labelStatuses.front.enabled'
               id='front-F1'
               ref="frontF1"
               side="front"
@@ -196,6 +207,9 @@
               }
           },
           labelStatuses: {
+            'hasWrap': false,
+            'count': 0,
+            'selected': [],
             'front': {
               'enabled': true,
               'dissableMessage': '',
@@ -209,7 +223,10 @@
           },
           help: false,
           helpMessage: "",
-          displaySide: 'front'          // label preview stuff
+          displaySide: 'front',          // label preview stuff
+          labels: [],
+          labelOptions: {'F1':'Front', 'B1':'Back', 'F2':'Second front', 'B2':'Second back'},
+          validLabelOptions: []
         }
     },
 
@@ -220,6 +237,8 @@
         this.helpMessage = CONSTANTS.helpMessage.replace("[help link here]", helpLink);
 
         this.overallWarning = CONSTANTS.invalidWarning;
+
+        this.validLabelOptions = ['Front', 'Back'];
     },
 
     methods: {
@@ -296,10 +315,43 @@
         if (this.globalPositions.front.maxWidth != null && this.globalPositions.front.maxWidth.width > wrapAroundBoundry) {
           this.labelStatuses.back.enabled = false;
           this.labelStatuses.back.dissableMessage = CONSTANTS.wrapAroundMessage;
+          this.labelStatuses.hasWrap = true;
         } else {
           this.labelStatuses.back.enabled = true;
           this.labelStatuses.back.dissableMessage = '';
+          this.labelStatuses.hasWrap = false;
         }
+      },
+
+      addLabel(label, id) {
+        //update count: type, global
+        this.labelStatuses.count += 1;
+        this.labelStatuses.selected.push(label);
+        this.validLabelOptions.filter(function(label){ 
+            return label != value; 
+        });
+
+        if (label.toLowerCase().includes("front")) {
+          this.labelStatuses.front.count += 1;
+        }
+        if (label.toLowerCase().includes("back")) {
+          this.labelStatuses.back.count += 1;
+        }
+
+        //add dependent labels
+        if (this.labelStatuses.count < 4) {
+          if (!this.labelStatuses.hasWrap) {
+            if (label == 'Front') {
+              this.validLabelOptions.push();
+            }
+          }
+        } else {
+          this.validLabelOptions = []
+        }
+      },
+
+      removeLabel(label, id) {
+
       },
 
       // Updates the maxWidth information for the given side when a label is updated and calls checkWrapAround()
@@ -353,13 +405,11 @@
         this.labelStatuses = {
           'front': {
             'enabled': true,
-            'dissableMessage': '',
-            'count': 0
+            'dissableMessage': ''
           },
           'back': {
             'enabled': true,
-            'dissableMessage': '',
-            'count': 0
+            'dissableMessage': ''
           } // Add medals here
         }
 
@@ -391,8 +441,6 @@
         this.globalPositions[side].valid = true;
 
         this.globalPositions[side][labelId] = form;   // Add/update new data to set
-
-        this.labelStatuses[side].count = Object.keys(this.globalPositions[side]).length - 2;    // -2 accounts for the 'maxWidth' and 'valid' keys
         
         this.updateMaxWidth(form.width, side, labelId);
 
@@ -450,7 +498,6 @@
         this.globalPositions[side].valid = true;
 
         this.globalPositions[side][labelId] = form;   // Add/update new data to set
-        this.labelStatuses[side].count = Object.keys(this.globalPositions[side]).length - 2;    // -2 accounts for the 'maxWidth' and 'valid' keys
 
         this.updateMaxWidth(form.width, side, labelId);
 
@@ -462,6 +509,8 @@
       },
 
       // Select which side the label preview is displaying and highlight the respective side's button
+      // updates preview if there is a bottle spec
+      // side: side of bottle, must be one of {'front', 'back'}
       displaySelect(side) {
         this.displaySide = side;
         switch (side) {
@@ -525,14 +574,12 @@
       // Default values are 0, if a height offset of 0 is found the label is hidden
       fetchDisplayMeasurements(side, labelId) {
 
-        const fullHeight = CONSTANTS[this.bottleType + "Height"];
-
         var heightOffset = 0;
         var height = 0;
         var theta = 0;
         if (this.globalPositions[side][labelId] != null && this.globalPositions[side].valid) {
-          heightOffset = (this.globalPositions[side][labelId].heightOffset/fullHeight)*100;
-          height = (this.globalPositions[side][labelId].height/fullHeight)*100;
+          heightOffset = this.globalPositions[side][labelId].heightOffset;
+          height = this.globalPositions[side][labelId].height;
           theta = (2 * this.globalPositions[side][labelId].width * Math.PI) / this.bottleSpec.circumference;
         }
         if (heightOffset == 0) {  
@@ -549,10 +596,11 @@
       displayLabel(element, label) {
 
         const diamiter = this.bottleSpec.diameter;
+        const fullHeight = CONSTANTS[this.bottleType + "Height"];
 
-        document.getElementById(element).style.height = `${label.height}%`;
+        document.getElementById(element).style.height = `${(label.height/fullHeight)*100}%`;
         document.getElementById(element).style.width = `${(label.adjustedWidth/diamiter)*100*0.47}%`;
-        document.getElementById(element).style.bottom = `${label.heightOffset}%`;
+        document.getElementById(element).style.bottom = `${(label.heightOffset/fullHeight)*100}%`;
         
         switch (element) {
           case "labelPreview":

@@ -531,7 +531,7 @@
 .sub-title-formatted {
     white-space: pre-wrap;
     text-align: left;
-    margin-left: 8%;
+    margin-left: 6%;
     width: 100%;
     font-weight: bold;
 }
@@ -544,6 +544,8 @@
 }
 
 .standard-input {
+    float: left;
+    margin-left: 5%;
     width: 80px;
     padding: 6%;
     border: 1px solid lightgrey;
@@ -554,6 +556,8 @@
 }
 
 .green-input {
+    float: left;
+    margin-left: 6%;
     width: 80px;
     padding: 6%;
     border: 3px solid green;
@@ -571,6 +575,8 @@
 }
 
 .orange-input {
+    float: left;
+    margin-left: 5%;
     width: 80px;
     padding: 6%;
     border: 3px solid orange;
@@ -587,6 +593,8 @@
 }
 
 .red-input {
+    float: left;
+    margin-left: 5%;
     width: 80px;
     padding: 6%;
     border: 3px solid red;
