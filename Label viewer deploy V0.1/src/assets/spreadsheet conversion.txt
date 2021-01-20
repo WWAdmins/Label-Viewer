@@ -1,0 +1,14 @@
+Warning:
+    Min offset: A + 3 (absolute >13)
+    Max height: H
+    Max width: F
+    point V: (D,H)
+    point U: (F,E)
+        -top corner of orange zone is a slope from point V to point U (V is higher point)
+
+Recomended:
+    Min offset: warning min offset + 2
+    Max height: B
+    Max width: C
+
+Diameter: G

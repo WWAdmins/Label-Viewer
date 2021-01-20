@@ -1,0 +1,555 @@
+{"Visy Glass (O-I)": 
+    {
+        "Burgundy":
+            {
+            "31555": {
+                "name": "Punted",
+                "diameter": 80,
+                "warning": {
+                    "minHeightOffset": 18,
+                    "maxHeight": 107,
+                    "maxWidth": 168.4571429,
+                    "VpointX": 125.7142857,
+                    "UpointY": 61.8
+                },
+                "recomended": {
+                    "minHeightOffset": 20,
+                    "maxHeight": 103,
+                    "maxWidth": 100.5714286
+                }
+            },
+            "30733": {
+                "name": "Punted",
+                "diameter": 80,
+                "warning": {
+                    "minHeightOffset": 16,
+                    "maxHeight": 107.4,
+                    "maxWidth": 168.4571429,
+                    "VpointX": 125.7142857,
+                    "UpointY": 62.04
+                },
+                "recomended": {
+                    "minHeightOffset": 18,
+                    "maxHeight": 103.4,
+                    "maxWidth": 100.5714286
+                }
+            },
+            "3662" : {
+                "name": "Ptd.",
+                "diameter": 82,
+                "warning": {
+                    "minHeightOffset": 16.3,
+                    "maxHeight": 107,
+                    "maxWidth": 172.6685714,
+                    "VpointX": 128.8571429,
+                    "UpointY": 61.8
+                },
+                "recomended": {
+                    "minHeightOffset": 18.3,
+                    "maxHeight": 103,
+                    "maxWidth": 103.0857143
+                }
+            },
+            "31549": {
+                "name": "SH",
+                "diameter": 82,
+                "warning": {
+                    "minHeightOffset": 10.2,
+                    "maxHeight": 113,
+                    "maxWidth": 172.6685714,
+                    "VpointX": 128.8571429,
+                    "UpointY": 65.4
+                },
+                "recomended": {
+                    "minHeightOffset": 12.2,
+                    "maxHeight": 109,
+                    "maxWidth": 103.0857143
+                }
+            }
+        },
+        "Premium Burgundy": {
+            "31532": {
+                "name": "SH",
+                "diameter": 86,
+                "warning": {
+                    "minHeightOffset": 10.2,
+                    "maxHeight": 90.8,
+                    "maxWidth": 181.0914286,
+                    "VpointX": 135.1428571,
+                    "UpointY": 52.08
+                },
+                "recomended": {
+                    "minHeightOffset": 12.2,
+                    "maxHeight": 86.8,
+                    "maxWidth": 108.1142857
+                }
+            },
+            "30105": {
+                "name": "Premium",
+                "diameter": 86,
+                "warning": {
+                    "minHeightOffset": 18,
+                    "maxHeight": 83,
+                    "maxWidth": 181.0914286,
+                    "VpointX": 135.1428571,
+                    "UpointY": 47.4
+                },
+                "recomended": {
+                    "minHeightOffset": 20,
+                    "maxHeight": 79,
+                    "maxWidth": 108.1142857
+                }
+            },
+            "31296": {
+                "name": "Ultra",
+                "diameter": 88.6,
+                "warning": {
+                    "minHeightOffset": 16.3,
+                    "maxHeight": 89.2,
+                    "maxWidth": 186.5662857,
+                    "VpointX": 139.2285714,
+                    "UpointY": 51.12
+                },
+                "recomended": {
+                    "minHeightOffset": 18.3,
+                    "maxHeight": 85.2,
+                    "maxWidth": 111.3828571
+                }
+            },
+            "31103": {
+                "name": "Grande",
+                "diameter": 87.2,
+                "warning": {
+                    "minHeightOffset": 16.3,
+                    "maxHeight": 89.2,
+                    "maxWidth": 183.6182857,
+                    "VpointX": 137.0285714,
+                    "UpointY": 51.12
+                },
+                "recomended": {
+                    "minHeightOffset": 18.3,
+                    "maxHeight": 85.2,
+                    "maxWidth": 109.6228571
+                }
+            },
+            "31550": {
+                "name": "SH",
+                "diameter": 87.2,
+                "warning": {
+                    "minHeightOffset": 10,
+                    "maxHeight": 95.5,
+                    "maxWidth": 183.6182857,
+                    "VpointX": 137.0285714,
+                    "UpointY": 54.9
+                },
+                "recomended": {
+                    "minHeightOffset": 12,
+                    "maxHeight": 91.5,
+                    "maxWidth": 109.6228571
+                }
+            }
+        },
+        "Bordeaux": {
+            "31256": {
+                "name": "Punted",
+                "diameter": 75.3,
+                "warning": {
+                    "minHeightOffset": 18,
+                    "maxHeight": 156.9,
+                    "maxWidth": 158.5602857,
+                    "VpointX": 118.3285714,
+                    "UpointY": 91.74
+                },
+                "recomended": {
+                    "minHeightOffset": 20,
+                    "maxHeight": 152.9,
+                    "maxWidth": 94.66285714
+                }
+            },
+            "30750": {
+                "name": "Punted",
+                "diameter": 75.8,
+                "warning": {
+                    "minHeightOffset": 18,
+                    "maxHeight": 156.9,
+                    "maxWidth": 159.6131429,
+                    "VpointX": 119.1142857,
+                    "UpointY": 91.74
+                },
+                "recomended": {
+                    "minHeightOffset": 20,
+                    "maxHeight": 152.9,
+                    "maxWidth": 95.29142857
+                }
+            },
+            "30053": {
+                "name": "Premium",
+                "diameter": 76.2,
+                "warning": {
+                    "minHeightOffset": 21,
+                    "maxHeight": 165,
+                    "maxWidth": 160.4554286,
+                    "VpointX": 119.7428571,
+                    "UpointY": 96.6
+                },
+                "recomended": {
+                    "minHeightOffset": 23,
+                    "maxHeight": 161,
+                    "maxWidth": 95.79428571
+                }
+            }
+        },
+        "Riesling": {
+            "3663": {
+                "name": "Riesling",
+                "diameter": 76.2,
+                "warning": {
+                    "minHeightOffset": 18,
+                    "maxHeight": 114.9,
+                    "maxWidth": 160.4554286,
+                    "VpointX": 119.7428571,
+                    "UpointY": 66.54
+                },
+                "recomended": {
+                    "minHeightOffset": 20,
+                    "maxHeight": 110.9,
+                    "maxWidth": 95.79428571
+                }
+            },
+            "30646": {
+                "name": "Premium",
+                "diameter": 80.2,
+                "warning": {
+                    "minHeightOffset": 18,
+                    "maxHeight": 89,
+                    "maxWidth": 168.8782857,
+                    "VpointX": 126.0285714,
+                    "UpointY": 51
+                },
+                "recomended": {
+                    "minHeightOffset": 20,
+                    "maxHeight": 85,
+                    "maxWidth": 100.8228571
+                }
+            }
+        }
+    },
+    "Chandler Resources": {
+        "Burgundy": {
+            "CR404": {
+                "name": "Legere",
+                "diameter": 80,
+                "warning": {
+                    "minHeightOffset": 18,
+                    "maxHeight": 106.8,
+                    "maxWidth": 168.4571429,
+                    "VpointX": 125.7142857,
+                    "UpointY": 61.68
+                },
+                "recomended": {
+                    "minHeightOffset": 20,
+                    "maxHeight": 102.8,
+                    "maxWidth": 100.5714286
+                }
+            },
+            "CR403": {
+                "name": "Export",
+                "diameter": 80,
+                "warning": {
+                    "minHeightOffset": 16,
+                    "maxHeight": 112,
+                    "maxWidth": 168.4571429,
+                    "VpointX": 125.7142857,
+                    "UpointY": 64.8
+                },
+                "recomended": {
+                    "minHeightOffset": 18,
+                    "maxHeight": 108,
+                    "maxWidth": 100.5714286
+                }
+            },
+            "CR401": {
+                "name": "Traditional",
+                "diameter": 81.5,
+                "warning": {
+                    "minHeightOffset": 14,
+                    "maxHeight": 109.5,
+                    "maxWidth": 171.6157143,
+                    "VpointX": 128.0714286,
+                    "UpointY": 63.3
+                },
+                "recomended": {
+                    "minHeightOffset": 16,
+                    "maxHeight": 105.5,
+                    "maxWidth": 102.4571429
+                }
+            }
+        },
+        "Premium Burgundy": {
+            "CR409": {
+                "name": "Grandeur",
+                "diameter": 87,
+                "warning": {
+                    "minHeightOffset": 18,
+                    "maxHeight": 87.5,
+                    "maxWidth": 183.1971429,
+                    "VpointX": 136.7142857,
+                    "UpointY": 50.1
+                },
+                "recomended": {
+                    "minHeightOffset": 20,
+                    "maxHeight": 83.5,
+                    "maxWidth": 109.3714286
+                }
+            },
+            "CR408": {
+                "name": "Premier",
+                "diameter": 85.8,
+                "warning": {
+                    "minHeightOffset": 18,
+                    "maxHeight": 83,
+                    "maxWidth": 180.6702857,
+                    "VpointX": 134.8285714,
+                    "UpointY": 47.4
+                },
+                "recomended": {
+                    "minHeightOffset": 20,
+                    "maxHeight": 79,
+                    "maxWidth": 107.8628571
+                }
+            },
+            "CR4015": {
+                "name": "Avignon",
+                "diameter": 87.4,
+                "warning": {
+                    "minHeightOffset": 15,
+                    "maxHeight": 81,
+                    "maxWidth": 184.0394286,
+                    "VpointX": 137.3428571,
+                    "UpointY": 46.2
+                },
+                "recomended": {
+                    "minHeightOffset": 17,
+                    "maxHeight": 77,
+                    "maxWidth": 109.8742857
+                }
+            },
+            "CR407": {
+                "name": "Passion",
+                "diameter": 88,
+                "warning": {
+                    "minHeightOffset": 17,
+                    "maxHeight": 93,
+                    "maxWidth": 185.3028571,
+                    "VpointX": 138.2857143,
+                    "UpointY": 53.4
+                },
+                "recomended": {
+                    "minHeightOffset": 19,
+                    "maxHeight": 89,
+                    "maxWidth": 110.6285714
+                }
+            },
+            "CR478": {
+                "name": "Alba",
+                "diameter": 86.2,
+                "warning": {
+                    "minHeightOffset": 24,
+                    "maxHeight": 88,
+                    "maxWidth": 181.5125714,
+                    "VpointX": 135.4571429,
+                    "UpointY": 50.4
+                },
+                "recomended": {
+                    "minHeightOffset": 26,
+                    "maxHeight": 84,
+                    "maxWidth": 108.3657143
+                }
+            }
+        },
+        "Magnum": {
+            "CR4021": {
+                "name": "Prestige",
+                "diameter": 107.2,
+                "warning": {
+                    "minHeightOffset": 25,
+                    "maxHeight": 114.8,
+                    "maxWidth": 225.7325714,
+                    "VpointX": 168.4571429,
+                    "UpointY": 66.48
+                },
+                "recomended": {
+                    "minHeightOffset": 27,
+                    "maxHeight": 110.8,
+                    "maxWidth": 134.7657143
+                }
+            }
+        },
+        "Bordeaux": {
+            "CR501": {
+                "name": "Svelte",
+                "diameter": 75.2,
+                "warning": {
+                    "minHeightOffset": 17,
+                    "maxHeight": 153.7,
+                    "maxWidth": 158.3497143,
+                    "VpointX": 118.1714286,
+                    "UpointY": 89.82
+                },
+                "recomended": {
+                    "minHeightOffset": 19,
+                    "maxHeight": 149.7,
+                    "maxWidth": 94.53714286
+                }
+            },
+            "CR507": {
+                "name": "Export",
+                "diameter": 75.4,
+                "warning": {
+                    "minHeightOffset": 19,
+                    "maxHeight": 159.5,
+                    "maxWidth": 158.7708571,
+                    "VpointX": 118.4857143,
+                    "UpointY": 93.3
+                },
+                "recomended": {
+                    "minHeightOffset": 21,
+                    "maxHeight": 155.5,
+                    "maxWidth": 94.78857143
+                }
+            },
+            "CR5015": {
+                "name": "Superior",
+                "diameter": 84.5,
+                "warning": {
+                    "minHeightOffset": 18,
+                    "maxHeight": 157,
+                    "maxWidth": 177.9328571,
+                    "VpointX": 132.7857143,
+                    "UpointY": 91.8
+                },
+                "recomended": {
+                    "minHeightOffset": 20,
+                    "maxHeight": 153,
+                    "maxWidth": 106.2285714
+                }
+            },
+            "CR508": {
+                "name": "Premium",
+                "diameter": 76.2,
+                "warning": {
+                    "minHeightOffset": 19,
+                    "maxHeight": 163,
+                    "maxWidth": 160.4554286,
+                    "VpointX": 119.7428571,
+                    "UpointY": 95.4
+                },
+                "recomended": {
+                    "minHeightOffset": 21,
+                    "maxHeight": 159,
+                    "maxWidth": 95.79428571
+                }
+            },
+            "CR5011": {
+                "name": "Resolute",
+                "diameter": 74.8,
+                "warning": {
+                    "minHeightOffset": 21,
+                    "maxHeight": 184,
+                    "maxWidth": 157.5074286,
+                    "VpointX": 117.5428571,
+                    "UpointY": 108
+                },
+                "recomended": {
+                    "minHeightOffset": 23,
+                    "maxHeight": 180,
+                    "maxWidth": 94.03428571
+                }
+            }
+        },
+        "Riesling": {
+            "CR302": {
+                "name": "Primo",
+                "diameter": 75.3,
+                "warning": {
+                    "minHeightOffset": 17,
+                    "maxHeight": 101,
+                    "maxWidth": 158.5602857,
+                    "VpointX": 118.3285714,
+                    "UpointY": 58.2
+                },
+                "recomended": {
+                    "minHeightOffset": 19,
+                    "maxHeight": 97,
+                    "maxWidth": 94.66285714
+                }
+            }
+        },
+        "Sparkling": {
+            "CR982": {
+                "name": "Carbeco",
+                "diameter": 84.6,
+                "warning": {
+                    "minHeightOffset": 19,
+                    "maxHeight": 97.5,
+                    "maxWidth": 178.1434286,
+                    "VpointX": 132.9428571,
+                    "UpointY": 56.1
+                },
+                "recomended": {
+                    "minHeightOffset": 21,
+                    "maxHeight": 93.5,
+                    "maxWidth": 106.3542857
+                }
+            },
+            "CR988": {
+                "name": "Beaumont",
+                "diameter": 86.5,
+                "warning": {
+                    "minHeightOffset": 18,
+                    "maxHeight": 97,
+                    "maxWidth": 182.1442857,
+                    "VpointX": 135.9285714,
+                    "UpointY": 55.8
+                },
+                "recomended": {
+                    "minHeightOffset": 20,
+                    "maxHeight": 93,
+                    "maxWidth": 108.7428571
+                }
+            },
+            "CR989": {
+                "name": "Gallivant",
+                "diameter": 85.5,
+                "warning": {
+                    "minHeightOffset": 17.5,
+                    "maxHeight": 105.5,
+                    "maxWidth": 180.0385714,
+                    "VpointX": 134.3571429,
+                    "UpointY": 60.9
+                },
+                "recomended": {
+                    "minHeightOffset": 19.5,
+                    "maxHeight": 101.5,
+                    "maxWidth": 107.4857143
+                }
+            },
+            "CR983": {
+                "name": "Brut",
+                "diameter": 95.5,
+                "warning": {
+                    "minHeightOffset": 10.8,
+                    "maxHeight": 85.5,
+                    "maxWidth": 201.0957143,
+                    "VpointX": 150.0714286,
+                    "UpointY": 48.9
+                },
+                "recomended": {
+                    "minHeightOffset": 12.8,
+                    "maxHeight": 81.5,
+                    "maxWidth": 120.0571429
+                }
+            }
+        }
+    }
+}
