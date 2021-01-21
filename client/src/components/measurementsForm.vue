@@ -141,6 +141,11 @@
         },
 
         mounted() {
+            if (this.bottleSpec != null) {
+                this.updateHeightDescription();
+                this.updateHeightOffsetDescription();
+                this.updateWidthDescription();
+            }
         },
 
         methods: {
