@@ -51,13 +51,12 @@
           >Bottle</multiselect>
         </div>
         <multiselect 
-          v-model="labels" 
-          placeholder="Select the labels you want" 
-          label="name"
-          :options="options" 
-          :multiple="true" 
-          :taggable="true" 
-          max=4
+          v-model="labelStatuses.selected" 
+          placeholder="Select the labels you want"
+          :close-on-select="false" 
+          :options="validLabelOptions"
+          :multiple="true"
+          :max="4"
           @select='addLabel'
           @remove='removeLabel'
         >Label choice</multiselect>
@@ -224,7 +223,6 @@
           help: false,
           helpMessage: "",
           displaySide: 'front',          // label preview stuff
-          labels: [],
           labelOptions: {'F1':'Front', 'B1':'Back', 'F2':'Second front', 'B2':'Second back'},
           validLabelOptions: []
         }
@@ -323,13 +321,9 @@
         }
       },
 
-      addLabel(label, id) {
+      addLabel(label) {
         //update count: type, global
         this.labelStatuses.count += 1;
-        this.labelStatuses.selected.push(label);
-        this.validLabelOptions.filter(function(label){ 
-            return label != value; 
-        });
 
         if (label.toLowerCase().includes("front")) {
           this.labelStatuses.front.count += 1;
@@ -342,7 +336,10 @@
         if (this.labelStatuses.count < 4) {
           if (!this.labelStatuses.hasWrap) {
             if (label == 'Front') {
-              this.validLabelOptions.push();
+              this.validLabelOptions.push(this.labelOptions.F2);
+            }
+            if (label == "Back") {
+              this.validLabelOptions.push(this.labelOptions.B2);
             }
           }
         } else {
@@ -350,8 +347,27 @@
         }
       },
 
-      removeLabel(label, id) {
+      arrayRemove(array, item) {
+        var index = array.indexOf(item);
+        if (index > -1) {
+          array.splice(index, 1);
+        }
+        return array;
+      },
 
+      removeLabel(label) {
+        this.labelStatuses.count -= 1;
+        //medals logic stuff
+        if (label == 'Front') {
+          this.validLabelOptions = this.arrayRemove(this.validLabelOptions, this.labelOptions.F2);
+          this.labelStatuses.selected = this.arrayRemove(this.labelStatuses.selected, this.labelOptions.F2);
+          this.labelStatuses.front.count -= 1;
+        }
+        if (label == "Back") {
+          this.validLabelOptions = this.arrayRemove(this.validLabelOptions, this.labelOptions.B2);
+          this.labelStatuses.selected = this.arrayRemove(this.labelStatuses.selected, this.labelOptions.B2);
+          this.labelStatuses.back.count -= 1;
+        }
       },
 
       // Updates the maxWidth information for the given side when a label is updated and calls checkWrapAround()
@@ -380,7 +396,7 @@
       //    - Refs call is used as this is an event and it is not sutable to change the child's state
       // Resets globalPositions and labelStatuses, then calls checkWrapAround() and checkGlobalInvalid() to clear and reset any errors
       clearForm() {
-
+        
         // Clear the orange zone warning as well? Just to be safe
         this.warned = false;
 
@@ -512,6 +528,7 @@
       // updates preview if there is a bottle spec
       // side: side of bottle, must be one of {'front', 'back'}
       displaySelect(side) {
+
         this.displaySide = side;
         switch (side) {
           case 'front':
