@@ -57,6 +57,7 @@
           :options="validLabelOptions"
           :multiple="true"
           :max="4"
+          :disabled="!bottleSpec"
           @select='addLabel'
           @remove='removeLabel'
         >Label choice</multiselect>
@@ -83,13 +84,15 @@
             <label class="header">Front labels</label>
             <!-- multi label support needed here -->
             <measurements-form
+              v-for="n in labelStatuses.front.count"
+              :key="'F' + n"
+              :id="'frontF' + n"
+              ref=n
+              side="front"
+              :labelId="'F' + n"
               :bottleSpec="bottleSpec"
               :globalPositions="globalPositions"
               v-show='labelStatuses.front.enabled'
-              id='front-F1'
-              ref="frontF1"
-              side="front"
-              labelId="F1"
               @invalid="emmittedInvalidLabel"
               @valid="emmittedValidLabel"
               @warning="emmitedWarningCatch"
@@ -102,13 +105,15 @@
             <label class="header">Back labels</label>
             <!-- multi label support needed here -->
             <measurements-form
+              v-for="n in labelStatuses.back.count"
+              :key="'B' + n"
+              :id="'backB' + n"
+              ref=n
+              side="back"
+              :labelId="'B' + n"
               :bottleSpec="bottleSpec"
               :globalPositions="globalPositions"
               v-show='labelStatuses.back.enabled'
-              id='back-B1'
-              ref="backB1"
-              side="back"
-              labelId="B1"
               @invalid="emmittedInvalidLabel"
               @valid="emmittedValidLabel"
               @warning="emmitedWarningCatch"
@@ -418,24 +423,18 @@
               'valid': true,
             }
         },
-        this.labelStatuses = {
-          'front': {
-            'enabled': true,
-            'dissableMessage': ''
-          },
-          'back': {
-            'enabled': true,
-            'dissableMessage': ''
-          } // Add medals here
-        }
+        this.labelStatuses.front.enabled = true;
+        this.labelStatuses.front.dissableMessage = '';
+        this.labelStatuses.back.enabled = true;
+        this.labelStatuses.back.dissableMessage = '';
+        
 
         this.checkWrapAround();
 
         this.checkGlobalInvalid();
 
-        // Multi label support here (gonna need to loop through them)
-        this.$refs.backB1.clearForm();
-        this.$refs.frontF1.clearForm();
+        this.$refs.n.forEach(form => form.clearForm());
+
       },
 
       // Checks if the "global level" error/invalid warning box is needed
@@ -554,19 +553,26 @@
         const diamiter = this.bottleSpec.diameter;
         const radius = diamiter/2;
 
-        var labels = {};
+        var labels = {'front': {}, 'back': {}};
         // loop for multi label
-        labels['front'] = this.fetchDisplayMeasurements('front', 'F1');
-        labels['back'] = this.fetchDisplayMeasurements('back', 'B1');
+        for (var label in this.globalPositions.front) {
+          if (label != 'maxWidth' && label != 'valid') {
+            labels.front[label] = this.fetchDisplayMeasurements('front', label);
+          }
+        }
+        labels.back.B1 = this.fetchDisplayMeasurements('back', 'B1');
+        labels.back.B2 = this.fetchDisplayMeasurements('back', 'B2');
+        labels.front.F2 = this.fetchDisplayMeasurements('front', 'F2');
+
 
         var main = {};
         var overflow = {};
         if (this.displaySide == 'front') {
-          main = labels['front'];
-          overflow = labels['back'];
+          main = labels.front.F2;
+          overflow = labels.back.B1;
         } else {
-          main = labels['back'];
-          overflow = labels['front'];
+          main = labels.back.B1;
+          overflow = labels.front.F2;
         }
 
         if (main.theta <= Math.PI) {

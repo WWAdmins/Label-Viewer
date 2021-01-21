@@ -1,5 +1,6 @@
 <template>
     <div id=inputs>
+        <hr v-if="labelId[1] > 1">
         <label class="sub-title-formatted">Height</label>
         <div class='row'>
             <div class='col-sm-5'>
