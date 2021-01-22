@@ -401,6 +401,16 @@
           this.labelStatuses.count -= 1;
           this.labelStatuses.selectedIds = this.arrayRemove(this.labelStatuses.selectedIds, 'B1');
         }
+        if (label == 'Second front') {
+          this.labelStatuses.front.count -= 1;
+          this.labelStatuses.count -= 1;
+          this.labelStatuses.selectedIds = this.arrayRemove(this.labelStatuses.selectedIds, 'F2');
+        }
+        if (label == 'Second back') {
+          this.labelStatuses.back.count -= 1;
+          this.labelStatuses.count -= 1;
+          this.labelStatuses.selectedIds = this.arrayRemove(this.labelStatuses.selectedIds, 'B2');
+        }
       },
 
       // Updates the maxWidth information for the given side when a label is updated and calls checkWrapAround()
@@ -463,6 +473,8 @@
 
         this.$refs.n.forEach(form => form.clearForm());
 
+        this.updatePreview();
+
       },
 
       // Checks if the "global level" error/invalid warning box is needed
@@ -489,7 +501,7 @@
 
         this.checkGlobalInvalid();
 
-        if (this.form != null && this.form.heightOffset != null) {
+        if (this.form != null) {
           this.updatePreview();
         }
 
@@ -603,7 +615,6 @@
 
         var  label;
         for (var x in main) {
-          console.log('x', x);
           label = main[x];
           if (label.theta <= Math.PI) {
             label['adjustedWidth'] = 2 * Math.sin(label.theta/2) * radius;
@@ -650,7 +661,6 @@
 
       // Sets demensions of the label preview on the bottle and places it in the right possition
       displayLabel(element, label) {
-        console.log(element, label);
 
         const diamiter = this.bottleSpec.diameter;
         const fullHeight = CONSTANTS[this.bottleType + "Height"];
