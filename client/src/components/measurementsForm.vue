@@ -117,31 +117,35 @@
                     if (this.globalPositions.latest.id != this.labelId) {
                         clearTimeout(this.delayWatcherTimer);
                         this.delayWatcherTimer = setTimeout(()=>{
-                            if (this.side == 'back') {
-                                this.validate();
+                            if (this.globalPositions.latest.id == 'global') {
+                                this.validate('props');
+
                                 this.updateWidthDescription();
+                                this.updateHeightDescription();
+                                this.updateHeightOffsetDescription();
                             }
 
-                            // if label 2
-                                // update offset
-                                // validate
-
-                                // height diaply
-                                // height offset display
-                            if (this.labelId[1] != 1) {
-                                const oldOffset = this.heightOffset;
+                            if (this.labelId[1] == 2) {
                                 this.heightOffset = this.labelGap + this.globalPositions[this.side][this.labelId[0]+'1'].height + this.globalPositions[this.side][this.labelId[0]+'1'].heightOffset;
-                                if (this.heightOffset != oldOffset) {
-                                    this.validate('props');
-                                }
                             } else {
                                 this.heightOffset = this.applicationHeight;
                             }
-                                
-                                
+                            
+                            if (this.globalPositions.latest.id == 'F1') {
+                                this.validate('props');
 
+                                this.updateWidthDescription();
                                 this.updateHeightDescription();
                                 this.updateHeightOffsetDescription();
+                            } else if (this.side == 'back' && this.globalPositions.latest.side == 'front') {
+                                this.validate('props');
+                                this.updateWidthDescription();
+                            } else if (this.globalPositions.latest.id == 'B1' && this.labelId == 'B2') {
+                                this.validate('props');
+                                this.updateWidthDescription();
+                                this.updateHeightDescription();
+                                this.updateHeightOffsetDescription();
+                            }
                         }, 600);
                     }
                 },
@@ -270,19 +274,19 @@
                     this.heightOffsetDescription = '';
                 } else {
                     if (this.validHeight) {
-                        const maxHeightoffsetRecomended = this.getMaxHeightOffset('recomended');
-                        const maxHeightoffsetWarning = this.getMaxHeightOffset('warning');
+                        const maxHeightOffsetRecomended = this.getmaxHeightOffset('recomended');
+                        const maxHeightOffsetWarning = this.getmaxHeightOffset('warning');
                         const minHeightoffsetRecomended = this.getMinHeightOffset('recomended');
 
 
-                        if (maxHeightoffsetRecomended <= minHeightoffsetRecomended) {
-                            if (maxHeightoffsetWarning <= minHeightoffsetRecomended) {
-                                this.heightOffsetDescription = `Recomended <b><b>${maxHeightoffsetWarning}mm</b></b>`;
+                        if (maxHeightOffsetRecomended <= minHeightoffsetRecomended) {
+                            if (maxHeightOffsetWarning <= minHeightoffsetRecomended) {
+                                this.heightOffsetDescription = `Recomended <b><b>${maxHeightOffsetWarning}mm</b></b>`;
                             } else {
                                 this.heightOffsetDescription = `Recomended <b><b>${minHeightoffsetRecomended}mm</b></b>`;
                             }
                         } else {
-                            this.heightOffsetDescription = `Recomended between <b><b>${minHeightoffsetRecomended}mm</b></b> and <b><b>${maxHeightoffsetRecomended}mm</b></b>`;
+                            this.heightOffsetDescription = `Recomended between <b><b>${minHeightoffsetRecomended}mm</b></b> and <b><b>${maxHeightOffsetRecomended}mm</b></b>`;
                         }
                     }
                 }
@@ -310,8 +314,21 @@
             // Type: {'warning', 'recomended'}
             getMaxHeight(type) {
                 var maxHeight;
+                if ((this.labelId == 'F1' && this.globalPositions.activeLabels.includes('F2')) || (this.labelId == 'B1' && this.globalPositions.activeLabels.includes('B2'))) { // If X1 label and X2 label exists
+                    maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.minVerticalLabelGap[type] - CONSTANTS.minLabelHeight;
+                } else if (this.labelId == 'F2' || this.labelId == 'B2') {  // If label is an X2
+                    maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.minVerticalLabelGap[type] - CONSTANTS.minLabelHeight;
 
-                maxHeight = this.bottleSpec[type].maxHeight;
+                    if (this.globalPositions[this.side][this.labelId[0] + '1'] != null) {   // if the measurements for X1 exist
+                        const X1 = this.globalPositions[this.side][this.labelId[0] + '1'];
+                        if (X1.height != '' && X1.height > CONSTANTS.minLabelHeight) {  // If the height exists and it is greater than the min height
+                            maxHeight -= X1.height - CONSTANTS.minLabelHeight;
+                        }
+                    }
+                } else {
+                    maxHeight = this.bottleSpec[type].maxHeight;
+                }
+
                 return maxHeight;
             },
 
@@ -323,22 +340,22 @@
             // Fetches the maximum possible height offset of the label using type to specify which max height offset to use
             // The max height offset takes the current label height entered by the user or the minimum label height into account (depending which is bigger)
             // Type: {'warning', 'recomended'}
-            getMaxHeightOffset(type) {
-                var maxHeightoffset;
+            getmaxHeightOffset(type) {
+                var maxHeightOffset;
                 const X1 = this.globalPositions[this.side][this.labelId[0]+'1'];
                 if (this.labelId[1] != 1 && X1 != null) {
-                    maxHeightoffset = this.bottleSpec[type].maxHeight - (X1.height + X1.heightOffset - this.bottleSpec[type].minHeightOffset) - CONSTANTS.minVerticalLabelGap[type] - CONSTANTS.minLabelHeight;
+                    maxHeightOffset = this.bottleSpec[type].maxHeight - (X1.height + X1.heightOffset - this.bottleSpec[type].minHeightOffset) - CONSTANTS.minVerticalLabelGap[type] - CONSTANTS.minLabelHeight;
 
                     if (this.height !== null && this.height >= CONSTANTS.minLabelHeight) {
-                        maxHeightoffset -= this.height - CONSTANTS.minLabelHeight;
+                        maxHeightOffset -= this.height - CONSTANTS.minLabelHeight;
                     }
                 } else {
-                    maxHeightoffset = this.bottleSpec[type].maxHeight + this.bottleSpec[type].minHeightOffset - CONSTANTS.minLabelHeight;
+                    maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec[type].minHeightOffset - CONSTANTS.minLabelHeight;
                     if (this.height !== null && this.height >= CONSTANTS.minLabelHeight) {
-                        maxHeightoffset -= this.height - CONSTANTS.minLabelHeight;
+                        maxHeightOffset -= this.height - CONSTANTS.minLabelHeight;
                     }
                 }
-                return maxHeightoffset;
+                return maxHeightOffset;
             },
 
             getMinHeightOffset(type) {
@@ -363,7 +380,6 @@
             // When multiple constraints are all relavent (ie, constrained by another label and by height of label) the minimum value is taken
             // Type: {'warning', 'recomended'}
             getMaxWidth(type) {
-                console.log(this.labelId)
                 var heightAccountedMax = this.bottleSpec.warning.maxWidth;
                 const wrapAroundBoundry = CONSTANTS.warpAroundDef * this.bottleSpec.circumference;
                 if (this.side == 'back' && this.globalPositions.front.maxWidth != null) { // If back label, account for front label width
@@ -488,18 +504,14 @@
                     'width': this.width
                 };
 
-                if (input == 'props') {
-                    // emit props
+                // Address "global level" warnings here
+                if (!this.valid) {
+                    this.$emit('invalid', {'labelId':this.labelId, 'side':this.side, 'type': input});
                 } else {
-                    // Address "global level" warnings here
-                    if (!this.valid) {
-                        this.$emit('invalid', {'labelId':this.labelId, 'side':this.side, 'type': input});
-                    } else {
-                        this.$emit('valid', {'form':form, 'labelId':this.labelId, 'side':this.side, 'type': input});
-                    }
-                    if (this.orangeZone) {
-                        this.$emit('warning', {'warning':'orange zone', 'labelId':this.labelId, 'side':this.side, 'type': input, 'form':form});
-                    }
+                    this.$emit('valid', {'form':form, 'labelId':this.labelId, 'side':this.side, 'type': input});
+                }
+                if (this.orangeZone) {
+                    this.$emit('warning', {'warning':'orange zone', 'labelId':this.labelId, 'side':this.side, 'type': input, 'form':form});
                 }
             },
 
@@ -536,19 +548,27 @@
                     this.heightOffsetWarnClass = '';
                     return;
                 }
-                if (this.heightOffset < this.bottleSpec.warning.minHeightOffset) { // too low
+                
+                var offset;
+                if (this.labelId[1] == 1) { // If this is a first label
+                    offset = this.heightOffset;
+                } else {    // If this is a second label
+                    offset = this.labelGap;
+                }
+
+                if (offset < this.getMinHeightOffset('warning')) { // too low
                     this.validHeightOffset = false;
                     this.warnHeightOffset = CONSTANTS.lowHeightOffsetWarning;
                     this.heightOffsetWarnClass = 'red';
                     this.setInputCss('heightOffset', 'red');
-                } else if ((this.heightOffset > this.getMaxHeightOffset('recomended') && this.heightOffset <= this.getMaxHeightOffset('warning')) ||
-                            (this.heightOffset < this.bottleSpec.recomended.minHeightOffset && this.heightOffset >= this.bottleSpec.warning.minHeightOffset)) { // warn
+                } else if ((offset > this.getmaxHeightOffset('recomended') && offset <= this.getmaxHeightOffset('warning')) ||
+                            (offset < this.getMinHeightOffset('recomended') && offset >= this.getMinHeightOffset('warning'))) { // warn
                     this.orangeZone = true;
                     this.validHeightOffset = true;
                     this.warnHeightOffset = CONSTANTS.orangeZoneWarning;
                     this.heightOffsetWarnClass = 'orange';
                     this.setInputCss('heightOffset', 'orange');
-                } else if (this.heightOffset > this.getMaxHeightOffset('warning')) { // too high
+                } else if (offset > this.getmaxHeightOffset('warning')) { // too high
                     this.validHeightOffset = false;
                     this.warnHeightOffset = CONSTANTS.highHeightOffsetWarning;
                     this.heightOffsetWarnClass = 'red';

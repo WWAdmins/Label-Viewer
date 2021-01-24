@@ -213,13 +213,13 @@
               {
                 'maxWidth': null,
                 'valid': true
-              }
+              },
+            'activeLabels': []
           },
           labelStatuses: {
             'hasWrap': false,
             'count': 0,
             'selected': [],
-            'selectedIds': [],
             'front': {
               'enabled': true,
               'dissableMessage': '',
@@ -353,18 +353,19 @@
         }
         switch (label) {
           case 'Front':
-            this.labelStatuses.selectedIds.push('F1');
+            this.globalPositions.activeLabels.push('F1');
             break;
           case 'Back':
-            this.labelStatuses.selectedIds.push('B1');
+            this.globalPositions.activeLabels.push('B1');
             break;
           case 'Second front':
-            this.labelStatuses.selectedIds.push('F2');
+            this.globalPositions.activeLabels.push('F2');
             break;
           case 'Second back':
-            this.labelStatuses.selectedIds.push('B2');
+            this.globalPositions.activeLabels.push('B2');
             break;
         }
+        this.globalPositions.latest.id = 'global';
       },
 
       arrayRemove(array, item) {
@@ -383,11 +384,11 @@
             this.labelStatuses.selected = this.arrayRemove(this.labelStatuses.selected, 'Second front');
             this.labelStatuses.front.count -= 1;
             this.labelStatuses.count -= 1;
-            this.labelStatuses.selectedIds = this.arrayRemove(this.labelStatuses.selectedIds, 'F2');
+            this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'F2');
           }
           this.labelStatuses.front.count -= 1;
           this.labelStatuses.count -= 1;
-          this.labelStatuses.selectedIds = this.arrayRemove(this.labelStatuses.selectedIds, 'F1');
+          this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'F1');
         }
         if (label == "Back") {
           this.validLabelOptions = this.arrayRemove(this.validLabelOptions, 'Second back');
@@ -395,22 +396,24 @@
             this.labelStatuses.selected = this.arrayRemove(this.labelStatuses.selected, 'Second back');
             this.labelStatuses.back.count -= 1;
             this.labelStatuses.count -= 1;
-            this.labelStatuses.selectedIds = this.arrayRemove(this.labelStatuses.selectedIds, 'B2');
+            this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'B2');
           }
           this.labelStatuses.back.count -= 1;
           this.labelStatuses.count -= 1;
-          this.labelStatuses.selectedIds = this.arrayRemove(this.labelStatuses.selectedIds, 'B1');
+          this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'B1');
         }
         if (label == 'Second front') {
           this.labelStatuses.front.count -= 1;
           this.labelStatuses.count -= 1;
-          this.labelStatuses.selectedIds = this.arrayRemove(this.labelStatuses.selectedIds, 'F2');
+          this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'F2');
         }
         if (label == 'Second back') {
           this.labelStatuses.back.count -= 1;
           this.labelStatuses.count -= 1;
-          this.labelStatuses.selectedIds = this.arrayRemove(this.labelStatuses.selectedIds, 'B2');
+          this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'B2');
         }
+
+        this.globalPositions.latest.id = 'global';
       },
 
       // Updates the maxWidth information for the given side when a label is updated and calls checkWrapAround()
@@ -595,7 +598,7 @@
 
         var labels = {'front': {}, 'back': {}};
         // loop for multi label
-        for (var id of this.labelStatuses.selectedIds) {
+        for (var id of this.globalPositions.activeLabels) {
           if (id[0].toLowerCase() == 'f') {
             labels.front[id] = this.fetchDisplayMeasurements('front', id);
           } else if (id[0].toLowerCase() == 'b') {
