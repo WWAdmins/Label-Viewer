@@ -331,6 +331,7 @@
           this.labelStatuses.back.enabled = false;
           this.labelStatuses.back.dissableMessage = CONSTANTS.wrapAroundMessage;
           this.labelStatuses.hasWrap = true;
+          console.log(this.globalPositions.activeLabels)
           if (this.globalPositions.activeLabels.includes('F2')) {
             document.getElementById('frontF2').classList.add("hidden"); // This is done as it is simpler than trying to putting a v-show in a v-for that doesn't cover all components in the v-for
           }
@@ -488,7 +489,7 @@
             {
               'maxWidth': null
             },
-            'activeLabels': []
+            'activeLabels': this.globalPositions.activeLabels
         },
         this.labelStatuses.front.enabled = true;
         this.labelStatuses.front.dissableMessage = '';
