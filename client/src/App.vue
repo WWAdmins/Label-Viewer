@@ -50,17 +50,20 @@
             :disabled="!bottleType"
           >Bottle</multiselect>
         </div>
-        <multiselect 
-          v-model="labelStatuses.selected" 
-          placeholder="Select the labels you want"
-          :close-on-select="false" 
-          :options="validLabelOptions"
-          :multiple="true"
-          :max="4"
-          :disabled="!bottleSpec"
-          @select='addLabel'
-          @remove='removeLabel'
-        >Label choice</multiselect>
+        <div>
+          <multiselect 
+            class='multi-select'
+            v-model="labelStatuses.selected" 
+            placeholder="Select the labels you want"
+            :close-on-select="false" 
+            :options="validLabelOptions"
+            :multiple="true"
+            :max="4"
+            :disabled="!bottleSpec"
+            @select='addLabel'
+            @remove='removeLabel'
+          >Label choice</multiselect>
+        </div>
         <div class="row">
           <div class='col-lg-12'>
             <button class="clear" v-if='!help' v-on:click="clearForm()">Clear all</button>
