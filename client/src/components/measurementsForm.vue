@@ -126,7 +126,10 @@
                             }
 
                             if (this.labelId[1] == 2) {
-                                this.heightOffset = this.labelGap + this.globalPositions[this.side][this.labelId[0]+'1'].height + this.globalPositions[this.side][this.labelId[0]+'1'].heightOffset;
+                                const X1 = this.globalPositions[this.side][this.labelId[0]+'1'];
+                                if (X1 != null) {
+                                    this.heightOffset = this.labelGap + X1.height + X1.heightOffset;
+                                }
                             } else {
                                 this.heightOffset = this.applicationHeight;
                             }
@@ -314,7 +317,8 @@
             // Type: {'warning', 'recomended'}
             getMaxHeight(type) {
                 var maxHeight;
-                if ((this.labelId == 'F1' && this.globalPositions.activeLabels.includes('F2')) || (this.labelId == 'B1' && this.globalPositions.activeLabels.includes('B2'))) { // If X1 label and X2 label exists
+                if ((this.labelId == 'F1' && this.globalPositions.activeLabels.includes('F2')) || 
+                    (this.labelId == 'B1' && this.globalPositions.activeLabels.includes('B2'))) { // If X1 label and X2 label exists
                     maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.minVerticalLabelGap[type] - CONSTANTS.minLabelHeight;
                 } else if (this.labelId == 'F2' || this.labelId == 'B2') {  // If label is an X2
                     maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.minVerticalLabelGap[type] - CONSTANTS.minLabelHeight;
@@ -350,7 +354,12 @@
                         maxHeightOffset -= this.height - CONSTANTS.minLabelHeight;
                     }
                 } else {
-                    maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec[type].minHeightOffset - CONSTANTS.minLabelHeight;
+                    if ((this.labelId == 'F1' && this.globalPositions.activeLabels.includes('F2')) || 
+                        (this.labelId == 'B1' && this.globalPositions.activeLabels.includes('B2'))) { // If X1 label and X2 label exists
+                        maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec[type].minHeightOffset - CONSTANTS.minLabelHeight - CONSTANTS.minLabelHeight - CONSTANTS.minVerticalLabelGap[type]
+                    } else {
+                        maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec[type].minHeightOffset - CONSTANTS.minLabelHeight;
+                    }
                     if (this.height !== null && this.height >= CONSTANTS.minLabelHeight) {
                         maxHeightOffset -= this.height - CONSTANTS.minLabelHeight;
                     }
@@ -391,12 +400,12 @@
                             heightAccountedMax = ( (this.height - warningInfo.UpointY) * ( (warningInfo.VpointX - warningInfo.maxWidth)/(warningInfo.maxHeight - warningInfo.UpointY) ) ) + warningInfo.maxWidth;
                         }
                         
-                        sideAccountedMax = this.bottleSpec.circumference - (2 * CONSTANTS.minLabelGap.warning) - Math.round(this.globalPositions.front.maxWidth.width);
+                        sideAccountedMax = this.bottleSpec.circumference - (2 * CONSTANTS.minLabelGap.warning) - Math.round(this.globalPositions.front.maxWidth);
                         
                         return Math.min(sideAccountedMax, heightAccountedMax, this.bottleSpec.warning.maxWidth, wrapAroundBoundry);
 
                     } else if (type == 'recomended') {
-                        sideAccountedMax = this.bottleSpec.circumference - (2 * CONSTANTS.minLabelGap.recomended) - Math.round(this.globalPositions.front.maxWidth.width);
+                        sideAccountedMax = this.bottleSpec.circumference - (2 * CONSTANTS.minLabelGap.recomended) - Math.round(this.globalPositions.front.maxWidth);
                         return Math.min(sideAccountedMax, this.bottleSpec.recomended.maxWidth);
                     }
                 } else {        // If not back label or no front label yet
@@ -426,25 +435,29 @@
             setInputCss(input, setting) {
                 var inputId = this.labelId + '-input-' + input;
 
-                document.getElementById(inputId).classList.remove("orange-input");
-                document.getElementById(inputId).classList.remove("red-input");
-                document.getElementById(inputId).classList.remove("green-input");
-                document.getElementById(inputId).classList.remove("standard-input");
-                document.getElementById(inputId).classList.remove("is-valid");
+                var element = document.getElementById(inputId);
+
+                if (element == null) {
+                    return;
+                }
+
+                element.classList.remove("orange-input");
+                element.classList.remove("red-input");
+                element.classList.remove("green-input");
+                element.classList.remove("standard-input");
                 this.$nextTick(function () {
                     switch (setting) {
                     case 'green':
-                        document.getElementById(inputId).classList.add("green-input");
-                        document.getElementById(inputId).classList.add("is-valid");
+                        element.classList.add("green-input");
                         break;
                     case 'orange':
-                        document.getElementById(inputId).classList.add("orange-input");
+                        element.classList.add("orange-input");
                         break;
                     case 'red':
-                        document.getElementById(inputId).classList.add("red-input");
+                        element.classList.add("red-input");
                         break;
                     case 'standard':
-                        document.getElementById(inputId).classList.add("standard-input");
+                        element.classList.add("standard-input");
                         break;
                     }
                 })
@@ -461,7 +474,7 @@
             // emits events for valid, invalid and orange zone (warning)
             // Validation details are handeled by helper functions
             validate(input) {
-                if (this.labelId[1] != 1) {
+                if (this.labelId[1] != 1 && this.globalPositions[this.side][this.labelId[0]+'1'] != null) {
                     this.heightOffset = this.labelGap + this.globalPositions[this.side][this.labelId[0]+'1'].height + this.globalPositions[this.side][this.labelId[0]+'1'].heightOffset;
                 } else {
                     this.heightOffset = this.applicationHeight;
@@ -501,7 +514,8 @@
                 const form = {
                     'height': this.height,
                     'heightOffset': this.heightOffset,
-                    'width': this.width
+                    'width': this.width,
+                    'valid': this.valid
                 };
 
                 // Address "global level" warnings here

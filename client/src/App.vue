@@ -161,10 +161,16 @@
               <img v-if="bottleType == 'Premium Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/PBG_image.png">
             </transition>
             
-            
             <div class='layer-4'>
               <div class="alert alert-danger p-5 font-weight-bold" role="alert" id='invalidWarning' v-show="showInvalid">{{ overallWarning }}</div>
             </div>
+          </div>
+        </div>
+        <div class="row">
+          <div id="previewLabel" class="col-lg-8 offset-lg-2 preview">
+            <transition name="slide-fade">
+              <label v-if="bottleType && bottleSpec" class="disclaimer" v-html=bottlePreviewDisclaimer></label>
+            </transition>
           </div>
         </div>
       </div>
@@ -206,13 +212,11 @@
               },
             'front': 
               {
-                'maxWidth': null,
-                'valid': true
+                'maxWidth': null
               },
             'back': 
               {
-                'maxWidth': null,
-                'valid': true
+                'maxWidth': null
               },
             'activeLabels': []
           },
@@ -233,6 +237,7 @@
           },
           help: false,
           helpMessage: "",
+          bottlePreviewDisclaimer: "",
           displaySide: 'front',          // label preview stuff
           validLabelOptions: []
         }
@@ -245,6 +250,7 @@
         this.helpMessage = CONSTANTS.helpMessage.replace("[help link here]", helpLink);
 
         this.overallWarning = CONSTANTS.invalidWarning;
+        this.bottlePreviewDisclaimer = CONSTANTS.bottlePreviewDisclaimer;
 
         this.validLabelOptions = ['Front', 'Back'];
     },
@@ -319,15 +325,22 @@
 
       // Dissables the back label if front label max width would define it as a wrap around
       checkWrapAround() {
+
         const wrapAroundBoundry = CONSTANTS.warpAroundDef * this.bottleSpec.circumference;
-        if (this.globalPositions.front.maxWidth != null && this.globalPositions.front.maxWidth.width > wrapAroundBoundry) {
+        if (this.globalPositions.front.maxWidth != null && this.globalPositions.front.maxWidth > wrapAroundBoundry) {
           this.labelStatuses.back.enabled = false;
           this.labelStatuses.back.dissableMessage = CONSTANTS.wrapAroundMessage;
           this.labelStatuses.hasWrap = true;
+          if (this.globalPositions.activeLabels.includes('F2')) {
+            document.getElementById('frontF2').classList.add("hidden"); // This is done as it is simpler than trying to putting a v-show in a v-for that doesn't cover all components in the v-for
+          }
         } else {
           this.labelStatuses.back.enabled = true;
           this.labelStatuses.back.dissableMessage = '';
           this.labelStatuses.hasWrap = false;
+          if (this.globalPositions.activeLabels.includes('F2')) {
+            document.getElementById('frontF2').classList.remove("hidden");  // This is done as it is simpler than trying to putting a v-show in a v-for that doesn't cover all components in the v-for
+          }
         }
       },
 
@@ -385,10 +398,13 @@
             this.labelStatuses.front.count -= 1;
             this.labelStatuses.count -= 1;
             this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'F2');
+            this.globalPositions.front.F2 = null;
           }
           this.labelStatuses.front.count -= 1;
           this.labelStatuses.count -= 1;
           this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'F1');
+          this.globalPositions.front.F1 = null;
+          this.updateMaxWidth('front');
         }
         if (label == "Back") {
           this.validLabelOptions = this.arrayRemove(this.validLabelOptions, 'Second back');
@@ -397,42 +413,49 @@
             this.labelStatuses.back.count -= 1;
             this.labelStatuses.count -= 1;
             this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'B2');
+            this.globalPositions.back.F2 = null;
           }
           this.labelStatuses.back.count -= 1;
           this.labelStatuses.count -= 1;
           this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'B1');
+          this.globalPositions.back.B1 = null;
+          this.updateMaxWidth('back');
         }
         if (label == 'Second front') {
           this.labelStatuses.front.count -= 1;
           this.labelStatuses.count -= 1;
           this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'F2');
+          this.globalPositions.front.F2 = null;
+            this.updateMaxWidth('front');
         }
         if (label == 'Second back') {
           this.labelStatuses.back.count -= 1;
           this.labelStatuses.count -= 1;
           this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'B2');
+          this.globalPositions.back.B2 = null;
+          this.updateMaxWidth('back');
         }
 
         this.globalPositions.latest.id = 'global';
+
+        this.checkGlobalInvalid();
       },
 
       // Updates the maxWidth information for the given side when a label is updated and calls checkWrapAround()
       // Takes width from form, side of bottle {'front', 'back'} and id of label changed
-      updateMaxWidth(width, side, labelId) {
-        var maxWidthData = this.globalPositions[side].maxWidth;
-        if (width != "") {     // If there is a width
-          if (maxWidthData == null || maxWidthData.width < width) { // There is no max width yet or the submitted width is widest for that side
-            this.globalPositions[side].maxWidth = {'labelId': labelId, 'width': width};
+      updateMaxWidth(side) {
 
-          } else if (this.globalPositions[side].maxWidth.labelId === labelId) { // If it is an update to the current max width
-            // todo: check all other labels on that side to ensure the max width is grabbed (for multi-label support)
-            this.globalPositions[side].maxWidth = {'labelId': labelId, 'width': width};
+        var maxWidthValue = null;
+
+        Object.keys(this.globalPositions[side]).forEach((element) => {
+          if (element != 'maxWidth' && this.globalPositions.front[element] != null) {
+            if (this.globalPositions[side][element].width > maxWidthValue) {
+              maxWidthValue = this.globalPositions[side][element].width;
+            }
           }
+        });
 
-        } else if (maxWidthData != null && this.globalPositions[side].maxWidth.labelId === labelId) {   // If what was the previous max width is now blank
-          // todo: check all other labels on that side to ensure the max width is grabbed (for multi-label support)
-            this.globalPositions[side].maxWidth = null;
-        }
+        this.globalPositions[side].maxWidth = maxWidthValue;
 
         this.checkWrapAround();
       },
@@ -446,6 +469,10 @@
         // Clear the orange zone warning as well? Just to be safe
         this.warned = false;
 
+        if (this.globalPositions.activeLabels.includes('F2')) {
+          document.getElementById('frontF2').classList.remove("hidden");  // This is done as it is simpler than trying to putting a v-show in a v-for that doesn't cover all components in the v-for
+        }
+
         this.globalPositions = {
           'latest': 
             {
@@ -455,35 +482,47 @@
             },
           'front': 
             {
-              'maxWidth': null,
-              'valid': true
+              'maxWidth': null
             },
           'back': 
             {
-              'maxWidth': null,
-              'valid': true,
-            }
+              'maxWidth': null
+            },
+            'activeLabels': []
         },
         this.labelStatuses.front.enabled = true;
         this.labelStatuses.front.dissableMessage = '';
         this.labelStatuses.back.enabled = true;
         this.labelStatuses.back.dissableMessage = '';
         
-
         this.checkWrapAround();
 
         this.checkGlobalInvalid();
 
         this.$refs.n.forEach(form => form.clearForm());
 
-        this.updatePreview();
+        this.clearPreview();
 
       },
 
       // Checks if the "global level" error/invalid warning box is needed
       checkGlobalInvalid() {
-        const front = this.globalPositions.front.valid || !this.labelStatuses.front.enabled;
-        const back = this.globalPositions.back.valid || !this.labelStatuses.back.enabled;
+        var front = Object.keys(this.globalPositions.front).every((element)=> {
+          if (element != 'maxWidth' && this.globalPositions.front[element] != null) {
+            return this.globalPositions.front[element].valid;
+          } else {
+            return true;
+          }
+        });
+        front |= !this.labelStatuses.front.enabled;
+        var back = Object.keys(this.globalPositions.back).every((element)=> {
+          if (element != 'maxWidth' && this.globalPositions.back[element] != null) {
+            return this.globalPositions.back[element].valid;
+          } else {
+            return true;
+          }
+        });
+        back |= !this.labelStatuses.back.enabled;
         // Medal support here
         this.showInvalid = !(front && back);
       },
@@ -495,12 +534,10 @@
         const {warning, labelId, side, type, form} = payload;
 
         this.globalPositions.latest = {'id': labelId, 'side':side, 'type':type};
-        // Modify for multi label support
-        this.globalPositions[side].valid = true;
 
         this.globalPositions[side][labelId] = form;   // Add/update new data to set
         
-        this.updateMaxWidth(form.width, side, labelId);
+        this.updateMaxWidth(side);
 
         this.checkGlobalInvalid();
 
@@ -536,8 +573,8 @@
 
         this.globalPositions.latest = {'id': labelId, 'side':side, 'type':type};
 
-        // Modify for multi label support
-        this.globalPositions[side].valid = false;
+        this.globalPositions[side][labelId].valid = false
+
         this.checkGlobalInvalid();
 
         this.updatePreview();
@@ -552,12 +589,9 @@
 
         this.globalPositions.latest = {'id': labelId, 'side':side, 'type':type};
 
-        // Modify for multi label support
-        this.globalPositions[side].valid = true;
-
         this.globalPositions[side][labelId] = form;   // Add/update new data to set
 
-        this.updateMaxWidth(form.width, side, labelId);
+        this.updateMaxWidth(side);
 
         this.checkGlobalInvalid();
 
@@ -598,6 +632,7 @@
 
         var labels = {'front': {}, 'back': {}};
         // loop for multi label
+
         for (var id of this.globalPositions.activeLabels) {
           if (id[0].toLowerCase() == 'f') {
             labels.front[id] = this.fetchDisplayMeasurements('front', id);
@@ -647,7 +682,7 @@
         var heightOffset = 0;
         var height = 0;
         var theta = 0;
-        if (this.globalPositions[side][labelId] != null && this.globalPositions[side].valid) {
+        if (this.globalPositions[side][labelId] != null && this.globalPositions[side][labelId].valid) {
           heightOffset = this.globalPositions[side][labelId].heightOffset;
           height = this.globalPositions[side][labelId].height;
           theta = (2 * this.globalPositions[side][labelId].width * Math.PI) / this.bottleSpec.circumference;
@@ -656,7 +691,23 @@
           height = 0;
           theta = 0;
         }
+        if (this.labelStatuses.hasWrap && labelId != 'F1') {  // Medals support here
+          height = 0;
+          theta = 0;
+        }
+
         return {'heightOffset':heightOffset, 'height':height, 'theta':theta};
+      },
+
+      clearPreview() {
+        const blank = {'height': 0, 'adjustedWidth': 0, 'heightOffset': 0}
+        this.displayLabel('labelPreview1', blank);
+        this.displayLabel('labelPreviewOverflowLeft1', blank);
+        this.displayLabel('labelPreviewOverflowRight1', blank);
+
+        this.displayLabel('labelPreview2', blank);
+        this.displayLabel('labelPreviewOverflowLeft2', blank);
+        this.displayLabel('labelPreviewOverflowRight2', blank);
       },
 
       // Todo: multi label support
@@ -716,6 +767,10 @@ body{
   padding-left: 2%;
 }
 
+.hidden {
+    visibility: hidden !important;
+}
+
 .pre-formatted {
   white-space: pre-wrap;
   padding: 5px;
@@ -725,6 +780,12 @@ body{
   padding: 15px 10px 5px 10px;
   text-align: center;
   font-size: 20px;
+}
+
+.disclaimer {
+  padding: 10px;
+  text-align: center;
+  font-size: 15px;
 }
 
 .multi-select {
