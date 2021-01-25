@@ -50,6 +50,20 @@
             :disabled="!bottleType"
           >Bottle</multiselect>
         </div>
+        <div>
+          <multiselect 
+            class='multi-select'
+            v-model="labelStatuses.selected" 
+            placeholder="Select the labels you want"
+            :close-on-select="false" 
+            :options="validLabelOptions"
+            :multiple="true"
+            :max="4"
+            :disabled="!bottleSpec"
+            @select='addLabel'
+            @remove='removeLabel'
+          >Label choice</multiselect>
+        </div>
         <div class="row">
           <div class='col-lg-12'>
             <button class="clear" v-if='!help' v-on:click="clearForm()">Clear all</button>
@@ -73,13 +87,15 @@
             <label class="header">Front labels</label>
             <!-- multi label support needed here -->
             <measurements-form
+              v-for="n in labelStatuses.front.count"
+              :key="'F' + n"
+              :id="'frontF' + n"
+              ref=n
+              side="front"
+              :labelId="'F' + n"
               :bottleSpec="bottleSpec"
               :globalPositions="globalPositions"
-              v-if='labelStatuses.front.enabled'
-              id='front-F1'
-              ref="frontF1"
-              side="front"
-              labelId="F1"
+              v-show='labelStatuses.front.enabled'
               @invalid="emmittedInvalidLabel"
               @valid="emmittedValidLabel"
               @warning="emmitedWarningCatch"
@@ -92,13 +108,15 @@
             <label class="header">Back labels</label>
             <!-- multi label support needed here -->
             <measurements-form
+              v-for="n in labelStatuses.back.count"
+              :key="'B' + n"
+              :id="'backB' + n"
+              ref=n
+              side="back"
+              :labelId="'B' + n"
               :bottleSpec="bottleSpec"
               :globalPositions="globalPositions"
               v-show='labelStatuses.back.enabled'
-              id='back-B1'
-              ref="backB1"
-              side="back"
-              labelId="B1"
               @invalid="emmittedInvalidLabel"
               @valid="emmittedValidLabel"
               @warning="emmitedWarningCatch"
@@ -112,18 +130,24 @@
 
       <div class='col-lg-6'>
         <div class="row">
-          <button id="frontDisplayButton" class="sideToggle selected" v-on:click="displaySelect('front')">Front</button>
-          <button id="backDisplayButton" class="sideToggle" v-on:click="displaySelect('back')">Back</button>
+          <button id="frontDisplayButton" class="sideToggle selected" v-on:click="displaySelect('front')">Front view</button>
+          <button id="backDisplayButton" class="sideToggle" v-on:click="displaySelect('back')">Back view</button>
         </div>
+        <label class='header' v-if="!bottleSpec">{{ selectHelpMessage }}</label>
         <br>
         <div class="row">
           <div id="preview" class="col-lg-8 offset-lg-2 preview">
-            <!-- Will need for loop here for multi label -->
-            <div class="layer-2 labelPreview" id='labelPreview'></div>
-            <div class="layer-2 labelPreview" id='labelPreviewOverflowLeft'></div>
-            <div class="layer-2 labelPreview" id='labelPreviewOverflowRight'></div>
+
+            <div class="layer-2 labelPreview" id='labelPreview1'></div>
+            <div class="layer-2 labelPreview" id='labelPreviewOverflowLeft1'></div>
+            <div class="layer-2 labelPreview" id='labelPreviewOverflowRight1'></div>
+
+            <div class="layer-3 labelPreview" id='labelPreview2'></div>
+            <div class="layer-3 labelPreview" id='labelPreviewOverflowLeft2'></div>
+            <div class="layer-3 labelPreview" id='labelPreviewOverflowRight2'></div>
+
             <transition name="slide-fade">
-              <img v-if="bottleType == 'Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/BRG_image_alt.png">
+              <img v-if="bottleType == 'Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/BRG_image.png">
             </transition>
             <transition name="slide-fade">
               <img v-if="bottleType == 'Bordeaux' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/BDX_image.png">
@@ -141,10 +165,16 @@
               <img v-if="bottleType == 'Premium Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/PBG_image.png">
             </transition>
             
-            
-            <div class='layer-3'>
+            <div class='layer-4'>
               <div class="alert alert-danger p-5 font-weight-bold" role="alert" id='invalidWarning' v-show="showInvalid">{{ overallWarning }}</div>
             </div>
+          </div>
+        </div>
+        <div class="row">
+          <div id="previewLabel" class="col-lg-8 offset-lg-2 preview">
+            <transition name="slide-fade">
+              <label v-if="bottleType && bottleSpec" class="disclaimer" v-html=bottlePreviewDisclaimer></label>
+            </transition>
           </div>
         </div>
       </div>
@@ -186,16 +216,18 @@
               },
             'front': 
               {
-                'maxWidth': null,
-                'valid': true
+                'maxWidth': null
               },
             'back': 
               {
-                'maxWidth': null,
-                'valid': true
-              }
+                'maxWidth': null
+              },
+            'activeLabels': []
           },
           labelStatuses: {
+            'hasWrap': false,
+            'count': 0,
+            'selected': [],
             'front': {
               'enabled': true,
               'dissableMessage': '',
@@ -209,7 +241,10 @@
           },
           help: false,
           helpMessage: "",
-          displaySide: 'front'          // label preview stuff
+          bottlePreviewDisclaimer: "",
+          displaySide: 'front',          // label preview stuff
+          validLabelOptions: [],
+          selectHelpMessage: ''
         }
     },
 
@@ -220,6 +255,10 @@
         this.helpMessage = CONSTANTS.helpMessage.replace("[help link here]", helpLink);
 
         this.overallWarning = CONSTANTS.invalidWarning;
+        this.bottlePreviewDisclaimer = CONSTANTS.bottlePreviewDisclaimer;
+        this.selectHelpMessage = CONSTANTS.selectHelpMessage;
+
+        this.validLabelOptions = ['Front', 'Back'];
     },
 
     methods: {
@@ -292,33 +331,156 @@
 
       // Dissables the back label if front label max width would define it as a wrap around
       checkWrapAround() {
+
         const wrapAroundBoundry = CONSTANTS.warpAroundDef * this.bottleSpec.circumference;
-        if (this.globalPositions.front.maxWidth != null && this.globalPositions.front.maxWidth.width > wrapAroundBoundry) {
+        if (this.globalPositions.front.maxWidth != null && this.globalPositions.front.maxWidth > wrapAroundBoundry) {
           this.labelStatuses.back.enabled = false;
           this.labelStatuses.back.dissableMessage = CONSTANTS.wrapAroundMessage;
+          this.labelStatuses.hasWrap = true;
+          console.log(this.globalPositions.activeLabels)
+          if (this.globalPositions.activeLabels.includes('F2')) {
+            document.getElementById('frontF2').classList.add("hidden"); // This is done as it is simpler than trying to putting a v-show in a v-for that doesn't cover all components in the v-for
+          }
         } else {
           this.labelStatuses.back.enabled = true;
           this.labelStatuses.back.dissableMessage = '';
+          this.labelStatuses.hasWrap = false;
+          if (this.globalPositions.activeLabels.includes('F2')) {
+            document.getElementById('frontF2').classList.remove("hidden");  // This is done as it is simpler than trying to putting a v-show in a v-for that doesn't cover all components in the v-for
+          }
         }
       },
 
-      // Updates the maxWidth information for the given side when a label is updated and calls checkWrapAround()
-      // Takes width from form, side of bottle {'front', 'back'} and id of label changed
-      updateMaxWidth(width, side, labelId) {
-        var maxWidthData = this.globalPositions[side].maxWidth;
-        if (width != "") {     // If there is a width
-          if (maxWidthData == null || maxWidthData.width < width) { // There is no max width yet or the submitted width is widest for that side
-            this.globalPositions[side].maxWidth = {'labelId': labelId, 'width': width};
+      // When label selected in multi select
+      // Updates label counts
+      // Updates validLabelOptions
+      // Adds label to active labels
+      // Updates globalPositions.latest to be a global to force updates in child measurement forms
+      // Label: selection from the multi select
+      addLabel(label) {
+        //update count: type, global
+        this.labelStatuses.count += 1;
 
-          } else if (this.globalPositions[side].maxWidth.labelId === labelId) { // If it is an update to the current max width
-            // todo: check all other labels on that side to ensure the max width is grabbed (for multi-label support)
-            this.globalPositions[side].maxWidth = {'labelId': labelId, 'width': width};
-          }
-
-        } else if (maxWidthData != null && this.globalPositions[side].maxWidth.labelId === labelId) {   // If what was the previous max width is now blank
-          // todo: check all other labels on that side to ensure the max width is grabbed (for multi-label support)
-            this.globalPositions[side].maxWidth = null;
+        if (label.toLowerCase().includes("front")) {
+          this.labelStatuses.front.count += 1;
         }
+        if (label.toLowerCase().includes("back")) {
+          this.labelStatuses.back.count += 1;
+        }
+
+        //add dependent labels
+        if (!this.labelStatuses.hasWrap) {
+          if (label == 'Front') {
+            this.validLabelOptions.push('Second front');
+          }
+          if (label == "Back") {
+            this.validLabelOptions.push('Second back');
+          }
+        }
+        switch (label) {
+          case 'Front':
+            this.globalPositions.activeLabels.push('F1');
+            break;
+          case 'Back':
+            this.globalPositions.activeLabels.push('B1');
+            break;
+          case 'Second front':
+            this.globalPositions.activeLabels.push('F2');
+            break;
+          case 'Second back':
+            this.globalPositions.activeLabels.push('B2');
+            break;
+        }
+        this.globalPositions.latest.id = 'global';
+      },
+
+      // Minor helper function, removes the given item from the array and returns the resultant array
+      arrayRemove(array, item) {
+        var index = array.indexOf(item);
+        if (index > -1) {
+          array.splice(index, 1);
+        }
+        return array;
+      },
+
+      // When label deslected in multi select
+      // Removes dependent labels from thevalid options and from the active selections
+      // Updates label counts
+      // Nullifies the labels information in globalPositions
+      // Updates max width valeus
+      // Updates label preview
+      // Updates global invalid
+      // Label: multi select option that was removed
+      removeLabel(label) {
+        //medals logic stuff
+        if (label == 'Front') {
+          this.validLabelOptions = this.arrayRemove(this.validLabelOptions, 'Second front');
+          if (this.labelStatuses.selected.includes('Second front')) {
+            this.labelStatuses.selected = this.arrayRemove(this.labelStatuses.selected, 'Second front');
+            this.labelStatuses.front.count -= 1;
+            this.labelStatuses.count -= 1;
+            this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'F2');
+            this.globalPositions.front.F2 = null;
+          }
+          this.labelStatuses.front.count -= 1;
+          this.labelStatuses.count -= 1;
+          this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'F1');
+          this.globalPositions.front.F1 = null;
+          this.updateMaxWidth('front');
+        }
+        if (label == "Back") {
+          this.validLabelOptions = this.arrayRemove(this.validLabelOptions, 'Second back');
+          if (this.labelStatuses.selected.includes('Second back')) {
+            this.labelStatuses.selected = this.arrayRemove(this.labelStatuses.selected, 'Second back');
+            this.labelStatuses.back.count -= 1;
+            this.labelStatuses.count -= 1;
+            this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'B2');
+            this.globalPositions.back.F2 = null;
+          }
+          this.labelStatuses.back.count -= 1;
+          this.labelStatuses.count -= 1;
+          this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'B1');
+          this.globalPositions.back.B1 = null;
+          this.updateMaxWidth('back');
+        }
+        if (label == 'Second front') {
+          this.labelStatuses.front.count -= 1;
+          this.labelStatuses.count -= 1;
+          this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'F2');
+          this.globalPositions.front.F2 = null;
+          this.updateMaxWidth('front');
+        }
+        if (label == 'Second back') {
+          this.labelStatuses.back.count -= 1;
+          this.labelStatuses.count -= 1;
+          this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'B2');
+          this.globalPositions.back.B2 = null;
+          this.updateMaxWidth('back');
+        }
+
+        this.globalPositions.latest.id = 'global';
+
+        this.clearPreview();
+        this.updatePreview();
+
+        this.checkGlobalInvalid();
+      },
+
+      // Updates the maxWidth information for the given side when a label is updated and calls checkWrapAround()
+      // Side: side of the bottle being updated
+      updateMaxWidth(side) {
+
+        var maxWidthValue = null;
+
+        Object.keys(this.globalPositions[side]).forEach((element) => {
+          if (element != 'maxWidth' && this.globalPositions[side][element] != null) {
+            if (this.globalPositions[side][element].width > maxWidthValue) {
+              maxWidthValue = this.globalPositions[side][element].width;
+            }
+          }
+        });
+
+        this.globalPositions[side].maxWidth = maxWidthValue;
 
         this.checkWrapAround();
       },
@@ -328,9 +490,13 @@
       //    - Refs call is used as this is an event and it is not sutable to change the child's state
       // Resets globalPositions and labelStatuses, then calls checkWrapAround() and checkGlobalInvalid() to clear and reset any errors
       clearForm() {
-
+        
         // Clear the orange zone warning as well? Just to be safe
         this.warned = false;
+
+        if (this.globalPositions.activeLabels.includes('F2')) {
+          document.getElementById('frontF2').classList.remove("hidden");  // This is done as it is simpler than trying to putting a v-show in a v-for that doesn't cover all components in the v-for
+        }
 
         this.globalPositions = {
           'latest': 
@@ -341,41 +507,47 @@
             },
           'front': 
             {
-              'maxWidth': null,
-              'valid': true
+              'maxWidth': null
             },
           'back': 
             {
-              'maxWidth': null,
-              'valid': true,
-            }
+              'maxWidth': null
+            },
+            'activeLabels': this.globalPositions.activeLabels
         },
-        this.labelStatuses = {
-          'front': {
-            'enabled': true,
-            'dissableMessage': '',
-            'count': 0
-          },
-          'back': {
-            'enabled': true,
-            'dissableMessage': '',
-            'count': 0
-          } // Add medals here
-        }
-
+        this.labelStatuses.front.enabled = true;
+        this.labelStatuses.front.dissableMessage = '';
+        this.labelStatuses.back.enabled = true;
+        this.labelStatuses.back.dissableMessage = '';
+        
         this.checkWrapAround();
 
         this.checkGlobalInvalid();
 
-        // Multi label support here (gonna need to loop through them)
-        this.$refs.backB1.clearForm();
-        this.$refs.frontF1.clearForm();
+        this.$refs.n.forEach(form => form.clearForm());
+
+        this.clearPreview();
+
       },
 
       // Checks if the "global level" error/invalid warning box is needed
       checkGlobalInvalid() {
-        const front = this.globalPositions.front.valid || !this.labelStatuses.front.enabled;
-        const back = this.globalPositions.back.valid || !this.labelStatuses.back.enabled;
+        var front = Object.keys(this.globalPositions.front).every((element)=> {
+          if (element != 'maxWidth' && this.globalPositions.front[element] != null) {
+            return this.globalPositions.front[element].valid;
+          } else {
+            return true;
+          }
+        });
+        front |= !this.labelStatuses.front.enabled;
+        var back = Object.keys(this.globalPositions.back).every((element)=> {
+          if (element != 'maxWidth' && this.globalPositions.back[element] != null) {
+            return this.globalPositions.back[element].valid;
+          } else {
+            return true;
+          }
+        });
+        back |= !this.labelStatuses.back.enabled;
         // Medal support here
         this.showInvalid = !(front && back);
       },
@@ -387,18 +559,14 @@
         const {warning, labelId, side, type, form} = payload;
 
         this.globalPositions.latest = {'id': labelId, 'side':side, 'type':type};
-        // Modify for multi label support
-        this.globalPositions[side].valid = true;
 
         this.globalPositions[side][labelId] = form;   // Add/update new data to set
-
-        this.labelStatuses[side].count = Object.keys(this.globalPositions[side]).length - 2;    // -2 accounts for the 'maxWidth' and 'valid' keys
         
-        this.updateMaxWidth(form.width, side, labelId);
+        this.updateMaxWidth(side);
 
         this.checkGlobalInvalid();
 
-        if (this.form != null && this.form.heightOffset != null) {
+        if (this.form != null) {
           this.updatePreview();
         }
 
@@ -430,8 +598,8 @@
 
         this.globalPositions.latest = {'id': labelId, 'side':side, 'type':type};
 
-        // Modify for multi label support
-        this.globalPositions[side].valid = false;
+        this.globalPositions[side][labelId].valid = false
+
         this.checkGlobalInvalid();
 
         this.updatePreview();
@@ -446,13 +614,9 @@
 
         this.globalPositions.latest = {'id': labelId, 'side':side, 'type':type};
 
-        // Modify for multi label support
-        this.globalPositions[side].valid = true;
-
         this.globalPositions[side][labelId] = form;   // Add/update new data to set
-        this.labelStatuses[side].count = Object.keys(this.globalPositions[side]).length - 2;    // -2 accounts for the 'maxWidth' and 'valid' keys
 
-        this.updateMaxWidth(form.width, side, labelId);
+        this.updateMaxWidth(side);
 
         this.checkGlobalInvalid();
 
@@ -462,7 +626,10 @@
       },
 
       // Select which side the label preview is displaying and highlight the respective side's button
+      // updates preview if there is a bottle spec
+      // side: side of bottle, must be one of {'front', 'back'}
       displaySelect(side) {
+
         this.displaySide = side;
         switch (side) {
           case 'front':
@@ -476,6 +643,7 @@
           case 2:
         }
         if (this.bottleSpec != null) {
+          this.clearPreview();
           this.updatePreview();
         }
       },
@@ -488,82 +656,103 @@
         const diamiter = this.bottleSpec.diameter;
         const radius = diamiter/2;
 
-        var labels = {};
+        var labels = {'front': {}, 'back': {}};
         // loop for multi label
-        labels['front'] = this.fetchDisplayMeasurements('front', 'F1');
-        labels['back'] = this.fetchDisplayMeasurements('back', 'B1');
+
+        for (var id of this.globalPositions.activeLabels) {
+          if (id[0].toLowerCase() == 'f') {
+            labels.front[id] = this.fetchDisplayMeasurements('front', id);
+          } else if (id[0].toLowerCase() == 'b') {
+            labels.back[id] = this.fetchDisplayMeasurements('back', id);
+          }
+        }
 
         var main = {};
         var overflow = {};
         if (this.displaySide == 'front') {
-          main = labels['front'];
-          overflow = labels['back'];
+          main = labels.front;
+          overflow = labels.back;
         } else {
-          main = labels['back'];
-          overflow = labels['front'];
+          main = labels.back;
+          overflow = labels.front;
         }
 
-        if (main.theta <= Math.PI) {
-          main['adjustedWidth'] = 2 * Math.sin(main.theta/2) * radius;
-        } else {
-          main['adjustedWidth'] = diamiter;
+        var  label;
+        for (var x in main) {
+          label = main[x];
+          if (label.theta <= Math.PI) {
+            label['adjustedWidth'] = 2 * Math.sin(label.theta/2) * radius;
+          } else {
+            label['adjustedWidth'] = diamiter;
+          }
+          this.displayLabel("labelPreview"+x[1], label);
         }
 
-        if (overflow.theta > Math.PI) {
-          overflow.theta -= Math.PI;
-          overflow['adjustedWidth'] = radius - (Math.cos(overflow.theta/2) * radius);
-        } else {
-          overflow['adjustedWidth'] = 0;
+        for (var y in overflow) {
+          label = overflow[y];
+          if (label.theta > Math.PI) {
+            label.theta -= Math.PI;
+            label['adjustedWidth'] = radius - (Math.cos(label.theta/2) * radius);
+          } else {
+            label['adjustedWidth'] = 0;
+          }
+          this.displayLabel("labelPreviewOverflowLeft"+y[1], label);
+          this.displayLabel("labelPreviewOverflowRight"+y[1], label);
         }
-
-        this.displayLabel("labelPreview", main);
-        this.displayLabel("labelPreviewOverflowLeft", overflow);
-        this.displayLabel("labelPreviewOverflowRight", overflow);
       },
 
       // Fetches height and height offset for the specified label and calculates the width of the label as an angle on the radius of the bottle
       // Default values are 0, if a height offset of 0 is found the label is hidden
       fetchDisplayMeasurements(side, labelId) {
 
-        const fullHeight = CONSTANTS[this.bottleType + "Height"];
-
         var heightOffset = 0;
         var height = 0;
         var theta = 0;
-        if (this.globalPositions[side][labelId] != null && this.globalPositions[side].valid) {
-          heightOffset = (this.globalPositions[side][labelId].heightOffset/fullHeight)*100;
-          height = (this.globalPositions[side][labelId].height/fullHeight)*100;
+        if (this.globalPositions[side][labelId] != null && this.globalPositions[side][labelId].valid) {
+          heightOffset = this.globalPositions[side][labelId].heightOffset;
+          height = this.globalPositions[side][labelId].height;
           theta = (2 * this.globalPositions[side][labelId].width * Math.PI) / this.bottleSpec.circumference;
         }
         if (heightOffset == 0) {  
           height = 0;
           theta = 0;
         }
+        if (this.labelStatuses.hasWrap && labelId != 'F1') {  // Medals support here
+          height = 0;
+          theta = 0;
+        }
+
         return {'heightOffset':heightOffset, 'height':height, 'theta':theta};
       },
 
-      // Todo: multi label support
-        // Will need multiple div squares per label. (create dynamically??????)
+      // Clears all labels off label preview
+      clearPreview() {
+        const blank = {'height': 0, 'adjustedWidth': 0, 'heightOffset': 0}
+        this.displayLabel('labelPreview1', blank);
+        this.displayLabel('labelPreviewOverflowLeft1', blank);
+        this.displayLabel('labelPreviewOverflowRight1', blank);
+
+        this.displayLabel('labelPreview2', blank);
+        this.displayLabel('labelPreviewOverflowLeft2', blank);
+        this.displayLabel('labelPreviewOverflowRight2', blank);
+      },
 
       // Sets demensions of the label preview on the bottle and places it in the right possition
       displayLabel(element, label) {
 
         const diamiter = this.bottleSpec.diameter;
+        const fullHeight = CONSTANTS[this.bottleType + "Height"];
 
-        document.getElementById(element).style.height = `${label.height}%`;
+        document.getElementById(element).style.height = `${(label.height/fullHeight)*100}%`;
         document.getElementById(element).style.width = `${(label.adjustedWidth/diamiter)*100*0.47}%`;
-        document.getElementById(element).style.bottom = `${label.heightOffset}%`;
-        
-        switch (element) {
-          case "labelPreview":
-            document.getElementById("labelPreview").style.left = `${50 - ((label.adjustedWidth/diamiter)*100*0.47)/2}%`;
-            break;
-          case "labelPreviewOverflowLeft":
-            document.getElementById("labelPreviewOverflowLeft").style.left = `${26.5}%`;
-            break;
-          case "labelPreviewOverflowRight":
-            document.getElementById("labelPreviewOverflowRight").style.left = `${100-26.5 - label.adjustedWidth/diamiter*100*0.47}%`;
-            break;
+        document.getElementById(element).style.bottom = `${(label.heightOffset/fullHeight)*100}%`;
+
+        if (element.includes('OverflowLeft')) {
+          document.getElementById(element).style.left = `${26.5}%`;
+        } else if (element.includes('OverflowRight')) {
+          document.getElementById(element).style.left = `${100-26.5 - label.adjustedWidth/diamiter*100*0.47}%`;
+        } else {
+          document.getElementById(element).style.left = `${50 - ((label.adjustedWidth/diamiter)*100*0.47)/2}%`;
         }
       }
     }
@@ -602,6 +791,10 @@ body{
   padding-left: 2%;
 }
 
+.hidden {
+    visibility: hidden !important;
+}
+
 .pre-formatted {
   white-space: pre-wrap;
   padding: 5px;
@@ -611,6 +804,12 @@ body{
   padding: 15px 10px 5px 10px;
   text-align: center;
   font-size: 20px;
+}
+
+.disclaimer {
+  padding: 10px;
+  text-align: center;
+  font-size: 15px;
 }
 
 .multi-select {
@@ -633,6 +832,12 @@ body{
 
 .layer-3 {
   z-index: 2;
+  position: absolute;
+  width: 50%
+}
+
+.layer-4 {
+  z-index: 5;
   position: absolute;
   top: 50%;
   left: 15%;

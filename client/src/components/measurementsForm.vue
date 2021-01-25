@@ -1,5 +1,6 @@
 <template>
     <div id=inputs>
+        <hr v-if="labelId[1] > 1">
         <label class="sub-title-formatted">Height</label>
         <div class='row'>
             <div class='col-sm-5'>
@@ -7,7 +8,7 @@
                     :disabled="!bottleSpec"
                     class="standard-input"
                     :id='labelId+"-input-height"'
-                    v-model.number="form.height"
+                    v-model.number="height"
                     required
                     @keyup="inputChange('height')"
                     @keydown="keyDown"
@@ -27,7 +28,7 @@
                     :disabled="!bottleSpec"
                     class="standard-input"
                     :id='labelId+"-input-width"'
-                    v-model.number="form.width"
+                    v-model.number="width"
                     required
                     @keyup="inputChange('width')"
                     @keydown="keyDown"
@@ -40,14 +41,27 @@
         </div>
         <br>
 
-        <label class="sub-title-formatted">Application height</label>
+        <label class="sub-title-formatted" v-if="labelId[1] == 1">Application height</label>
+        <label class="sub-title-formatted" v-if="labelId[1] == 2">Label gap</label>
         <div class='row'>
             <div class='col-sm-5'>
                 <input
+                    v-if="labelId[1] == 1"
                     :disabled="!bottleSpec"
                     class="standard-input"
                     :id='labelId+"-input-heightOffset"'
-                    v-model.number="form.heightOffset"
+                    v-model.number="applicationHeight"
+                    required
+                    @keyup="inputChange('heightOffset')"
+                    @keydown="keyDown"
+                    v-tooltip.right="{ content: warnHeightOffset, classes: heightOffsetWarnClass }"
+                >
+                <input
+                    v-if="labelId[1] == 2"
+                    :disabled="!bottleSpec"
+                    class="standard-input"
+                    :id='labelId+"-input-heightOffset"'
+                    v-model.number="labelGap"
                     required
                     @keyup="inputChange('heightOffset')"
                     @keydown="keyDown"
@@ -82,7 +96,6 @@
                     return ['front', 'back'].indexOf(value) !== -1;
                 }
             }
-
         },
 
         watch: {
@@ -93,7 +106,7 @@
                         this.updateHeightDescription();
                         this.updateHeightOffsetDescription();
                         this.updateWidthDescription();
-                    }
+                    }  
                 },
                 deep: true
             },
@@ -104,9 +117,38 @@
                     if (this.globalPositions.latest.id != this.labelId) {
                         clearTimeout(this.delayWatcherTimer);
                         this.delayWatcherTimer = setTimeout(()=>{
-                            this.updateHeightDescription();
-                            this.updateHeightOffsetDescription();
-                            this.updateWidthDescription();
+                            if (this.globalPositions.latest.id == 'global') {
+                                this.validate('props');
+
+                                this.updateWidthDescription();
+                                this.updateHeightDescription();
+                                this.updateHeightOffsetDescription();
+                            }
+
+                            if (this.labelId[1] == 2) {
+                                const X1 = this.globalPositions[this.side][this.labelId[0]+'1'];
+                                if (X1 != null) {
+                                    this.heightOffset = this.labelGap + X1.height + X1.heightOffset;
+                                }
+                            } else {
+                                this.heightOffset = this.applicationHeight;
+                            }
+                            
+                            if (this.globalPositions.latest.id == 'F1') {
+                                this.validate('props');
+
+                                this.updateWidthDescription();
+                                this.updateHeightDescription();
+                                this.updateHeightOffsetDescription();
+                            } else if (this.side == 'back' && this.globalPositions.latest.side == 'front') {
+                                this.validate('props');
+                                this.updateWidthDescription();
+                            } else if (this.globalPositions.latest.id == 'B1' && this.labelId == 'B2') {
+                                this.validate('props');
+                                this.updateWidthDescription();
+                                this.updateHeightDescription();
+                                this.updateHeightOffsetDescription();
+                            }
                         }, 600);
                     }
                 },
@@ -116,11 +158,11 @@
 
         data () {
             return {
-                form: {
-                    height: '',
-                    heightOffset: '',
-                    width: ''
-                },
+                height: '',
+                width: '',
+                labelGap: '',
+                applicationHeight: '',
+                heightOffset: 0,
                 heightDescription: "",
                 heightOffsetDescription: "",
                 widthDescription: "",
@@ -140,19 +182,25 @@
         },
 
         mounted() {
+            if (this.bottleSpec != null) {
+                this.updateHeightDescription();
+                this.updateHeightOffsetDescription();
+                this.updateWidthDescription();
+            }
         },
 
         methods: {
 
             // When clear button is pressed
-            // Clears inputs, updates heightOffsetDescription, sets all valid tags to true,
-            // clears all warning strings, sets orange zone to false, sets all inputs to standard-input css, sets all warningStatus tags to 'green'
+            // Clears inputs, sets all valid tags to true,
+            // clears all warning strings, sets orange zone to false, sets all inputs to standard-input css
             clearForm() {
                 // clear our form values
-                this.form.height = '';
-                this.form.heightOffset = '';
-                this.form.width = '';
-                this.updateHeightOffsetDescription();
+                this.height = '';
+                this.applicationHeight = '';
+                this.labelGap = '';
+                this.heightOffset = 0;
+                this.width = '';
                 this.validHeight = true;
                 this.validHeightOffset = true;
                 this.validWidth = true;
@@ -228,24 +276,26 @@
                     this.heightOffsetDescription = '';
                 } else {
                     if (this.validHeight) {
-                        const maxHeightoffsetRecomended = this.getMaxHeightOffset('recomended');
-                        const maxHeightoffsetWarning = this.getMaxHeightOffset('warning');
+                        const maxHeightOffsetRecomended = this.getmaxHeightOffset('recomended');
+                        const maxHeightOffsetWarning = this.getmaxHeightOffset('warning');
+                        const minHeightoffsetRecomended = this.getMinHeightOffset('recomended');
 
-                        if (maxHeightoffsetRecomended <= this.bottleSpec.recomended.minHeightOffset) {
-                            if (maxHeightoffsetWarning <= this.bottleSpec.recomended.minHeightOffset) {
-                                this.heightOffsetDescription = `Recomended <b><b>${maxHeightoffsetWarning}mm</b></b>`;
+
+                        if (maxHeightOffsetRecomended <= minHeightoffsetRecomended) {
+                            if (maxHeightOffsetWarning <= minHeightoffsetRecomended) {
+                                this.heightOffsetDescription = `Recomended <b><b>${maxHeightOffsetWarning}mm</b></b>`;
                             } else {
-                                this.heightOffsetDescription = `Recomended <b><b>${this.bottleSpec.recomended.minHeightOffset}mm</b></b>`;
+                                this.heightOffsetDescription = `Recomended <b><b>${minHeightoffsetRecomended}mm</b></b>`;
                             }
                         } else {
-                            this.heightOffsetDescription = `Recomended between <b><b>${this.bottleSpec.recomended.minHeightOffset}mm</b></b> and <b><b>${maxHeightoffsetRecomended}mm</b></b>`;
+                            this.heightOffsetDescription = `Recomended between <b><b>${minHeightoffsetRecomended}mm</b></b> and <b><b>${maxHeightOffsetRecomended}mm</b></b>`;
                         }
                     }
                 }
             },
 
 
-            // Updates the display of the currentrecomended boundry values for width
+            // Updates the display of the current recomended boundry values for width
             // The widthDescription must be displayed using a v-html directive for the formatting to display propperly (ie <label v-html='textVar'></label>)
             updateWidthDescription() {
                 // Max width can vary with back and front label sizes
@@ -258,50 +308,83 @@
             },
 
 
-            // Todo: add multi label support into calcualtions
-            // Will likely need to store global max height?
-            // Will need seperate sections for front and back label (add additional tag like type?)
-
             // Fetches the maximum possible height of the label using the type to specify which max height to use
+            // If it is a primary label and a secondarylabel exists for that side, min label size and and are accounted for
+            // IF secondary label, primary label height and height offset are accounted for
             // Type: {'warning', 'recomended'}
             getMaxHeight(type) {
                 var maxHeight;
+                if ((this.labelId == 'F1' && this.globalPositions.activeLabels.includes('F2')) || 
+                    (this.labelId == 'B1' && this.globalPositions.activeLabels.includes('B2'))) { // If X1 label and X2 label exists
+                    maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.minVerticalLabelGap.recomended - CONSTANTS.minLabelHeight - 4; // -4 to account for extra potential drift
+                } else if (this.labelId == 'F2' || this.labelId == 'B2') {  // If label is an X2
+                    maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.minVerticalLabelGap.recomended - CONSTANTS.minLabelHeight;
 
-                if (type == 'warning') {
-                    // account for slope section
-                    maxHeight = this.bottleSpec.warning.maxHeight
-                } else if (type == 'recomended') {
-                    maxHeight = this.bottleSpec.recomended.maxHeight
+                    if (this.globalPositions[this.side][this.labelId[0] + '1'] != null) {   // if the measurements for X1 exist
+                        const X1 = this.globalPositions[this.side][this.labelId[0] + '1'];
+                        if (X1.height != '' && X1.height > CONSTANTS.minLabelHeight) {  // If the height exists and it is greater than the min height
+                            maxHeight -= X1.height - CONSTANTS.minLabelHeight;
+                        }
+                        if (X1.heightOffset != '') {
+                            maxHeight -= X1.heightOffset - this.bottleSpec.recomended.minHeightOffset;
+                        }
+                    }
+                } else {
+                    maxHeight = this.bottleSpec[type].maxHeight;
                 }
+
                 return maxHeight;
             },
 
 
-            // Todo: add multi label supprot
-            // Max height can cover some of this but will need to look for overlap (dedicated function?)
-            // Front and back label will need to be done seperately (additional tag like type?)
-
             // Fetches the maximum possible height offset of the label using type to specify which max height offset to use
             // The max height offset takes the current label height entered by the user or the minimum label height into account (depending which is bigger)
+            // If a primary and secondary label exists: 
+                // Secondary label accounts for primary labels current measurements
+                // Primary label accounts for minimum measurements of secondary label
             // Type: {'warning', 'recomended'}
-            getMaxHeightOffset(type) {
-                var maxHeightoffset;
-                if (type == 'warning') {
-                    // account for slope section
-                    maxHeightoffset = this.bottleSpec.warning.maxHeight + this.bottleSpec.warning.minHeightOffset - CONSTANTS.minLabelHeight;
-                } else if (type == 'recomended') {
-                    maxHeightoffset = this.bottleSpec.recomended.maxHeight + this.bottleSpec.recomended.minHeightOffset - CONSTANTS.minLabelHeight;
-                }
-                if (this.form.height !== null && this.form.height >= CONSTANTS.minLabelHeight) {
-                    maxHeightoffset -= this.form.height - CONSTANTS.minLabelHeight;
-                }
+            getmaxHeightOffset(type) {
+                var maxHeightOffset;
+                const X1 = this.globalPositions[this.side][this.labelId[0]+'1'];
+                if (this.labelId[1] != 1 && X1 != null) {   // If label is secondary and the primary label has measurements
+                    maxHeightOffset = this.bottleSpec[type].maxHeight - (X1.height + X1.heightOffset - this.bottleSpec.recomended.minHeightOffset) - CONSTANTS.minVerticalLabelGap.recomended - CONSTANTS.minLabelHeight;
 
-                return maxHeightoffset;
+                    if (this.height != null && this.height >= CONSTANTS.minLabelHeight) { // If height is filled in
+                        maxHeightOffset -= this.height - CONSTANTS.minLabelHeight;
+                    }
+
+                    if (maxHeightOffset < CONSTANTS.minVerticalLabelGap.recomended) {
+                        maxHeightOffset = CONSTANTS.minVerticalLabelGap.recomended;
+                    }
+                } else {
+                    if ((this.labelId == 'F1' && this.globalPositions.activeLabels.includes('F2')) || 
+                        (this.labelId == 'B1' && this.globalPositions.activeLabels.includes('B2'))) { // If X1 label and X2 label exists
+                        maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec.recomended.minHeightOffset - CONSTANTS.minLabelHeight - CONSTANTS.minLabelHeight - CONSTANTS.minVerticalLabelGap.recomended
+                    } else {
+                        maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec.recomended.minHeightOffset - CONSTANTS.minLabelHeight;
+                    }
+                    if (this.height !== null && this.height >= CONSTANTS.minLabelHeight) {
+                        maxHeightOffset -= this.height - CONSTANTS.minLabelHeight;
+                    }
+                }
+                return maxHeightOffset;
             },
 
+            // Gets the minimum height offset of the label for the given type
+            // Type: {'warning', 'recomended'}
+            // If label is secondary the min height offset is the min vertical label gap
+            // If label is primary the height offset is taken from the bottle spec
+            getMinHeightOffset(type) {
+                var minHeightOffset;
+                const X1 = this.globalPositions[this.side][this.labelId[0]+'1'];
+                if (this.labelId[1] != 1 && X1 != null) {
+                    minHeightOffset = CONSTANTS.minVerticalLabelGap[type];
+                } else {
+                    minHeightOffset = this.bottleSpec[type].minHeightOffset;
+                }
+                return minHeightOffset;
+            },
 
-            // Todo: Add multi label support
-            // Confirm min label gap info
 
             // Fecthes the maximum possible width of the label using type to specify which max width to fetch
             // Accounts for width of labels on the other side of the bottle
@@ -311,34 +394,38 @@
             // Type: {'warning', 'recomended'}
             getMaxWidth(type) {
                 var heightAccountedMax = this.bottleSpec.warning.maxWidth;
+                const wrapAroundBoundry = CONSTANTS.warpAroundDef * this.bottleSpec.circumference;
                 if (this.side == 'back' && this.globalPositions.front.maxWidth != null) { // If back label, account for front label width
                     var sideAccountedMax;
                     if (type == 'warning') {
                         // account for slope section
-                        if (this.validateHeight && this.form.height != '') {
+                        if (this.validateHeight && this.height != '') {
                             const warningInfo = this.bottleSpec.warning;
-                            heightAccountedMax = ( (this.form.height - warningInfo.UpointY) * ( (warningInfo.VpointX - warningInfo.maxWidth)/(warningInfo.maxHeight - warningInfo.UpointY) ) ) + warningInfo.maxWidth;
+                            heightAccountedMax = ( (this.height - warningInfo.UpointY) * ( (warningInfo.VpointX - warningInfo.maxWidth)/(warningInfo.maxHeight - warningInfo.UpointY) ) ) + warningInfo.maxWidth;
                         }
                         
-                        sideAccountedMax = this.bottleSpec.circumference - (2 * CONSTANTS.minLabelGap.warning) - Math.round(this.globalPositions.front.maxWidth.width);
-                        const wrapAroundBoundry = CONSTANTS.warpAroundDef * this.bottleSpec.circumference;
+                        sideAccountedMax = this.bottleSpec.circumference - (2 * CONSTANTS.minLabelGap.warning) - Math.round(this.globalPositions.front.maxWidth);
                         
                         return Math.min(sideAccountedMax, heightAccountedMax, this.bottleSpec.warning.maxWidth, wrapAroundBoundry);
 
                     } else if (type == 'recomended') {
-                        sideAccountedMax = this.bottleSpec.circumference - (2 * CONSTANTS.minLabelGap.recomended) - Math.round(this.globalPositions.front.maxWidth.width);
+                        sideAccountedMax = this.bottleSpec.circumference - (2 * CONSTANTS.minLabelGap.recomended) - Math.round(this.globalPositions.front.maxWidth);
                         return Math.min(sideAccountedMax, this.bottleSpec.recomended.maxWidth);
                     }
                 } else {        // If not back label or no front label yet
                     if (type == 'warning') {
                         const warningInfo = this.bottleSpec.warning;
                         // account for slope section
-                        if (this.validateHeight && this.form.height != '') {
+                        if (this.validateHeight && this.height != '') {
                             
-                            heightAccountedMax = ( (this.form.height - warningInfo.UpointY) * ( (warningInfo.VpointX - warningInfo.maxWidth)/(warningInfo.maxHeight - warningInfo.UpointY) ) ) + warningInfo.maxWidth;
+                            heightAccountedMax = ( (this.height - warningInfo.UpointY) * ( (warningInfo.VpointX - warningInfo.maxWidth)/(warningInfo.maxHeight - warningInfo.UpointY) ) ) + warningInfo.maxWidth;
                         }
+                        if (this.labelId != 'F1') {
+                            return Math.min(heightAccountedMax, this.bottleSpec.warning.maxWidth, wrapAroundBoundry);
+                        } else {
+                            return Math.min(heightAccountedMax, this.bottleSpec.warning.maxWidth);
+                        }                       
                         
-                        return Math.min(heightAccountedMax, this.bottleSpec.warning.maxWidth);
 
                     } else if (type == 'recomended') {
                         return this.bottleSpec.recomended.maxWidth;
@@ -352,25 +439,29 @@
             setInputCss(input, setting) {
                 var inputId = this.labelId + '-input-' + input;
 
-                document.getElementById(inputId).classList.remove("orange-input");
-                document.getElementById(inputId).classList.remove("red-input");
-                document.getElementById(inputId).classList.remove("green-input");
-                document.getElementById(inputId).classList.remove("standard-input");
-                document.getElementById(inputId).classList.remove("is-valid");
+                var element = document.getElementById(inputId);
+
+                if (element == null) {
+                    return;
+                }
+
+                element.classList.remove("orange-input");
+                element.classList.remove("red-input");
+                element.classList.remove("green-input");
+                element.classList.remove("standard-input");
                 this.$nextTick(function () {
                     switch (setting) {
                     case 'green':
-                        document.getElementById(inputId).classList.add("green-input");
-                        document.getElementById(inputId).classList.add("is-valid");
+                        element.classList.add("green-input");
                         break;
                     case 'orange':
-                        document.getElementById(inputId).classList.add("orange-input");
+                        element.classList.add("orange-input");
                         break;
                     case 'red':
-                        document.getElementById(inputId).classList.add("red-input");
+                        element.classList.add("red-input");
                         break;
                     case 'standard':
-                        document.getElementById(inputId).classList.add("standard-input");
+                        element.classList.add("standard-input");
                         break;
                     }
                 })
@@ -379,17 +470,20 @@
             },
 
 
-            // Todo: add multi label support
-            // Maybe break this up into smaller helper function for easy of understanding and to be able to reuse stuff???
-
             // Takes the provided user measurments and validates them against the currently selected spec
             // If a field is blank, validation is skipped and it is considered valid, but it's css class is set to standard-input
             // emits events for valid, invalid and orange zone (warning)
             // Validation details are handeled by helper functions
             validate(input) {
+                if (this.labelId[1] != 1 && this.globalPositions[this.side][this.labelId[0]+'1'] != null) {
+                    this.heightOffset = this.labelGap + this.globalPositions[this.side][this.labelId[0]+'1'].height + this.globalPositions[this.side][this.labelId[0]+'1'].heightOffset;
+                } else {
+                    this.heightOffset = this.applicationHeight;
+                }
+
                 this.orangeZone = false;
 
-                if (this.form.height == '' || this.form.height == null) {
+                if (this.height == '' || this.height == null) {
                     this.validHeight = true;
                     this.warnHeight = null;
                     this.heightWarnClass = '';
@@ -398,7 +492,7 @@
                     this.validateHeight();
                 }
                 
-                if (this.form.heightOffset == '' || this.form.heightOffset == null) {
+                if (this.heightOffset == '' || this.heightOffset == null || (this.applicationHeight == '' && this.labelId[1] == 1) || (this.labelGap == '' && this.labelId[1] == 2)) {
                     this.validHeightOffset = true;
                     this.warnHeightOffset = null;
                     this.heightOffsetWarnClass = '';
@@ -407,7 +501,7 @@
                     this.validateHeightOffset();
                 }
 
-                if (this.form.width == '' || this.form.width == null) {
+                if (this.width == '' || this.width == null) {
                     this.validWidth = true;
                     this.warnWidth = null;
                     this.widthWarnClass = '';
@@ -418,31 +512,38 @@
 
                 this.valid = this.validHeight && this.validHeightOffset && this.validWidth;
 
+                const form = {
+                    'height': this.height,
+                    'heightOffset': this.heightOffset,
+                    'width': this.width,
+                    'valid': this.valid
+                };
+
                 // Address "global level" warnings here
                 if (!this.valid) {
                     this.$emit('invalid', {'labelId':this.labelId, 'side':this.side, 'type': input});
                 } else {
-                    this.$emit('valid', {'form':this.form, 'labelId':this.labelId, 'side':this.side, 'type': input});
+                    this.$emit('valid', {'form':form, 'labelId':this.labelId, 'side':this.side, 'type': input});
                 }
                 if (this.orangeZone) {
-                    this.$emit('warning', {'warning':'orange zone', 'labelId':this.labelId, 'side':this.side, 'type': input, 'form':this.form});
+                    this.$emit('warning', {'warning':'orange zone', 'labelId':this.labelId, 'side':this.side, 'type': input, 'form':form});
                 }
             },
 
             // Checks the validity of the height field and sets validHeight, changes css setting of input and triggers warnings depending on validity
             validateHeight() {
-                if (this.form.height < CONSTANTS.minLabelHeight) {  // too low
+                if (this.height < CONSTANTS.minLabelHeight) {  // too low
                     this.validHeight = false;
                     this.warnHeight = CONSTANTS.lowHeightWarning;
                     this.heightWarnClass = 'red';
                     this.setInputCss('height', 'red');
-                } else if (this.form.height > this.getMaxHeight('recomended') && this.form.height <= this.getMaxHeight('warning')) { // warn
+                } else if (this.height > this.getMaxHeight('recomended') && this.height <= this.getMaxHeight('warning')) { // warn
                     this.orangeZone = true;
                     this.validHeight = true;
                     this.warnHeight = CONSTANTS.orangeZoneWarning;
                     this.heightWarnClass = 'orange';
                     this.setInputCss('height', 'orange');
-                } else if (this.form.height > this.getMaxHeight('warning')) { // too high
+                } else if (this.height > this.getMaxHeight('warning')) { // too high
                     this.validHeight = false;
                     this.warnHeight = CONSTANTS.highHeightWarning;
                     this.heightWarnClass = 'red';
@@ -462,19 +563,27 @@
                     this.heightOffsetWarnClass = '';
                     return;
                 }
-                if (this.form.heightOffset < this.bottleSpec.warning.minHeightOffset) { // too low
+                
+                var offset;
+                if (this.labelId[1] == 1) { // If this is a first label
+                    offset = this.heightOffset;
+                } else {    // If this is a second label
+                    offset = this.labelGap;
+                }
+
+                if (offset < this.getMinHeightOffset('warning')) { // too low
                     this.validHeightOffset = false;
                     this.warnHeightOffset = CONSTANTS.lowHeightOffsetWarning;
                     this.heightOffsetWarnClass = 'red';
                     this.setInputCss('heightOffset', 'red');
-                } else if ((this.form.heightOffset > this.getMaxHeightOffset('recomended') && this.form.heightOffset <= this.getMaxHeightOffset('warning')) ||
-                            (this.form.heightOffset < this.bottleSpec.recomended.minHeightOffset && this.form.heightOffset >= this.bottleSpec.warning.minHeightOffset)) { // warn
+                } else if ((offset > this.getmaxHeightOffset('recomended') && offset <= this.getmaxHeightOffset('warning')) ||
+                            (offset < this.getMinHeightOffset('recomended') && offset >= this.getMinHeightOffset('warning'))) { // warn
                     this.orangeZone = true;
                     this.validHeightOffset = true;
                     this.warnHeightOffset = CONSTANTS.orangeZoneWarning;
                     this.heightOffsetWarnClass = 'orange';
                     this.setInputCss('heightOffset', 'orange');
-                } else if (this.form.heightOffset > this.getMaxHeightOffset('warning')) { // too high
+                } else if (offset > this.getmaxHeightOffset('warning')) { // too high
                     this.validHeightOffset = false;
                     this.warnHeightOffset = CONSTANTS.highHeightOffsetWarning;
                     this.heightOffsetWarnClass = 'red';
@@ -489,18 +598,18 @@
 
             // Checks the validity of the width field and sets validHeightOffset, changes css setting of input and triggers warnings depending on validity
             validateWidth() {
-                if (this.form.width < CONSTANTS.minLabelWidth) { // too narrow
+                if (this.width < CONSTANTS.minLabelWidth) { // too narrow
                     this.validWidth = false;
                     this.warnWidth = CONSTANTS.lowWidthWarning;
                     this.widthWarnClass = 'red';
                     this.setInputCss('width', 'red');
-                } else if (this.form.width > this.getMaxWidth('recomended') && this.form.width <= this.getMaxWidth('warning')) { // warn
+                } else if (this.width > this.getMaxWidth('recomended') && this.width <= this.getMaxWidth('warning')) { // warn
                     this.orangeZone = true;
                     this.validWidth = true;
                     this.warnWidth = CONSTANTS.orangeZoneWarning;
                     this.widthWarnClass = 'orange';
                     this.setInputCss('width', 'orange');
-                } else if (this.form.width > this.getMaxWidth('warning')) { // too wide
+                } else if (this.width > this.getMaxWidth('warning')) { // too wide
                     this.validWidth = false;
                     this.warnWidth = CONSTANTS.highWidthWarning;
                     this.widthWarnClass = 'red';
@@ -531,7 +640,7 @@
 .sub-title-formatted {
     white-space: pre-wrap;
     text-align: left;
-    margin-left: 8%;
+    margin-left: 6%;
     width: 100%;
     font-weight: bold;
 }
@@ -544,6 +653,8 @@
 }
 
 .standard-input {
+    float: left;
+    margin-left: 5%;
     width: 80px;
     padding: 6%;
     border: 1px solid lightgrey;
@@ -554,6 +665,8 @@
 }
 
 .green-input {
+    float: left;
+    margin-left: 6%;
     width: 80px;
     padding: 6%;
     border: 3px solid green;
@@ -571,6 +684,8 @@
 }
 
 .orange-input {
+    float: left;
+    margin-left: 5%;
     width: 80px;
     padding: 6%;
     border: 3px solid orange;
@@ -587,6 +702,8 @@
 }
 
 .red-input {
+    float: left;
+    margin-left: 5%;
     width: 80px;
     padding: 6%;
     border: 3px solid red;
