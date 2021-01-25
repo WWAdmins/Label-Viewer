@@ -192,8 +192,8 @@
         methods: {
 
             // When clear button is pressed
-            // Clears inputs, updates heightOffsetDescription, sets all valid tags to true,
-            // clears all warning strings, sets orange zone to false, sets all inputs to standard-input css, sets all warningStatus tags to 'green'
+            // Clears inputs, sets all valid tags to true,
+            // clears all warning strings, sets orange zone to false, sets all inputs to standard-input css
             clearForm() {
                 // clear our form values
                 this.height = '';
@@ -201,7 +201,6 @@
                 this.labelGap = '';
                 this.heightOffset = 0;
                 this.width = '';
-                this.updateHeightOffsetDescription();
                 this.validHeight = true;
                 this.validHeightOffset = true;
                 this.validWidth = true;
@@ -296,7 +295,7 @@
             },
 
 
-            // Updates the display of the currentrecomended boundry values for width
+            // Updates the display of the current recomended boundry values for width
             // The widthDescription must be displayed using a v-html directive for the formatting to display propperly (ie <label v-html='textVar'></label>)
             updateWidthDescription() {
                 // Max width can vary with back and front label sizes
@@ -309,11 +308,9 @@
             },
 
 
-            // Todo: add multi label support into calcualtions
-            // Will likely need to store global max height?
-            // Will need seperate sections for front and back label (add additional tag like type?)
-
             // Fetches the maximum possible height of the label using the type to specify which max height to use
+            // If it is a primary label and a secondarylabel exists for that side, min label size and and are accounted for
+            // IF secondary label, primary label height and height offset are accounted for
             // Type: {'warning', 'recomended'}
             getMaxHeight(type) {
                 var maxHeight;
@@ -340,20 +337,19 @@
             },
 
 
-            // Todo: add multi label supprot
-            // Max height can cover some of this but will need to look for overlap (dedicated function?)
-            // Front and back label will need to be done seperately (additional tag like type?)
-
             // Fetches the maximum possible height offset of the label using type to specify which max height offset to use
             // The max height offset takes the current label height entered by the user or the minimum label height into account (depending which is bigger)
+            // If a primary and secondary label exists: 
+                // Secondary label accounts for primary labels current measurements
+                // Primary label accounts for minimum measurements of secondary label
             // Type: {'warning', 'recomended'}
             getmaxHeightOffset(type) {
                 var maxHeightOffset;
                 const X1 = this.globalPositions[this.side][this.labelId[0]+'1'];
-                if (this.labelId[1] != 1 && X1 != null) {
+                if (this.labelId[1] != 1 && X1 != null) {   // If label is secondary and the primary label has measurements
                     maxHeightOffset = this.bottleSpec[type].maxHeight - (X1.height + X1.heightOffset - this.bottleSpec.recomended.minHeightOffset) - CONSTANTS.minVerticalLabelGap.recomended - CONSTANTS.minLabelHeight;
 
-                    if (this.height !== null && this.height >= CONSTANTS.minLabelHeight) {
+                    if (this.height != null && this.height >= CONSTANTS.minLabelHeight) { // If height is filled in
                         maxHeightOffset -= this.height - CONSTANTS.minLabelHeight;
                     }
 
@@ -374,6 +370,10 @@
                 return maxHeightOffset;
             },
 
+            // Gets the minimum height offset of the label for the given type
+            // Type: {'warning', 'recomended'}
+            // If label is secondary the min height offset is the min vertical label gap
+            // If label is primary the height offset is taken from the bottle spec
             getMinHeightOffset(type) {
                 var minHeightOffset;
                 const X1 = this.globalPositions[this.side][this.labelId[0]+'1'];
@@ -385,9 +385,6 @@
                 return minHeightOffset;
             },
 
-
-            // Todo: Add multi label support
-            // Confirm min label gap info
 
             // Fecthes the maximum possible width of the label using type to specify which max width to fetch
             // Accounts for width of labels on the other side of the bottle
@@ -472,9 +469,6 @@
                 
             },
 
-
-            // Todo: add multi label support
-            // Maybe break this up into smaller helper function for easy of understanding and to be able to reuse stuff???
 
             // Takes the provided user measurments and validates them against the currently selected spec
             // If a field is blank, validation is skipped and it is considered valid, but it's css class is set to standard-input

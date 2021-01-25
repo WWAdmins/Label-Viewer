@@ -351,6 +351,12 @@
         }
       },
 
+      // When label selected in multi select
+      // Updates label counts
+      // Updates validLabelOptions
+      // Adds label to active labels
+      // Updates globalPositions.latest to be a global to force updates in child measurement forms
+      // Label: selection from the multi select
       addLabel(label) {
         //update count: type, global
         this.labelStatuses.count += 1;
@@ -388,6 +394,7 @@
         this.globalPositions.latest.id = 'global';
       },
 
+      // Minor helper function, removes the given item from the array and returns the resultant array
       arrayRemove(array, item) {
         var index = array.indexOf(item);
         if (index > -1) {
@@ -396,6 +403,14 @@
         return array;
       },
 
+      // When label deslected in multi select
+      // Removes dependent labels from thevalid options and from the active selections
+      // Updates label counts
+      // Nullifies the labels information in globalPositions
+      // Updates max width valeus
+      // Updates label preview
+      // Updates global invalid
+      // Label: multi select option that was removed
       removeLabel(label) {
         //medals logic stuff
         if (label == 'Front') {
@@ -433,7 +448,7 @@
           this.labelStatuses.count -= 1;
           this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'F2');
           this.globalPositions.front.F2 = null;
-            this.updateMaxWidth('front');
+          this.updateMaxWidth('front');
         }
         if (label == 'Second back') {
           this.labelStatuses.back.count -= 1;
@@ -452,7 +467,7 @@
       },
 
       // Updates the maxWidth information for the given side when a label is updated and calls checkWrapAround()
-      // Takes width from form, side of bottle {'front', 'back'} and id of label changed
+      // Side: side of the bottle being updated
       updateMaxWidth(side) {
 
         var maxWidthValue = null;
@@ -710,6 +725,7 @@
         return {'heightOffset':heightOffset, 'height':height, 'theta':theta};
       },
 
+      // Clears all labels off label preview
       clearPreview() {
         const blank = {'height': 0, 'adjustedWidth': 0, 'heightOffset': 0}
         this.displayLabel('labelPreview1', blank);
@@ -720,9 +736,6 @@
         this.displayLabel('labelPreviewOverflowLeft2', blank);
         this.displayLabel('labelPreviewOverflowRight2', blank);
       },
-
-      // Todo: multi label support
-        // Will need multiple div squares per label. (create dynamically??????)
 
       // Sets demensions of the label preview on the bottle and places it in the right possition
       displayLabel(element, label) {
