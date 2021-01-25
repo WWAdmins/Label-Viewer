@@ -319,14 +319,17 @@
                 var maxHeight;
                 if ((this.labelId == 'F1' && this.globalPositions.activeLabels.includes('F2')) || 
                     (this.labelId == 'B1' && this.globalPositions.activeLabels.includes('B2'))) { // If X1 label and X2 label exists
-                    maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.minVerticalLabelGap[type] - CONSTANTS.minLabelHeight;
+                    maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.minVerticalLabelGap.recomended - CONSTANTS.minLabelHeight - 4; // -4 to account for extra potential drift
                 } else if (this.labelId == 'F2' || this.labelId == 'B2') {  // If label is an X2
-                    maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.minVerticalLabelGap[type] - CONSTANTS.minLabelHeight;
+                    maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.minVerticalLabelGap.recomended - CONSTANTS.minLabelHeight;
 
                     if (this.globalPositions[this.side][this.labelId[0] + '1'] != null) {   // if the measurements for X1 exist
                         const X1 = this.globalPositions[this.side][this.labelId[0] + '1'];
                         if (X1.height != '' && X1.height > CONSTANTS.minLabelHeight) {  // If the height exists and it is greater than the min height
                             maxHeight -= X1.height - CONSTANTS.minLabelHeight;
+                        }
+                        if (X1.heightOffset != '') {
+                            maxHeight -= X1.heightOffset - this.bottleSpec.recomended.minHeightOffset;
                         }
                     }
                 } else {
@@ -348,17 +351,21 @@
                 var maxHeightOffset;
                 const X1 = this.globalPositions[this.side][this.labelId[0]+'1'];
                 if (this.labelId[1] != 1 && X1 != null) {
-                    maxHeightOffset = this.bottleSpec[type].maxHeight - (X1.height + X1.heightOffset - this.bottleSpec[type].minHeightOffset) - CONSTANTS.minVerticalLabelGap[type] - CONSTANTS.minLabelHeight;
+                    maxHeightOffset = this.bottleSpec[type].maxHeight - (X1.height + X1.heightOffset - this.bottleSpec.recomended.minHeightOffset) - CONSTANTS.minVerticalLabelGap.recomended - CONSTANTS.minLabelHeight;
 
                     if (this.height !== null && this.height >= CONSTANTS.minLabelHeight) {
                         maxHeightOffset -= this.height - CONSTANTS.minLabelHeight;
                     }
+
+                    if (maxHeightOffset < CONSTANTS.minVerticalLabelGap.recomended) {
+                        maxHeightOffset = CONSTANTS.minVerticalLabelGap.recomended;
+                    }
                 } else {
                     if ((this.labelId == 'F1' && this.globalPositions.activeLabels.includes('F2')) || 
                         (this.labelId == 'B1' && this.globalPositions.activeLabels.includes('B2'))) { // If X1 label and X2 label exists
-                        maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec[type].minHeightOffset - CONSTANTS.minLabelHeight - CONSTANTS.minLabelHeight - CONSTANTS.minVerticalLabelGap[type]
+                        maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec.recomended.minHeightOffset - CONSTANTS.minLabelHeight - CONSTANTS.minLabelHeight - CONSTANTS.minVerticalLabelGap.recomended
                     } else {
-                        maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec[type].minHeightOffset - CONSTANTS.minLabelHeight;
+                        maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec.recomended.minHeightOffset - CONSTANTS.minLabelHeight;
                     }
                     if (this.height !== null && this.height >= CONSTANTS.minLabelHeight) {
                         maxHeightOffset -= this.height - CONSTANTS.minLabelHeight;

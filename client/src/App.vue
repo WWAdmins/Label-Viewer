@@ -143,7 +143,7 @@
             <div class="layer-3 labelPreview" id='labelPreviewOverflowRight2'></div>
 
             <transition name="slide-fade">
-              <img v-if="bottleType == 'Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/BRG_image_alt.png">
+              <img v-if="bottleType == 'Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/BRG_image.png">
             </transition>
             <transition name="slide-fade">
               <img v-if="bottleType == 'Bordeaux' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/BDX_image.png">
@@ -439,6 +439,9 @@
 
         this.globalPositions.latest.id = 'global';
 
+        this.clearPreview();
+        this.updatePreview();
+
         this.checkGlobalInvalid();
       },
 
@@ -619,6 +622,7 @@
           case 2:
         }
         if (this.bottleSpec != null) {
+          this.clearPreview();
           this.updatePreview();
         }
       },
