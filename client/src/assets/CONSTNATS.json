@@ -16,6 +16,7 @@
     "helpMessage": "Unsure of how to take your measurements? \nFor height take the vertical distance from the highest to the lowest point of your label \nFor Width take the horizontal distance from the furthest left point to the furthest right point<hr>If your measurements are invalid and you wish to discuss why, feel free to contact us [help link here]",
     "helpLink": "https://www.wineworks.co.nz/",
     "bottlePreviewDisclaimer": "Preview depiction is not fully accurate for every bottle and should only be used as a estimation",
+    "selectHelpMessage": "Select a bottle to continue",
 
     "invalidWarning": "The current label specs are invalid",
 

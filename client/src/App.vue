@@ -130,9 +130,10 @@
 
       <div class='col-lg-6'>
         <div class="row">
-          <button id="frontDisplayButton" class="sideToggle selected" v-on:click="displaySelect('front')">Front</button>
-          <button id="backDisplayButton" class="sideToggle" v-on:click="displaySelect('back')">Back</button>
+          <button id="frontDisplayButton" class="sideToggle selected" v-on:click="displaySelect('front')">Front view</button>
+          <button id="backDisplayButton" class="sideToggle" v-on:click="displaySelect('back')">Back view</button>
         </div>
+        <label class='header' v-if="!bottleSpec">{{ selectHelpMessage }}</label>
         <br>
         <div class="row">
           <div id="preview" class="col-lg-8 offset-lg-2 preview">
@@ -242,7 +243,8 @@
           helpMessage: "",
           bottlePreviewDisclaimer: "",
           displaySide: 'front',          // label preview stuff
-          validLabelOptions: []
+          validLabelOptions: [],
+          selectHelpMessage: ''
         }
     },
 
@@ -254,6 +256,7 @@
 
         this.overallWarning = CONSTANTS.invalidWarning;
         this.bottlePreviewDisclaimer = CONSTANTS.bottlePreviewDisclaimer;
+        this.selectHelpMessage = CONSTANTS.selectHelpMessage;
 
         this.validLabelOptions = ['Front', 'Back'];
     },
@@ -455,7 +458,7 @@
         var maxWidthValue = null;
 
         Object.keys(this.globalPositions[side]).forEach((element) => {
-          if (element != 'maxWidth' && this.globalPositions.front[element] != null) {
+          if (element != 'maxWidth' && this.globalPositions[side][element] != null) {
             if (this.globalPositions[side][element].width > maxWidthValue) {
               maxWidthValue = this.globalPositions[side][element].width;
             }
