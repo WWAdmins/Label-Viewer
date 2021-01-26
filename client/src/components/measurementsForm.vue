@@ -115,39 +115,46 @@
                 // Update for multi label
                 handler() {
                     if (this.globalPositions.latest.id != this.labelId) {
+                        
+                        this.queue.push(this.globalPositions.latest.id);
                         clearTimeout(this.delayWatcherTimer);
                         this.delayWatcherTimer = setTimeout(()=>{
-                            if (this.globalPositions.latest.id == 'global') {
-                                this.validate('props');
+                            var ID;
+                            while(this.queue.length > 0) {
+                                ID = this.queue.shift();
 
-                                this.updateWidthDescription();
-                                this.updateHeightDescription();
-                                this.updateHeightOffsetDescription();
-                            }
-
-                            if (this.labelId[1] == 2) {
-                                const X1 = this.globalPositions[this.side][this.labelId[0]+'1'];
-                                if (X1 != null) {
-                                    this.heightOffset = this.labelGap + X1.height + X1.heightOffset;
+                                if (this.labelId[1] == 2) {
+                                    const X1 = this.globalPositions[this.side][this.labelId[0]+'1'];
+                                    if (X1 != null) {
+                                        this.heightOffset = this.labelGap + X1.height + X1.heightOffset;
+                                    }
+                                } else {
+                                    this.heightOffset = this.applicationHeight;
                                 }
-                            } else {
-                                this.heightOffset = this.applicationHeight;
-                            }
-                            
-                            if (this.globalPositions.latest.id == 'F1') {
-                                this.validate('props');
 
-                                this.updateWidthDescription();
-                                this.updateHeightDescription();
-                                this.updateHeightOffsetDescription();
-                            } else if (this.side == 'back' && this.globalPositions.latest.side == 'front') {
-                                this.validate('props');
-                                this.updateWidthDescription();
-                            } else if (this.globalPositions.latest.id == 'B1' && this.labelId == 'B2') {
-                                this.validate('props');
-                                this.updateWidthDescription();
-                                this.updateHeightDescription();
-                                this.updateHeightOffsetDescription();
+                                if (ID == 'global') {
+                                    this.validate('props');
+
+                                    this.updateWidthDescription();
+                                    this.updateHeightDescription();
+                                    this.updateHeightOffsetDescription();
+                                }
+                                
+                                if (ID == 'F1') {
+                                    this.validate('props');
+
+                                    this.updateWidthDescription();
+                                    this.updateHeightDescription();
+                                    this.updateHeightOffsetDescription();
+                                } else if (this.side == 'back' && this.globalPositions.latest.side == 'front') {
+                                    this.validate('props');
+                                    this.updateWidthDescription();
+                                } else if (ID == 'B1' && this.labelId == 'B2') {
+                                    this.validate('props');
+                                    this.updateWidthDescription();
+                                    this.updateHeightDescription();
+                                    this.updateHeightOffsetDescription();
+                                }
                             }
                         }, 600);
                     }
@@ -177,7 +184,8 @@
                 orangeZone: false,
                 heightWarnClass: '',
                 heightOffsetWarnClass: '',
-                widthWarnClass: ''
+                widthWarnClass: '',
+                queue: []
             }
         },
 

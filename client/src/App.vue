@@ -391,6 +391,7 @@
             this.globalPositions.activeLabels.push('B2');
             break;
         }
+
         this.globalPositions.latest.id = 'global';
       },
 
@@ -498,6 +499,8 @@
           document.getElementById('frontF2').classList.remove("hidden");  // This is done as it is simpler than trying to putting a v-show in a v-for that doesn't cover all components in the v-for
         }
 
+        const activeLabels = this.globalPositions.activeLabels;
+
         this.globalPositions = {
           'latest': 
             {
@@ -513,12 +516,14 @@
             {
               'maxWidth': null
             },
-            'activeLabels': this.globalPositions.activeLabels
+            'activeLabels': null
         },
         this.labelStatuses.front.enabled = true;
         this.labelStatuses.front.dissableMessage = '';
         this.labelStatuses.back.enabled = true;
         this.labelStatuses.back.dissableMessage = '';
+        
+        this.globalPositions.activeLabels = activeLabels;
         
         this.checkWrapAround();
 
