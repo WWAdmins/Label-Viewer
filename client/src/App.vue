@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="container-fluid col-lg-10 offset-lg-1">
+  <div id="app" class="container-fluid main-backing col-lg-10 offset-lg-1">
 
     <div class='row'>
       <div class='col-lg-6'>
@@ -66,8 +66,16 @@
         </div>
         <div class="row">
           <div class='col-lg-12'>
-            <button class="clear" v-if='!help' v-on:click="clearForm()">Clear all</button>
+            <button class="clear" v-if='!help' v-on:click="clearForm()" :disabled="!bottleSpec">Clear all</button>
             <button class='help-button' v-if='!help' v-on:click="help = true">Help</button>
+            <button 
+              class='medal-button' 
+              v-if='!help && !medalMode' 
+              v-on:click="medalMode = !medalMode"
+              :disabled="labelStatuses.filled.length < globalPositions.activeLabels.length || globalPositions.activeLabels.length == 0 || globalPositions.activeMedals == 0"
+              >Medals
+            </button>
+            <button class='medal-button' v-if='!help && medalMode' v-on:click="medalMode = !medalMode">Labels</button>
             <div class="alert alert-info alert-dismissible fade show" role="alert" v-if="help">
               <button type="close-button" class="close" data-dismiss="alert" aria-label="Close" v-on:click="help = false">
                 <span aria-hidden="true">&times;</span>
@@ -78,14 +86,22 @@
         </div>
         <div class="row" v-if='help'>
           <div class='col-lg-12'>
-            <button class="clear" v-on:click="clearForm()">Clear all</button>
+            <button class="clear" v-on:click="clearForm()" :disabled="!bottleSpec">Clear all</button>
+            <button 
+              class='medal-button' 
+              v-if='help && !medalMode' 
+              v-on:click="medalMode = !medalMode"
+              :disabled="labelStatuses.filled.length < globalPositions.activeLabels.length || globalPositions.activeLabels.length == 0 || globalPositions.activeMedals == 0"
+              >Medals
+            </button>
+            <button class='medal-button' v-if='!help && medalMode' v-on:click="medalMode = !medalMode">Labels</button>
           </div>
         </div>
 
-        <div class="row">
+        <div class="row" v-show="!medalMode || globalPositions.activeLabels.length == 0 || labelStatuses.filled.length != globalPositions.activeLabels.length">
           <div class="col-lg-6">
-            <label class="header">Front labels</label>
-            <!-- multi label support needed here -->
+            <label class="header" v-if="bottleSpec">Front labels</label>
+            <label class="header dissabled-text" v-else>Front labels</label>
             <measurements-form
               v-for="n in labelStatuses.front.count"
               :key="'F' + n"
@@ -105,8 +121,8 @@
             <div class="alert alert-warning" role="alert" id='frontDissabledWarning' v-if="!labelStatuses.front.enabled">{{ labelStatuses.front.dissableMessage }}</div>
           </div>
           <div class="col-lg-6">
-            <label class="header">Back labels</label>
-            <!-- multi label support needed here -->
+            <label class="header" v-if="bottleSpec">Back labels</label>
+            <label class="header dissabled-text" v-else>Back labels</label>
             <measurements-form
               v-for="n in labelStatuses.back.count"
               :key="'B' + n"
@@ -124,6 +140,22 @@
             </measurements-form>
             <div class="alert alert-warning invalidWarning" role="alert" id='backDissabledWarning' v-if="!labelStatuses.back.enabled">{{ labelStatuses.back.dissableMessage }}</div>
           </div>
+        </div>
+        <div class="row" v-show="medalMode && globalPositions.activeLabels.length != 0 && labelStatuses.filled.length == globalPositions.activeLabels.length">
+          <measurements-form-medals
+              v-for="n in labelStatuses.medal.count"
+              :key="'M' + n"
+              :id="'medalM' + n"
+              ref=n
+              side="medal"
+              :labelId="'M' + n"
+              :bottleSpec="bottleSpec"
+              :globalPositions="globalPositions"
+              v-show='labelStatuses.medal.enabled'
+              @invalid="emmittedInvalidLabel"
+              @valid="emmittedValidLabel"
+              >
+          </measurements-form-medals>
         </div>
       </div>
 
@@ -146,6 +178,8 @@
             <div class="layer-3 labelPreview" id='labelPreviewOverflowLeft2'></div>
             <div class="layer-3 labelPreview" id='labelPreviewOverflowRight2'></div>
 
+            <div class="layer-4 medalPreview" id='medalPreview1'></div>
+
             <transition name="slide-fade">
               <img v-if="bottleType == 'Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/BRG_image.png">
             </transition>
@@ -165,7 +199,7 @@
               <img v-if="bottleType == 'Premium Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/PBG_image.png">
             </transition>
             
-            <div class='layer-4'>
+            <div class='layer-10'>
               <div class="alert alert-danger p-5 font-weight-bold" role="alert" id='invalidWarning' v-show="showInvalid">{{ overallWarning }}</div>
             </div>
           </div>
@@ -185,14 +219,15 @@
 <script>
   import Multiselect from 'vue-multiselect'
   import measurementsForm from './components/measurementsForm.vue';
+  import measurementsFormMedals from './components/measurementsFormMedals.vue';
 
   import dataImport from './assets/data.json';
-  import CONSTANTS from './assets/CONSTNATS.json';
+  import CONSTANTS from './assets/CONSTANTS.json';
 
 
   export default {
     name: 'App',
-    components: {Multiselect, measurementsForm},
+    components: {Multiselect, measurementsForm, measurementsFormMedals},
     data () {
         return {
           data: [],
@@ -222,12 +257,14 @@
               {
                 'maxWidth': null
               },
-            'activeLabels': []
+            'medal': {},
+            'activeLabels': [],
+            'activeMedals': []
           },
           labelStatuses: {
             'hasWrap': false,
-            'count': 0,
             'selected': [],
+            'filled': [],
             'front': {
               'enabled': true,
               'dissableMessage': '',
@@ -237,14 +274,21 @@
               'enabled': true,
               'dissableMessage': '',
               'count': 0
-            } // Add medals here
+            },
+            'medal': {
+              'enabled': true,
+              'dissableMessage': '',
+              'count': 0
+            }
           },
           help: false,
           helpMessage: "",
           bottlePreviewDisclaimer: "",
           displaySide: 'front',          // label preview stuff
           validLabelOptions: [],
-          selectHelpMessage: ''
+          selectHelpMessage: '',
+
+          medalMode: false  // toggle between labels and medals using button
         }
     },
 
@@ -258,7 +302,7 @@
         this.bottlePreviewDisclaimer = CONSTANTS.bottlePreviewDisclaimer;
         this.selectHelpMessage = CONSTANTS.selectHelpMessage;
 
-        this.validLabelOptions = ['Front', 'Back'];
+        this.validLabelOptions = [CONSTANTS.labelNames.F1, CONSTANTS.labelNames.B1];
     },
 
     methods: {
@@ -337,7 +381,6 @@
           this.labelStatuses.back.enabled = false;
           this.labelStatuses.back.dissableMessage = CONSTANTS.wrapAroundMessage;
           this.labelStatuses.hasWrap = true;
-          console.log(this.globalPositions.activeLabels)
           if (this.globalPositions.activeLabels.includes('F2')) {
             document.getElementById('frontF2').classList.add("hidden"); // This is done as it is simpler than trying to putting a v-show in a v-for that doesn't cover all components in the v-for
           }
@@ -359,36 +402,46 @@
       // Label: selection from the multi select
       addLabel(label) {
         //update count: type, global
-        this.labelStatuses.count += 1;
 
-        if (label.toLowerCase().includes("front")) {
+        if (label.toLowerCase().includes(CONSTANTS.labelNames.F1.toLowerCase())) {
           this.labelStatuses.front.count += 1;
-        }
-        if (label.toLowerCase().includes("back")) {
+        } else if (label.toLowerCase().includes(CONSTANTS.labelNames.B1.toLowerCase())) {
           this.labelStatuses.back.count += 1;
+        } else if (label.toLowerCase().includes(CONSTANTS.labelNames.M1.toLowerCase())) {
+          this.labelStatuses.medal.count += 1;
         }
 
         //add dependent labels
-        if (!this.labelStatuses.hasWrap) {
-          if (label == 'Front') {
-            this.validLabelOptions.push('Second front');
-          }
-          if (label == "Back") {
-            this.validLabelOptions.push('Second back');
-          }
+        if (label == CONSTANTS.labelNames.F1) {
+          this.validLabelOptions.push(CONSTANTS.labelNames.F2);
+          this.validLabelOptions.push(CONSTANTS.labelNames.M1);
+
+        } else if (label == CONSTANTS.labelNames.B1) {
+          this.validLabelOptions.push(CONSTANTS.labelNames.B2);
+
+        } else if (label == CONSTANTS.labelNames.M1) {
+          this.validLabelOptions.push(CONSTANTS.labelNames.M2);
         }
+
+
         switch (label) {
-          case 'Front':
+          case CONSTANTS.labelNames.F1:
             this.globalPositions.activeLabels.push('F1');
             break;
-          case 'Back':
+          case CONSTANTS.labelNames.B1:
             this.globalPositions.activeLabels.push('B1');
             break;
-          case 'Second front':
+          case CONSTANTS.labelNames.F2:
             this.globalPositions.activeLabels.push('F2');
             break;
-          case 'Second back':
+          case CONSTANTS.labelNames.B2:
             this.globalPositions.activeLabels.push('B2');
+            break;
+          case CONSTANTS.labelNames.M1:
+            this.globalPositions.activeMedals.push('M1');
+            break;
+          case CONSTANTS.labelNames.M2:
+            this.globalPositions.activeMedals.push('M2');
             break;
         }
 
@@ -404,6 +457,24 @@
         return array;
       },
 
+      cleanLabel(ID, side, deselect) {
+        if (deselect) {
+          this.labelStatuses.selected = this.arrayRemove(this.labelStatuses.selected, CONSTANTS.labelNames[ID]);
+        }
+
+        this.labelStatuses[side].count -= 1;
+        if (side != 'medal') {
+          this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, ID);
+          this.labelStatuses.filled = this.arrayRemove(this.labelStatuses.filled, ID);
+        } else {
+          this.globalPositions.activeMedals = this.arrayRemove(this.globalPositions.activeMedals, ID);
+        }
+
+        this.medalMode &= this.globalPositions.activeMedals.length > 0;
+        
+        this.globalPositions[side][ID] = null;
+      },
+
       // When label deslected in multi select
       // Removes dependent labels from thevalid options and from the active selections
       // Updates label counts
@@ -414,48 +485,59 @@
       // Label: multi select option that was removed
       removeLabel(label) {
         //medals logic stuff
-        if (label == 'Front') {
-          this.validLabelOptions = this.arrayRemove(this.validLabelOptions, 'Second front');
-          if (this.labelStatuses.selected.includes('Second front')) {
-            this.labelStatuses.selected = this.arrayRemove(this.labelStatuses.selected, 'Second front');
-            this.labelStatuses.front.count -= 1;
-            this.labelStatuses.count -= 1;
-            this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'F2');
-            this.globalPositions.front.F2 = null;
+        if (label == CONSTANTS.labelNames.F1) {
+          this.validLabelOptions = this.arrayRemove(this.validLabelOptions, CONSTANTS.labelNames.F2);
+          this.validLabelOptions = this.arrayRemove(this.validLabelOptions, CONSTANTS.labelNames.M1);
+          this.validLabelOptions = this.arrayRemove(this.validLabelOptions, CONSTANTS.labelNames.M2);
+
+          if (this.labelStatuses.selected.includes(CONSTANTS.labelNames.F2)) {
+            this.cleanLabel('F2', 'front', true);
           }
-          this.labelStatuses.front.count -= 1;
-          this.labelStatuses.count -= 1;
-          this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'F1');
-          this.globalPositions.front.F1 = null;
+          if (this.labelStatuses.selected.includes(CONSTANTS.labelNames.M1)) {
+            this.cleanLabel('M1', 'medal', true);
+          }
+          if (this.labelStatuses.selected.includes(CONSTANTS.labelNames.M2)) {
+            this.cleanLabel('M2', 'medal', true);
+          }
+          
+          this.cleanLabel('F1', 'front', false);
+
           this.updateMaxWidth('front');
         }
-        if (label == "Back") {
-          this.validLabelOptions = this.arrayRemove(this.validLabelOptions, 'Second back');
-          if (this.labelStatuses.selected.includes('Second back')) {
-            this.labelStatuses.selected = this.arrayRemove(this.labelStatuses.selected, 'Second back');
-            this.labelStatuses.back.count -= 1;
-            this.labelStatuses.count -= 1;
-            this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'B2');
-            this.globalPositions.back.F2 = null;
+
+        if (label == CONSTANTS.labelNames.B1) {
+          this.validLabelOptions = this.arrayRemove(this.validLabelOptions, CONSTANTS.labelNames.B2);
+
+          if (this.labelStatuses.selected.includes(CONSTANTS.labelNames.B2)) {
+            this.cleanLabel('B2', 'back', true);
           }
-          this.labelStatuses.back.count -= 1;
-          this.labelStatuses.count -= 1;
-          this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'B1');
-          this.globalPositions.back.B1 = null;
+
+          this.cleanLabel('B1', 'back', false);
+
           this.updateMaxWidth('back');
         }
-        if (label == 'Second front') {
-          this.labelStatuses.front.count -= 1;
-          this.labelStatuses.count -= 1;
-          this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'F2');
-          this.globalPositions.front.F2 = null;
+
+        if (label == CONSTANTS.labelNames.M1) {
+          this.validLabelOptions = this.arrayRemove(this.validLabelOptions, CONSTANTS.labelNames.M2);
+
+          if (this.labelStatuses.selected.includes(CONSTANTS.labelNames.M2)) {
+            this.cleanLabel('M2', 'medal', true);
+          }
+
+          this.cleanLabel('M1', 'medal', false);
+        }
+
+        if (label == CONSTANTS.labelNames.M2) {
+          this.cleanLabel('M2', 'medal', false);
+        }
+
+        if (label == CONSTANTS.labelNames.F2) {
+          this.cleanLabel('F2', 'front', false);
           this.updateMaxWidth('front');
         }
-        if (label == 'Second back') {
-          this.labelStatuses.back.count -= 1;
-          this.labelStatuses.count -= 1;
-          this.globalPositions.activeLabels = this.arrayRemove(this.globalPositions.activeLabels, 'B2');
-          this.globalPositions.back.B2 = null;
+
+        if (label == CONSTANTS.labelNames.B2) {
+          this.cleanLabel('B2', 'front', false);
           this.updateMaxWidth('back');
         }
 
@@ -500,6 +582,7 @@
         }
 
         const activeLabels = this.globalPositions.activeLabels;
+        const activeMedals = this.globalPositions.activeMedals;
 
         this.globalPositions = {
           'latest': 
@@ -516,14 +599,16 @@
             {
               'maxWidth': null
             },
-            'activeLabels': null
+          'medal': {},
+          'activeLabels': activeLabels,
+          'activeMedals': activeMedals
         },
         this.labelStatuses.front.enabled = true;
         this.labelStatuses.front.dissableMessage = '';
         this.labelStatuses.back.enabled = true;
         this.labelStatuses.back.dissableMessage = '';
-        
-        this.globalPositions.activeLabels = activeLabels;
+        this.labelStatuses.filled = [];
+        this.medalMode = false;
         
         this.checkWrapAround();
 
@@ -566,6 +651,15 @@
         this.globalPositions.latest = {'id': labelId, 'side':side, 'type':type};
 
         this.globalPositions[side][labelId] = form;   // Add/update new data to set
+
+        this.labelStatuses.filled = this.arrayRemove(this.labelStatuses.filled, labelId);
+        if (form.height != '' && form.width != '' && form.heightOffset != '') {
+          if (labelId[1] == 2 && this.labelStatuses.filled.includes(labelId[0] + '1')) {
+            this.labelStatuses.filled.push(labelId);
+          } else if (labelId[1] == 1) {
+            this.labelStatuses.filled.push(labelId);
+          }
+        }
         
         this.updateMaxWidth(side);
 
@@ -605,6 +699,10 @@
 
         this.globalPositions[side][labelId].valid = false
 
+        if (side != 'medal') {
+          this.labelStatuses.filled = this.arrayRemove(this.labelStatuses.filled, labelId);
+        }
+
         this.checkGlobalInvalid();
 
         this.updatePreview();
@@ -621,7 +719,18 @@
 
         this.globalPositions[side][labelId] = form;   // Add/update new data to set
 
-        this.updateMaxWidth(side);
+        if (side != 'medal') {
+          this.labelStatuses.filled = this.arrayRemove(this.labelStatuses.filled, labelId);
+          if (form.height != '' && form.width != '' && form.heightOffset != '') {
+            if (labelId[1] == 2 && this.labelStatuses.filled.includes(labelId[0] + '1')) {
+              this.labelStatuses.filled.push(labelId);
+            } else if (labelId[1] == 1) {
+              this.labelStatuses.filled.push(labelId);
+            }
+          }
+
+          this.updateMaxWidth(side);
+        }
 
         this.checkGlobalInvalid();
 
@@ -704,6 +813,15 @@
           this.displayLabel("labelPreviewOverflowLeft"+y[1], label);
           this.displayLabel("labelPreviewOverflowRight"+y[1], label);
         }
+
+        const adjM = 2 * Math.sin(((2 * 20 * Math.PI) / this.bottleSpec.circumference)/2) * radius;
+        const fullHeight = CONSTANTS[this.bottleType + "Height"];
+
+        document.getElementById('medalPreview1').style.height = `${(20/fullHeight)*100}%`;
+        document.getElementById('medalPreview1').style.width = `${(adjM/diamiter)*100*0.47}%`;
+        document.getElementById('medalPreview1').style.bottom = `${(70/fullHeight)*100}%`;
+        document.getElementById('medalPreview1').style.left = `${26.5}%`;
+        
       },
 
       // Fetches height and height offset for the specified label and calculates the width of the label as an angle on the radius of the bottle
@@ -778,7 +896,7 @@ body{
   min-width: 350px;
 }
 
-.container-fluid{
+.main-backing{
   margin-top: 60px;
   margin-bottom: 60px;
   border-radius: 8px;
@@ -803,6 +921,10 @@ body{
 .pre-formatted {
   white-space: pre-wrap;
   padding: 5px;
+}
+
+.dissabled-text {
+    opacity: 0.7;
 }
 
 .header {
@@ -832,17 +954,28 @@ body{
 .layer-2 {
   z-index: 1;
   position: absolute;
-  width: 50%
 }
 
 .layer-3 {
   z-index: 2;
   position: absolute;
-  width: 50%
 }
 
 .layer-4 {
-  z-index: 5;
+  z-index: 6;
+  position: absolute;
+  border-radius: 50%;
+}
+
+.medalPreview {
+  width: 0%;
+  height: 0%;
+  background-color: goldenrod;
+  opacity: 80%;
+}
+
+.layer-10 {
+  z-index: 10;
   position: absolute;
   top: 50%;
   left: 15%;
@@ -858,6 +991,19 @@ body{
   border-radius: 8px;
   border: 1px solid lightgrey;
   background: #cffeff;
+  opacity: 0.7;
+  outline:none !important;
+  outline-width: 0 !important;
+}
+
+.medal-button {
+  float: left;
+  margin: 5px;
+  text-align: center;
+  padding: 3px 10px 3px;
+  border-radius: 8px;
+  border: 1px solid lightgrey;
+  background: white;
   opacity: 0.7;
   outline:none !important;
   outline-width: 0 !important;

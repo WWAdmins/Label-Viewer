@@ -1,7 +1,8 @@
 <template>
     <div id=inputs>
-        <hr v-if="labelId[1] > 1">
-        <label class="sub-title-formatted">Height</label>
+        <hr v-if="labelId[1] > 1"> 
+        <label class="sub-title-formatted" v-if="bottleSpec">Height</label>
+        <label class="sub-title-formatted dissabled-text" v-else>Height</label>
         <div class='row'>
             <div class='col-sm-5'>
                 <input
@@ -21,7 +22,8 @@
         </div>
         <br>
 
-        <label class="sub-title-formatted">Width</label>
+        <label class="sub-title-formatted" v-if="bottleSpec">Width</label>
+        <label class="sub-title-formatted dissabled-text" v-else>Width</label>
         <div class='row'>
             <div class='col-sm-5'>
                 <input
@@ -41,8 +43,10 @@
         </div>
         <br>
 
-        <label class="sub-title-formatted" v-if="labelId[1] == 1">Application height</label>
+        <label class="sub-title-formatted" v-if="labelId[1] == 1 && bottleSpec">Application height</label>
+        <label class="sub-title-formatted dissabled-text" v-if="labelId[1] == 1 && !bottleSpec">Application height</label>
         <label class="sub-title-formatted" v-if="labelId[1] == 2">Label gap</label>
+        <label class="sub-title-formatted dissabled-text" v-if="labelId[1] == 2 && !bottleSpec">Label gap</label>
         <div class='row'>
             <div class='col-sm-5'>
                 <input
@@ -77,7 +81,7 @@
 </template>
 
 <script>
-    import CONSTANTS from '../assets/CONSTNATS.json';
+    import CONSTANTS from '../assets/CONSTANTS.json';
 
     export default {
         name: 'measurementsForm',
@@ -653,11 +657,8 @@
     font-weight: bold;
 }
 
-.form-control {
-    width: 100%;
-    padding: 6%;
-    border-radius: 8px;
-    font-size: 70px;
+.dissabled-text {
+    opacity: 0.7;
 }
 
 .standard-input {

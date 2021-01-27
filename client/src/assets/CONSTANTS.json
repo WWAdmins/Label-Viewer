@@ -1,6 +1,11 @@
 {
     "minLabelHeight": 18,
     "minLabelWidth": 12,
+
+    "maxMedalHeight": 50,
+    "minStripWidth": 30,
+    "maxStripWidth": 90,
+
     "minLabelGap": {
         "recomended": 20,
         "warning": 10
@@ -9,6 +14,15 @@
     "minVerticalLabelGap": {
         "recomended": 5,
         "warning": 3
+    },
+
+    "labelNames": {
+        "F1": "Front",
+        "F2": "Second front",
+        "B1": "Back",
+        "B2": "Second back",
+        "M1": "Medal",
+        "M2": "Second medal"
     },
 
     "wrapAroundMessage": "Due to limitations of out labeler, we are not able to apply a back label while applying a wraparound style label to the front",
