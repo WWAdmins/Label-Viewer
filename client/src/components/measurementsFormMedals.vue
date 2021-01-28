@@ -320,13 +320,13 @@
                     const F2 = this.globalPositions.front.F2;
                     if (F2 != null) {
                         this.HPlacementMax = F2.width + 2 * this.height - this.width;
-                        this.VPlacementMax = F2.height + (F2.heightOffset - this.bottleSpec.recomended.minHeightOffset);
+                        this.VPlacementMax = F2.height + (F2.heightOffset - this.bottleSpec.recomended.minHeightOffset) - this.height;
                     }
                 } else {
                     const F1 = this.globalPositions.front.F1;
                     if (F1 != null) {
                         this.HPlacementMax = F1.width + 2 * this.height - this.width;
-                        this.VPlacementMax = F1.height + (F1.heightOffset - this.bottleSpec.recomended.minHeightOffset);
+                        this.VPlacementMax = F1.height + (F1.heightOffset - this.bottleSpec.recomended.minHeightOffset) - this.height;
                     }
                 }
             
