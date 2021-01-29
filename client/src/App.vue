@@ -178,8 +178,6 @@
             <div class="layer-3 labelPreview" id='labelPreviewOverflowLeft2'></div>
             <div class="layer-3 labelPreview" id='labelPreviewOverflowRight2'></div>
 
-            <div class="layer-4 medalPreview" id='medalPreview1'></div>
-
             <transition name="slide-fade">
               <img v-if="bottleType == 'Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/BRG_image.png">
             </transition>
@@ -775,9 +773,9 @@
 
         for (var id of this.globalPositions.activeLabels) {
           if (id[0].toLowerCase() == 'f') {
-            labels.front[id] = this.fetchDisplayMeasurements('front', id);
+            labels.front[id] = this.fetchDisplayMeasurements('front', id, radius);
           } else if (id[0].toLowerCase() == 'b') {
-            labels.back[id] = this.fetchDisplayMeasurements('back', id);
+            labels.back[id] = this.fetchDisplayMeasurements('back', id, radius);
           }
         }
 
@@ -813,20 +811,11 @@
           this.displayLabel("labelPreviewOverflowLeft"+y[1], label);
           this.displayLabel("labelPreviewOverflowRight"+y[1], label);
         }
-
-        const adjM = 2 * Math.sin(((2 * 20 * Math.PI) / this.bottleSpec.circumference)/2) * radius;
-        const fullHeight = CONSTANTS[this.bottleType + "Height"];
-
-        document.getElementById('medalPreview1').style.height = `${(20/fullHeight)*100}%`;
-        document.getElementById('medalPreview1').style.width = `${(adjM/diamiter)*100*0.47}%`;
-        document.getElementById('medalPreview1').style.bottom = `${(70/fullHeight)*100}%`;
-        document.getElementById('medalPreview1').style.left = `${26.5}%`;
-        
       },
 
       // Fetches height and height offset for the specified label and calculates the width of the label as an angle on the radius of the bottle
       // Default values are 0, if a height offset of 0 is found the label is hidden
-      fetchDisplayMeasurements(side, labelId) {
+      fetchDisplayMeasurements(side, labelId, radius) {
 
         var heightOffset = 0;
         var height = 0;
@@ -834,7 +823,7 @@
         if (this.globalPositions[side][labelId] != null && this.globalPositions[side][labelId].valid) {
           heightOffset = this.globalPositions[side][labelId].heightOffset;
           height = this.globalPositions[side][labelId].height;
-          theta = (2 * this.globalPositions[side][labelId].width * Math.PI) / this.bottleSpec.circumference;
+          theta = this.globalPositions[side][labelId].width / radius;
         }
         if (heightOffset == 0) {  
           height = 0;
@@ -965,13 +954,6 @@ body{
   z-index: 6;
   position: absolute;
   border-radius: 50%;
-}
-
-.medalPreview {
-  width: 0%;
-  height: 0%;
-  background-color: goldenrod;
-  opacity: 80%;
 }
 
 .layer-10 {

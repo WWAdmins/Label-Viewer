@@ -60,12 +60,8 @@
         <br>
         <div class="row row-cols-12">
             <div class="col-sm-6">
-                <label v-if="type" class="sub-title-formatted">Horizontal placement</label>
-                <label v-else class="sub-title-formatted dissabled-text">Horizontal placement</label>
-            </div>
-            <div class="col-sm-6">
-                <label v-if="type" class="sub-title-formatted">Vertical placement</label>
-                <label v-else class="sub-title-formatted dissabled-text">Vertical placement</label>
+                <label v-if="type" class="sub-title-formatted">Vertical inset</label>
+                <label v-else class="sub-title-formatted dissabled-text">Vertical inset</label>
             </div>
         </div>
         <div class='row row-cols-12' >
@@ -73,25 +69,8 @@
                 <div class="slidecontainer">
                     <input 
                         type="range" 
-                        min="0" 
-                        :max="100" 
-                        value=0 
-                        class="slider dissabled-slider"
-                        id="horizontalSlider"
-                        @input="sliderInput"
-                        >
-                </div>
-            </div>
-            <div class="col-sm-1">
-                <label class="sub-title-formatted">{{ HPlacement }}</label>
-            </div>
-
-            <div class='col-sm-5'>
-                <div class="slidecontainer">
-                    <input 
-                        type="range" 
-                        min="0" 
-                        :max="100" 
+                        :min="VInsetMin" 
+                        :max="VInsetMax" 
                         value=0
                         class="slider dissabled-slider"
                         id="verticalSlider"
@@ -99,7 +78,7 @@
                 </div>
             </div>
             <div class="col-sm-1">
-                <label class="sub-title-formatted">{{ VPlacement }}</label>
+                <label class="sub-title-formatted">{{ VInset }}</label>
             </div>
         </div>
     </div>
@@ -195,10 +174,9 @@
                 widthWarnClass: '',
                 queue: [],
 
-                HSliderPlacement: 0,
-                HPlacementMax: 0,
-                VSliderPlacement: 0,
-                VPlacementMax: 0,
+                VInsetMin: 0,
+                VInsetMax: 0,
+                VInset: 0,
             }
         },
 
@@ -216,20 +194,15 @@
 
             typeSelect() {
                 document.getElementById('verticalSlider').classList.remove("dissabled-slider");
-                document.getElementById('horizontalSlider').classList.remove("dissabled-slider");
             },
 
             typeRemove() {
                 document.getElementById('verticalSlider').classList.add("dissabled-slider");
-                document.getElementById('horizontalSlider').classList.add("dissabled-slider");
             },
 
             sliderInput(input) {
                 if (input.target.id == 'verticalSlider') {
-                    this.VSliderPlacement = input.target.value;
-                }
-                if (input.target.id == 'horizontalSlider') {
-                    this.HSliderPlacement = input.target.value;
+                    this.VInset = input.target.value;
                 }
             },
 
@@ -237,8 +210,9 @@
             // Clears inputs, sets all valid tags to true,
             // clears all warning strings, sets orange zone to false, sets all inputs to standard-input css
             clearForm() {
-                this.HSliderPlacement = 0,
-                this.VSliderPlacement = 0,
+                this.VInsetMin = 0,
+                this.VInsetMax = 0,
+                this.VInset = 0;
 
                 this.height = null,
                 this.width = null,
@@ -319,14 +293,14 @@
                 if (this.globalPositions.activeLabels.includes('F2')) {
                     const F2 = this.globalPositions.front.F2;
                     if (F2 != null) {
-                        this.HPlacementMax = F2.width + 2 * this.height - this.width;
-                        this.VPlacementMax = F2.height + (F2.heightOffset - this.bottleSpec.recomended.minHeightOffset);
+                        this.VInsetMax = (F2.height + F2.heightOffset) - this.bottleSpec.recomended.minHeightOffset;
+                        this.VInsetMin = (F2.height + F2.heightOffset + this.height) - this.bottleSpec.warning.maxHeight;
                     }
                 } else {
                     const F1 = this.globalPositions.front.F1;
                     if (F1 != null) {
-                        this.HPlacementMax = F1.width + 2 * this.height - this.width;
-                        this.VPlacementMax = F1.height + (F1.heightOffset - this.bottleSpec.recomended.minHeightOffset);
+                        this.VInsetMax = (F1.height + F1.heightOffset) - this.bottleSpec.recomended.minHeightOffset;
+                        this.VInsetMin = (F1.height + F1.heightOffset + this.height) - this.bottleSpec.warning.maxHeight;
                     }
                 }
             
