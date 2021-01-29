@@ -192,7 +192,11 @@
                         <div class="layer-3 labelPreview" id='labelPreviewOverflowLeft2'></div>
                         <div class="layer-3 labelPreview" id='labelPreviewOverflowRight2'></div>
 
-                        <div class="layer-4 medalPreview" id='medalPreview1'></div>
+                        <div class="layer-4 medalPreview dotted" id='medalPreview1'></div>
+                        <div class="layer-4 medalPreview" id='medalPreview2'></div>
+                        <div class="layer-4 medalPreview" id='medalPreviewExtra1'></div>
+                        <div class="layer-4 medalPreview" id='medalPreviewExtra2'></div>
+
 
                         <transition name="slide-fade">
                             <img v-if="bottleType == 'Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/BRG_image.png">
@@ -787,26 +791,15 @@
                 }
             },
 
-            // Todo: multi label support
-
-            // Fetches label measurements, calculates warped 2D width based on bottle size, displays label
-            //        - Fetching and display functionality is handeled in helper functions
-            updatePreview() {
-                const diamiter = this.bottleSpec.diameter;
-                const radius = diamiter/2;
-
-                var labels = {'front': {}, 'back': {}, 'medal': {}};
+            prepLabels() {
+                var labels = {'front': {}, 'back': {}};
 
                 for (var idL of this.globalPositions.activeLabels) {
                     if (idL[0].toLowerCase() == 'f') {
-                        labels.front[idL] = this.fetchDisplayMeasurements('front', idL);
+                        labels.front[idL] = this.fetchDisplayMeasurementsLabel('front', idL);
                     } else if (idL[0].toLowerCase() == 'b') {
-                        labels.back[idL] = this.fetchDisplayMeasurements('back', idL);
+                        labels.back[idL] = this.fetchDisplayMeasurementsLabel('back', idL);
                     }
-                }
-
-                for (var idM of this.globalPositions.activeMedals) {
-                    labels.medal[idM] = this.fetchDisplayMeasurements('medal', idM);
                 }
 
                 var main = {};
@@ -818,9 +811,13 @@
                     main = labels.back;
                     overflow = labels.front;
                 }
+                return {'main': main, 'overflow':overflow};
+            },
 
-                var    label;
-                // label split left/right
+            displayMainLabels(main) {
+                const radius = this.bottleSpec.diameter/2;
+
+                var label;
                 for (var x in main) {
                     label = main[x];
 
@@ -836,9 +833,14 @@
                         label['adjustedWidthRight'] = radius;
                     }
 
-                    this.displayLabel(false, false, x[1], label);
+                    this.displayLabel(false, x[1], label);
                 }
+            },
 
+            displayOverflowLabels(overflow) {
+                const radius = this.bottleSpec.diameter/2;
+
+                var label;
                 for (var y in overflow) {
                     label = overflow[y];
 
@@ -856,32 +858,89 @@
                         label['adjustedWidthRight'] = 0;
                     }
 
-                    this.displayLabel(true, false, y[1], label);
+                    this.displayLabel(true, y[1], label);
+                }
+            },
+
+            displaymedals(medals) {
+                const radius = this.bottleSpec.diameter/2;
+
+                var medal;
+                for (var x in medals) {
+                    medal = medals[x];
+
+                    if (medal.thetaLeftBeta >= Math.PI/2) { // Medal off the side
+                        medal['adjustedWidthLeft'] = 0;
+                    } else if (medal.thetaLeftBeta == 0 && medal.thetaLeftAlpha == 0) { // Alpha 0, beta 0 -->>> no left side medal
+                        medal['adjustedWidthLeft'] = 0;
+                    } else if (medal.thetaLeftAlpha <= Math.PI/2) {    // Alpha < Pi/2 -->>> left medal and it is inside bounds
+                        medal['adjustedWidthLeft'] = radius * (Math.sin(medal.thetaLeftAlpha) - Math.sin(medal.thetaLeftBeta));
+                    } else if (medal.thetaLeftBeta <= Math.PI/2 && medal.thetaLeftAlpha >= Math.PI/2) {
+                        medal.thetaLeftAlpha = Math.PI/2;
+                        medal['adjustedWidthLeft'] = radius * (Math.sin(medal.thetaLeftAlpha) - Math.sin(medal.thetaLeftBeta));
+                    }
+
+                    if (medal.thetaRightBeta >= Math.PI/2) { // Medal off the side
+                        medal['adjustedWidthRight'] = 0;
+                    } else if (medal.thetaRightBeta == 0 && medal.thetaRightAlpha == 0) { // Alpha 0, beta 0 -->>> no left side medal
+                        medal['adjustedWidthRight'] = 0;
+                    } else if (medal.thetaRightAlpha <= Math.PI/2) {    // Alpha < Pi/2 -->>> right medal and it is inside bounds
+                        medal['adjustedWidthRight'] = radius * (Math.sin(medal.thetaRightAlpha) - Math.sin(medal.thetaRightBeta));
+                    } else if (medal.thetaRightBeta <= Math.PI/2 && medal.thetaRightAlpha >= Math.PI/2) {
+                        medal.thetaRightAlpha = Math.PI/2;
+                        medal['adjustedWidthRight'] = radius * (Math.sin(medal.thetaRightAlpha) - Math.sin(medal.thetaRightBeta));
+                    }
+
+                    if (medal.thetaRightBeta == 0 && medal.thetaRightAlpha == 0) {  // All on left
+                        medal['adjustedCenterOffset'] = Math.sin(medal.thetaLeftAlpha) * radius;
+                    } else if (medal.thetaLeftBeta == 0 && medal.thetaLeftAlpha == 0) {  // All on left
+                        medal['adjustedCenterOffset'] = Math.sin(medal.thetaRightBeta) * radius;
+                    }
+
+                    console.log(medal.thetaLeftBeta, medal.thetaRightBeta, medal.adjustedCenterOffset)
+                    this.displayMedal(x[1], medal);
+                }
+            },
+
+            // Todo: multi label support
+
+            // Fetches label measurements, calculates warped 2D width based on bottle size, displays label
+            //        - Fetching and display functionality is handeled in helper functions
+            updatePreview() {
+                // Labels *****************************
+                const labels = this.prepLabels();
+                const main = labels.main;
+                const overflow = labels.overflow;
+
+                this.displayMainLabels(main);
+                this.displayOverflowLabels(overflow);
+
+                // Medals *****************************
+                var medals = {}
+                for (var idM of this.globalPositions.activeMedals) {
+                    medals[idM] = this.fetchDisplayMeasurementsMedal(idM);
                 }
 
-                const adjM = 2 * Math.sin(((2 * 20 * Math.PI) / this.bottleSpec.circumference)/2) * radius;
-                const fullHeight = CONSTANTS[this.bottleType + "Height"];
-
-                document.getElementById('medalPreview1').style.height = `${(20/fullHeight)*100}%`;
-                document.getElementById('medalPreview1').style.width = `${(adjM/diamiter)*100*0.47}%`;
-                document.getElementById('medalPreview1').style.bottom = `${(70/fullHeight)*100}%`;
-                document.getElementById('medalPreview1').style.left = `${26.5}%`;
+                this.displaymedals(medals);
                 
             },
 
             // Fetches height and height offset for the specified label and calculates the width of the label as an angle on the radius of the bottle
             // Default values are 0, if a height offset of 0 is found the label is hidden
-            fetchDisplayMeasurements(side, labelId) {
+            fetchDisplayMeasurementsLabel(side, labelId) {
 
                 var heightOffset = 0;
                 var height = 0;
                 var thetaLeft = 0;
                 var thetaRight = 0;
-                if (this.globalPositions[side][labelId] != null && this.globalPositions[side][labelId].valid) {
-                    heightOffset = this.globalPositions[side][labelId].heightOffset;
-                    height = this.globalPositions[side][labelId].height;
-                    thetaLeft = (this.globalPositions[side][labelId].width * Math.PI) / this.bottleSpec.circumference;
-                    thetaRight = (this.globalPositions[side][labelId].width * Math.PI) / this.bottleSpec.circumference;
+
+                const label = this.globalPositions[side][labelId];
+                if (label != null && label.valid) {
+                    heightOffset = label.heightOffset;
+                    height = label.height;
+
+                    thetaLeft = (label.width * Math.PI) / this.bottleSpec.circumference;
+                    thetaRight = (label.width * Math.PI) / this.bottleSpec.circumference;
 
                     if (this.labelStatuses.hasWrap) {
                         thetaLeft *= 2 * this.centerSplit;
@@ -902,26 +961,90 @@
                 return {'heightOffset':heightOffset, 'height':height, 'thetaLeft':thetaLeft, 'thetaRight':thetaRight};
             },
 
+            fetchDisplayMeasurementsMedal(medalId) {
+                var heightOffset = 0;
+                var height = 0;
+                var thetaLeftAlpha = 0;
+                var thetaLeftBeta = 0;
+                var thetaRightAlpha = 0;
+                var thetaRightBeta = 0;
+
+                const medal = this.globalPositions.medal[medalId];
+                if (medal != null && medal.valid) {
+
+                    height = medal.height;
+                    heightOffset = medal.VPlacement + this.globalPositions.front.F1.heightOffset;
+
+                    var topLabelWidth;
+                    if (this.globalPositions.activeLabels.includes('F2')) {
+                        topLabelWidth = this.globalPositions.front.F2.width;
+                    } else {
+                        topLabelWidth = this.globalPositions.front.F1.width;
+                    }
+                    const center = ( (topLabelWidth + 2 * medal.height) * this.centerSplit );
+
+                    if (medal.HPlacement <= center - medal.width) {
+                        thetaLeftBeta = ((Math.abs(center - medal.HPlacement) - medal.width) * (Math.PI*2)) / this.bottleSpec.circumference;
+                        thetaLeftAlpha = (Math.abs(center - medal.HPlacement) * (Math.PI/2)) / this.bottleSpec.circumference;
+                    } else if (medal.HPlacement >= center) {
+                        thetaRightBeta = ((Math.abs(center - medal.HPlacement) + medal.width) * (Math.PI*2)) / this.bottleSpec.circumference;
+                        thetaRightAlpha = (Math.abs(center - medal.HPlacement) ) * (Math.PI/2) / this.bottleSpec.circumference;
+                    } else {    // Annoying and in the middle (ugh)
+                        thetaLeftAlpha = ( ( (center - medal.HPlacement) * 2*Math.PI) / this.bottleSpec.circumference );
+                        thetaRightAlpha = ( ( (medal.HPlacement + medal.width - center) * (Math.PI/2)) / this.bottleSpec.circumference );
+                    }
+                }
+
+                return {'heightOffset':heightOffset, 'height':height,
+                        'thetaLeftAlpha':thetaLeftAlpha, 'thetaLeftBeta':thetaLeftBeta, 
+                        'thetaRightAlpha':thetaRightAlpha, 'thetaRightBeta': thetaRightBeta};
+            },
+
+            // Sets demensions of the label preview on the bottle and places it in the right possition
+            displayMedal(num, medal) {
+
+                const diamiter = this.bottleSpec.diameter;
+                const fullHeight = CONSTANTS[this.bottleType + "Height"];
+                // {heightOffset, :height, thetaLeftAlpha, thetaLeftBeta, thetaRightAlpha, thetaRightBeta}
+
+                if (medal.adjustedWidthLeft == 0) {  // medal is fully on the right
+                    document.getElementById('medalPreview' + num).style.height = `${(medal.height/fullHeight)*100}%`;
+                    document.getElementById('medalPreview' + num).style.width = `${(medal.adjustedWidthRight/diamiter)*100*0.47}%`;
+                    document.getElementById('medalPreview' + num).style.bottom = `${(medal.heightOffset/fullHeight)*100}%`;
+                    document.getElementById('medalPreview' + num).style.left = `${50 + (medal.adjustedCenterOffset/diamiter)*100}%`;
+                } else if (medal.adjustedWidthRight == 0) { // Label is fully on the left
+                    document.getElementById('medalPreview' + num).style.height = `${(medal.height/fullHeight)*100}%`;
+                    document.getElementById('medalPreview' + num).style.width = `${(medal.adjustedWidthLeft/diamiter)*100*0.47}%`;
+                    document.getElementById('medalPreview' + num).style.bottom = `${(medal.heightOffset/fullHeight)*100}%`;
+                    document.getElementById('medalPreview' + num).style.left = `${50 - (medal.adjustedCenterOffset/diamiter)*100}%`;
+                } else {    // It's in the middle and an absolute pain to deal with
+                    document.getElementById('medalPreview' + num).style.height = `${(medal.height/fullHeight)*100}%`;
+                    document.getElementById('medalPreview' + num).style.width = `${((medal.adjustedWidthRight + medal.adjustedWidthLeft)/diamiter)*100*0.47}%`;
+                    document.getElementById('medalPreview' + num).style.bottom = `${(medal.heightOffset/fullHeight)*100}%`;
+                    document.getElementById('medalPreview' + num).style.left = `${50 - (medal.adjustedWidthLeft/diamiter)*100}%`;
+                }
+            },
+
             // Clears all labels off label preview
             clearPreview() {
                 const blank = {'height': 0, 'adjustedWidthLeft': 0, 'adjustedWidthRight': 0, 'heightOffset': 0}
-                this.displayLabel(false, false, 1, blank);
-                this.displayLabel(false, false, 2, blank);
-                this.displayLabel(true, false, 1, blank);
-                this.displayLabel(true, false, 2, blank);
-                this.displayLabel(false, true, 1, blank);
-                this.displayLabel(false, true, 2, blank);
+                this.displayLabel(false, 1, blank);
+                this.displayLabel(false, 2, blank);
+                this.displayLabel(true, 1, blank);
+                this.displayLabel(true, 2, blank);
+                this.displayMedal(1, blank);
+                this.displayMedal(2, blank);
 
                 // clear medals
             },
 
             // Sets demensions of the label preview on the bottle and places it in the right possition
-            displayLabel(isOverFlow, isMedal, num, label) {
+            displayLabel(isOverFlow, num, label) {
 
                 const diamiter = this.bottleSpec.diameter;
                 const fullHeight = CONSTANTS[this.bottleType + "Height"];
 
-                if (!isOverFlow && !isMedal) {  // Front of label preview
+                if (!isOverFlow) {  // Front of label preview
                     document.getElementById('labelPreviewLeft' + num).style.height = `${(label.height/fullHeight)*100}%`;
                     document.getElementById('labelPreviewLeft' + num).style.width = `${(label.adjustedWidthLeft/diamiter)*100*0.47}%`;
                     document.getElementById('labelPreviewLeft' + num).style.bottom = `${(label.heightOffset/fullHeight)*100}%`;
@@ -932,7 +1055,6 @@
                     document.getElementById('labelPreviewRight' + num).style.bottom = `${(label.heightOffset/fullHeight)*100}%`;
                     document.getElementById('labelPreviewRight' + num).style.left = `${50}%`;
                 }
-
                 if (isOverFlow) {
                     document.getElementById('labelPreviewOverflowLeft' + num).style.height = `${(label.height/fullHeight)*100}%`;
                     document.getElementById('labelPreviewOverflowLeft' + num).style.width = `${(label.adjustedWidthLeft/diamiter)*100*0.47}%`;
@@ -1029,9 +1151,8 @@ body{
 }
 
 .layer-4 {
-    z-index: 6;
+    z-index: 3;
     position: absolute;
-    border-radius: 50%;
 }
 
 .medalPreview {
@@ -1092,7 +1213,6 @@ body{
 
 .labelPreview {
     width: 0%;
-    left: 50%;
     height: 0%;
     background-color: lightgrey;
     opacity: 80%;

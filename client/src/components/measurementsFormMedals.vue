@@ -231,6 +231,7 @@
                 if (input.target.id == 'horizontalSlider') {
                     this.HSliderPlacement = input.target.value;
                 }
+                this.validate('slider');
             },
 
             // When clear button is pressed
@@ -320,13 +321,13 @@
                     const F2 = this.globalPositions.front.F2;
                     if (F2 != null) {
                         this.HPlacementMax = F2.width + 2 * this.height - this.width;
-                        this.VPlacementMax = F2.height + (F2.heightOffset - this.bottleSpec.recomended.minHeightOffset) - this.height;
+                        this.VPlacementMax = F2.height + (F2.heightOffset - this.bottleSpec.recomended.minHeightOffset);
                     }
                 } else {
                     const F1 = this.globalPositions.front.F1;
                     if (F1 != null) {
                         this.HPlacementMax = F1.width + 2 * this.height - this.width;
-                        this.VPlacementMax = F1.height + (F1.heightOffset - this.bottleSpec.recomended.minHeightOffset) - this.height;
+                        this.VPlacementMax = F1.height + (F1.heightOffset - this.bottleSpec.recomended.minHeightOffset);
                     }
                 }
             
@@ -371,28 +372,30 @@
             // Validation details are handeled by helper functions
             validate(input) {
                 if (this.type == "Button medal") {
-                    this.width - this.height;
+                    this.width = this.height;
                 }
 
-                if (this.height == '' || this.height == null) {
-                    this.validHeight = true;
-                    this.warnHeight = null;
-                    this.heightWarnClass = '';
-                    this.setInputCss('height', 'standard');
-                } else {
-                    this.validateHeight();
-                }
+                if (input != 'slider') {
+                    if (this.height == '' || this.height == null) {
+                        this.validHeight = true;
+                        this.warnHeight = null;
+                        this.heightWarnClass = '';
+                        this.setInputCss('height', 'standard');
+                    } else {
+                        this.validateHeight();
+                    }
 
-                if (this.width == '' || this.width == null) {
-                    this.validWidth = true;
-                    this.warnWidth = null;
-                    this.widthWarnClass = '';
-                    this.setInputCss('width', 'standard');
-                } else {
-                    this.validateWidth();
-                }
+                    if (this.width == '' || this.width == null) {
+                        this.validWidth = true;
+                        this.warnWidth = null;
+                        this.widthWarnClass = '';
+                        this.setInputCss('width', 'standard');
+                    } else {
+                        this.validateWidth();
+                    }
 
-                this.valid = this.validHeight && this.validWidth;
+                    this.valid = this.validHeight && this.validWidth;
+                }
 
                 // todo: send placement info
                 const form = {
