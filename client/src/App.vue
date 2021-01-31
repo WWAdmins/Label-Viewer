@@ -288,7 +288,7 @@
           selectHelpMessage: '',
 
           medalMode: false,  // toggle between labels and medals using button
-          medalPlacementHelp: 'test'
+          medalPlacementHelp: ''
         }
     },
 
@@ -363,9 +363,9 @@
         this.bottleSpec.warning.VpointX = Math.floor(this.bottleSpec.warning.VpointX);
         this.bottleSpec.warning.UpointY = Math.floor(this.bottleSpec.warning.UpointY);
 
-        this.bottleSpec.recomended.minHeightOffset = Math.ceil(this.bottleSpec.recomended.minHeightOffset);
-        this.bottleSpec.recomended.maxHeight = Math.floor(this.bottleSpec.recomended.maxHeight);
-        this.bottleSpec.recomended.maxWidth = Math.floor(this.bottleSpec.recomended.maxWidth);
+        this.bottleSpec.recommended.minHeightOffset = Math.ceil(this.bottleSpec.recommended.minHeightOffset);
+        this.bottleSpec.recommended.maxHeight = Math.floor(this.bottleSpec.recommended.maxHeight);
+        this.bottleSpec.recommended.maxWidth = Math.floor(this.bottleSpec.recommended.maxWidth);
 
         const optimumZone = Math.round(CONSTANTS.optimumMedalZoneScale * this.bottleSpec.circumference / 2);
         this.medalPlacementHelp = CONSTANTS.medalPlacementHelp.replace("[measure here]", optimumZone);
@@ -460,6 +460,13 @@
         return array;
       },
 
+      // Removes label from globalPositions.activeLabels (/medals) and labelStatuses.filled (if not a medal)
+      // Checks if medal mode should be dissabled
+      // Clears label data from global positions
+      // If deselect: deselects the item from the current label selections (used to deslect dependednts when their dependency is removed)
+      // ID: id of the label
+      // side: side the label is on {'front', 'back', 'medal'}
+      // deselect: boolean tag denoting if the label needs to be removed from the currently selected labels
       cleanLabel(ID, side, deselect) {
         if (deselect) {
           this.labelStatuses.selected = this.arrayRemove(this.labelStatuses.selected, CONSTANTS.labelNames[ID]);

@@ -158,6 +158,7 @@
                 valid: true,
                 validHeight: true,
                 validWidth: true,
+                validOverlap: true,
                 warnHeight: null,
                 warnWidth: null,
                 warnOverlap: null,
@@ -168,7 +169,7 @@
 
                 overlapMin: 0,
                 overlapMax: 0,
-                overlap: null,
+                overlap: null
             }
         },
 
@@ -254,25 +255,25 @@
             },
 
 
-            // Updates the display of the current recomended boundry values for max height
+            // Updates the display of the current recommended boundry values for max height
             // The heightDescription must be displayed using a v-html directive for the formatting to display propperly (ie <label v-html='textVar'></label>)
             updateHeightDescription() {
                 if (this.bottleSpec == null) {
                     this.heightDescription = '';
                 } else {
-                    this.heightDescription = `Recomended between <b><b>${CONSTANTS.minLabelHeight}mm</b></b> and <b><b>${CONSTANTS.maxMedalHeight}mm</b></b>`;
+                    this.heightDescription = `recommended between <b><b>${CONSTANTS.minLabelHeight}mm</b></b> and <b><b>${CONSTANTS.maxMedalHeight}mm</b></b>`;
                 }
             },
 
 
-            // Updates the display of the current recomended boundry values for width
+            // Updates the display of the current recommended boundry values for width
             // The widthDescription must be displayed using a v-html directive for the formatting to display propperly (ie <label v-html='textVar'></label>)
             updateWidthDescription() {
                 // Max width can vary with back and front label sizes
                 if (this.bottleSpec == null) {
                     this.widthDescription = '';
                 } else {
-                    this.widthDescription = `Recomended between <b><b>${CONSTANTS.minStripWidth}mm</b></b> and <b><b>${CONSTANTS.maxStripWidth}mm</b></b>`;
+                    this.widthDescription = `recommended between <b><b>${CONSTANTS.minStripWidth}mm</b></b> and <b><b>${CONSTANTS.maxStripWidth}mm</b></b>`;
                 }
             },
 
@@ -281,17 +282,17 @@
                 if (this.globalPositions.activeLabels.includes('F2')) {
                     const F2 = this.globalPositions.front.F2;
                     if (F2 != null) {
-                        this.overlapMax = (F2.height + F2.heightOffset) - this.bottleSpec.recomended.minHeightOffset;
+                        this.overlapMax = (F2.height + F2.heightOffset) - this.bottleSpec.recommended.minHeightOffset;
                         this.overlapMin = (F2.height + F2.heightOffset + this.height) - this.bottleSpec.warning.maxHeight;
                     }
                 } else {
                     const F1 = this.globalPositions.front.F1;
                     if (F1 != null) {
-                        this.overlapMax = (F1.height + F1.heightOffset) - this.bottleSpec.recomended.minHeightOffset;
+                        this.overlapMax = (F1.height + F1.heightOffset) - this.bottleSpec.recommended.minHeightOffset;
                         this.overlapMin = (F1.height + F1.heightOffset + this.height) - this.bottleSpec.warning.maxHeight;
                     }
                 }
-                this.overlapDescription = `Recomended between <b><b>${this.overlapMin}mm</b></b> and <b><b>${this.overlapMax}mm</b></b>`;
+                this.overlapDescription = `recommended between <b><b>${this.overlapMin}mm</b></b> and <b><b>${this.overlapMax}mm</b></b>`;
             },
 
             // Set the provided input to the given setting's css class

@@ -12,7 +12,7 @@
                     "VpointX": 125.7142857,
                     "UpointY": 61.8
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 20,
                     "maxHeight": 103,
                     "maxWidth": 100.5714286
@@ -28,7 +28,7 @@
                     "VpointX": 125.7142857,
                     "UpointY": 62.04
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 18,
                     "maxHeight": 103.4,
                     "maxWidth": 100.5714286
@@ -44,7 +44,7 @@
                     "VpointX": 128.8571429,
                     "UpointY": 61.8
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 18.3,
                     "maxHeight": 103,
                     "maxWidth": 103.0857143
@@ -60,7 +60,7 @@
                     "VpointX": 128.8571429,
                     "UpointY": 65.4
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 12.2,
                     "maxHeight": 109,
                     "maxWidth": 103.0857143
@@ -78,7 +78,7 @@
                     "VpointX": 135.1428571,
                     "UpointY": 52.08
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 12.2,
                     "maxHeight": 86.8,
                     "maxWidth": 108.1142857
@@ -94,7 +94,7 @@
                     "VpointX": 135.1428571,
                     "UpointY": 47.4
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 20,
                     "maxHeight": 79,
                     "maxWidth": 108.1142857
@@ -110,7 +110,7 @@
                     "VpointX": 139.2285714,
                     "UpointY": 51.12
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 18.3,
                     "maxHeight": 85.2,
                     "maxWidth": 111.3828571
@@ -126,7 +126,7 @@
                     "VpointX": 137.0285714,
                     "UpointY": 51.12
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 18.3,
                     "maxHeight": 85.2,
                     "maxWidth": 109.6228571
@@ -142,7 +142,7 @@
                     "VpointX": 137.0285714,
                     "UpointY": 54.9
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 12,
                     "maxHeight": 91.5,
                     "maxWidth": 109.6228571
@@ -160,7 +160,7 @@
                     "VpointX": 118.3285714,
                     "UpointY": 91.74
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 20,
                     "maxHeight": 152.9,
                     "maxWidth": 94.66285714
@@ -176,7 +176,7 @@
                     "VpointX": 119.1142857,
                     "UpointY": 91.74
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 20,
                     "maxHeight": 152.9,
                     "maxWidth": 95.29142857
@@ -192,7 +192,7 @@
                     "VpointX": 119.7428571,
                     "UpointY": 96.6
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 23,
                     "maxHeight": 161,
                     "maxWidth": 95.79428571
@@ -210,7 +210,7 @@
                     "VpointX": 119.7428571,
                     "UpointY": 66.54
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 20,
                     "maxHeight": 110.9,
                     "maxWidth": 95.79428571
@@ -226,7 +226,7 @@
                     "VpointX": 126.0285714,
                     "UpointY": 51
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 20,
                     "maxHeight": 85,
                     "maxWidth": 100.8228571
@@ -246,7 +246,7 @@
                     "VpointX": 125.7142857,
                     "UpointY": 61.68
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 20,
                     "maxHeight": 102.8,
                     "maxWidth": 100.5714286
@@ -262,7 +262,7 @@
                     "VpointX": 125.7142857,
                     "UpointY": 64.8
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 18,
                     "maxHeight": 108,
                     "maxWidth": 100.5714286
@@ -278,7 +278,7 @@
                     "VpointX": 128.0714286,
                     "UpointY": 63.3
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 16,
                     "maxHeight": 105.5,
                     "maxWidth": 102.4571429
@@ -296,7 +296,7 @@
                     "VpointX": 136.7142857,
                     "UpointY": 50.1
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 20,
                     "maxHeight": 83.5,
                     "maxWidth": 109.3714286
@@ -312,7 +312,7 @@
                     "VpointX": 134.8285714,
                     "UpointY": 47.4
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 20,
                     "maxHeight": 79,
                     "maxWidth": 107.8628571
@@ -328,7 +328,7 @@
                     "VpointX": 137.3428571,
                     "UpointY": 46.2
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 17,
                     "maxHeight": 77,
                     "maxWidth": 109.8742857
@@ -344,7 +344,7 @@
                     "VpointX": 138.2857143,
                     "UpointY": 53.4
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 19,
                     "maxHeight": 89,
                     "maxWidth": 110.6285714
@@ -360,7 +360,7 @@
                     "VpointX": 135.4571429,
                     "UpointY": 50.4
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 26,
                     "maxHeight": 84,
                     "maxWidth": 108.3657143
@@ -378,7 +378,7 @@
                     "VpointX": 168.4571429,
                     "UpointY": 66.48
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 27,
                     "maxHeight": 110.8,
                     "maxWidth": 134.7657143
@@ -396,7 +396,7 @@
                     "VpointX": 118.1714286,
                     "UpointY": 89.82
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 19,
                     "maxHeight": 149.7,
                     "maxWidth": 94.53714286
@@ -412,7 +412,7 @@
                     "VpointX": 118.4857143,
                     "UpointY": 93.3
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 21,
                     "maxHeight": 155.5,
                     "maxWidth": 94.78857143
@@ -428,7 +428,7 @@
                     "VpointX": 132.7857143,
                     "UpointY": 91.8
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 20,
                     "maxHeight": 153,
                     "maxWidth": 106.2285714
@@ -444,7 +444,7 @@
                     "VpointX": 119.7428571,
                     "UpointY": 95.4
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 21,
                     "maxHeight": 159,
                     "maxWidth": 95.79428571
@@ -460,7 +460,7 @@
                     "VpointX": 117.5428571,
                     "UpointY": 108
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 23,
                     "maxHeight": 180,
                     "maxWidth": 94.03428571
@@ -478,7 +478,7 @@
                     "VpointX": 118.3285714,
                     "UpointY": 58.2
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 19,
                     "maxHeight": 97,
                     "maxWidth": 94.66285714
@@ -496,7 +496,7 @@
                     "VpointX": 132.9428571,
                     "UpointY": 56.1
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 21,
                     "maxHeight": 93.5,
                     "maxWidth": 106.3542857
@@ -512,7 +512,7 @@
                     "VpointX": 135.9285714,
                     "UpointY": 55.8
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 20,
                     "maxHeight": 93,
                     "maxWidth": 108.7428571
@@ -528,7 +528,7 @@
                     "VpointX": 134.3571429,
                     "UpointY": 60.9
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 19.5,
                     "maxHeight": 101.5,
                     "maxWidth": 107.4857143
@@ -544,7 +544,7 @@
                     "VpointX": 150.0714286,
                     "UpointY": 48.9
                 },
-                "recomended": {
+                "recommended": {
                     "minHeightOffset": 12.8,
                     "maxHeight": 81.5,
                     "maxWidth": 120.0571429

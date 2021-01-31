@@ -262,25 +262,25 @@
             },
 
 
-            // Updates the display of the current recomended boundry values for max height
+            // Updates the display of the current recommended boundry values for max height
             // The heightDescription must be displayed using a v-html directive for the formatting to display propperly (ie <label v-html='textVar'></label>)
             updateHeightDescription() {
                 if (this.bottleSpec == null) {
                     this.heightDescription = '';
                 } else {
                     // Min height is a constant, but max height will vary with height offset and potential addition labels
-                    var maxHeightRecomended = this.getMaxHeight('recomended');
+                    var maxHeightrecommended = this.getMaxHeight('recommended');
 
-                    if (maxHeightRecomended <= CONSTANTS.minLabelHeight) {
-                        this.heightDescription = `Recomended <b><b>${CONSTANTS.minLabelHeight}mm</b></b>`;
+                    if (maxHeightrecommended <= CONSTANTS.minLabelHeight) {
+                        this.heightDescription = `recommended <b><b>${CONSTANTS.minLabelHeight}mm</b></b>`;
                     } else {
-                        this.heightDescription = `Recomended between <b><b>${CONSTANTS.minLabelHeight}mm</b></b> and <b><b>${maxHeightRecomended}mm</b></b>`;
+                        this.heightDescription = `recommended between <b><b>${CONSTANTS.minLabelHeight}mm</b></b> and <b><b>${maxHeightrecommended}mm</b></b>`;
                     }
                 }
             },
 
 
-            // Updates the display of the current recomended boundry values for max height offset
+            // Updates the display of the current recommended boundry values for max height offset
             // The heightOffsetDescription must be displayed using a v-html directive for the formatting to display propperly (ie <label v-html='textVar'></label>)
             // This description will only update if the height is valid due to the use of the height in calculating max height offset
             updateHeightOffsetDescription() {
@@ -288,34 +288,34 @@
                     this.heightOffsetDescription = '';
                 } else {
                     if (this.validHeight) {
-                        const maxHeightOffsetRecomended = this.getmaxHeightOffset('recomended');
+                        const maxHeightOffsetrecommended = this.getmaxHeightOffset('recommended');
                         const maxHeightOffsetWarning = this.getmaxHeightOffset('warning');
-                        const minHeightoffsetRecomended = this.getMinHeightOffset('recomended');
+                        const minHeightoffsetrecommended = this.getMinHeightOffset('recommended');
 
 
-                        if (maxHeightOffsetRecomended <= minHeightoffsetRecomended) {
-                            if (maxHeightOffsetWarning <= minHeightoffsetRecomended) {
-                                this.heightOffsetDescription = `Recomended <b><b>${maxHeightOffsetWarning}mm</b></b>`;
+                        if (maxHeightOffsetrecommended <= minHeightoffsetrecommended) {
+                            if (maxHeightOffsetWarning <= minHeightoffsetrecommended) {
+                                this.heightOffsetDescription = `recommended <b><b>${maxHeightOffsetWarning}mm</b></b>`;
                             } else {
-                                this.heightOffsetDescription = `Recomended <b><b>${minHeightoffsetRecomended}mm</b></b>`;
+                                this.heightOffsetDescription = `recommended <b><b>${minHeightoffsetrecommended}mm</b></b>`;
                             }
                         } else {
-                            this.heightOffsetDescription = `Recomended between <b><b>${minHeightoffsetRecomended}mm</b></b> and <b><b>${maxHeightOffsetRecomended}mm</b></b>`;
+                            this.heightOffsetDescription = `recommended between <b><b>${minHeightoffsetrecommended}mm</b></b> and <b><b>${maxHeightOffsetrecommended}mm</b></b>`;
                         }
                     }
                 }
             },
 
 
-            // Updates the display of the current recomended boundry values for width
+            // Updates the display of the current recommended boundry values for width
             // The widthDescription must be displayed using a v-html directive for the formatting to display propperly (ie <label v-html='textVar'></label>)
             updateWidthDescription() {
                 // Max width can vary with back and front label sizes
                 if (this.bottleSpec == null) {
                     this.widthDescription = '';
                 } else {
-                    var maxWidthRecomended = this.getMaxWidth('recomended');
-                    this.widthDescription = `Recomended between <b><b>${CONSTANTS.minLabelWidth}mm</b></b> and <b><b>${maxWidthRecomended}mm</b></b>`;
+                    var maxWidthrecommended = this.getMaxWidth('recommended');
+                    this.widthDescription = `recommended between <b><b>${CONSTANTS.minLabelWidth}mm</b></b> and <b><b>${maxWidthrecommended}mm</b></b>`;
                 }
             },
 
@@ -323,14 +323,14 @@
             // Fetches the maximum possible height of the label using the type to specify which max height to use
             // If it is a primary label and a secondarylabel exists for that side, min label size and and are accounted for
             // IF secondary label, primary label height and height offset are accounted for
-            // Type: {'warning', 'recomended'}
+            // Type: {'warning', 'recommended'}
             getMaxHeight(type) {
                 var maxHeight;
                 if ((this.labelId == 'F1' && this.globalPositions.activeLabels.includes('F2')) || 
                     (this.labelId == 'B1' && this.globalPositions.activeLabels.includes('B2'))) { // If X1 label and X2 label exists
-                    maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.minVerticalLabelGap.recomended - CONSTANTS.minLabelHeight - 4; // -4 to account for extra potential drift
+                    maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.minVerticalLabelGap.recommended - CONSTANTS.minLabelHeight - 4; // -4 to account for extra potential drift
                 } else if (this.labelId == 'F2' || this.labelId == 'B2') {  // If label is an X2
-                    maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.minVerticalLabelGap.recomended - CONSTANTS.minLabelHeight;
+                    maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.minVerticalLabelGap.recommended - CONSTANTS.minLabelHeight;
 
                     if (this.globalPositions[this.side][this.labelId[0] + '1'] != null) {   // if the measurements for X1 exist
                         const X1 = this.globalPositions[this.side][this.labelId[0] + '1'];
@@ -338,7 +338,7 @@
                             maxHeight -= X1.height - CONSTANTS.minLabelHeight;
                         }
                         if (X1.heightOffset != '') {
-                            maxHeight -= X1.heightOffset - this.bottleSpec.recomended.minHeightOffset;
+                            maxHeight -= X1.heightOffset - this.bottleSpec.recommended.minHeightOffset;
                         }
                     }
                 } else {
@@ -354,26 +354,26 @@
             // If a primary and secondary label exists: 
                 // Secondary label accounts for primary labels current measurements
                 // Primary label accounts for minimum measurements of secondary label
-            // Type: {'warning', 'recomended'}
+            // Type: {'warning', 'recommended'}
             getmaxHeightOffset(type) {
                 var maxHeightOffset;
                 const X1 = this.globalPositions[this.side][this.labelId[0]+'1'];
                 if (this.labelId[1] != 1 && X1 != null) {   // If label is secondary and the primary label has measurements
-                    maxHeightOffset = this.bottleSpec[type].maxHeight - (X1.height + X1.heightOffset - this.bottleSpec.recomended.minHeightOffset) - CONSTANTS.minVerticalLabelGap.recomended - CONSTANTS.minLabelHeight;
+                    maxHeightOffset = this.bottleSpec[type].maxHeight - (X1.height + X1.heightOffset - this.bottleSpec.recommended.minHeightOffset) - CONSTANTS.minVerticalLabelGap.recommended - CONSTANTS.minLabelHeight;
 
                     if (this.height != null && this.height >= CONSTANTS.minLabelHeight) { // If height is filled in
                         maxHeightOffset -= this.height - CONSTANTS.minLabelHeight;
                     }
 
-                    if (maxHeightOffset < CONSTANTS.minVerticalLabelGap.recomended) {
-                        maxHeightOffset = CONSTANTS.minVerticalLabelGap.recomended;
+                    if (maxHeightOffset < CONSTANTS.minVerticalLabelGap.recommended) {
+                        maxHeightOffset = CONSTANTS.minVerticalLabelGap.recommended;
                     }
                 } else {
                     if ((this.labelId == 'F1' && this.globalPositions.activeLabels.includes('F2')) || 
                         (this.labelId == 'B1' && this.globalPositions.activeLabels.includes('B2'))) { // If X1 label and X2 label exists
-                        maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec.recomended.minHeightOffset - CONSTANTS.minLabelHeight - CONSTANTS.minLabelHeight - CONSTANTS.minVerticalLabelGap.recomended
+                        maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec.recommended.minHeightOffset - CONSTANTS.minLabelHeight - CONSTANTS.minLabelHeight - CONSTANTS.minVerticalLabelGap.recommended
                     } else {
-                        maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec.recomended.minHeightOffset - CONSTANTS.minLabelHeight;
+                        maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec.recommended.minHeightOffset - CONSTANTS.minLabelHeight;
                     }
                     if (this.height !== null && this.height >= CONSTANTS.minLabelHeight) {
                         maxHeightOffset -= this.height - CONSTANTS.minLabelHeight;
@@ -383,7 +383,7 @@
             },
 
             // Gets the minimum height offset of the label for the given type
-            // Type: {'warning', 'recomended'}
+            // Type: {'warning', 'recommended'}
             // If label is secondary the min height offset is the min vertical label gap
             // If label is primary the height offset is taken from the bottle spec
             getMinHeightOffset(type) {
@@ -403,7 +403,7 @@
             // Accounts for slope at top of orange zone
             // Wrap around definition is considered a maximum limit of the back label
             // When multiple constraints are all relavent (ie, constrained by another label and by height of label) the minimum value is taken
-            // Type: {'warning', 'recomended'}
+            // Type: {'warning', 'recommended'}
             getMaxWidth(type) {
                 var heightAccountedMax = this.bottleSpec.warning.maxWidth;
                 const wrapAroundBoundry = CONSTANTS.warpAroundDef * this.bottleSpec.circumference;
@@ -420,9 +420,9 @@
                         
                         return Math.min(sideAccountedMax, heightAccountedMax, this.bottleSpec.warning.maxWidth, wrapAroundBoundry);
 
-                    } else if (type == 'recomended') {
-                        sideAccountedMax = this.bottleSpec.circumference - (2 * CONSTANTS.minLabelGap.recomended) - Math.round(this.globalPositions.front.maxWidth);
-                        return Math.min(sideAccountedMax, this.bottleSpec.recomended.maxWidth);
+                    } else if (type == 'recommended') {
+                        sideAccountedMax = this.bottleSpec.circumference - (2 * CONSTANTS.minLabelGap.recommended) - Math.round(this.globalPositions.front.maxWidth);
+                        return Math.min(sideAccountedMax, this.bottleSpec.recommended.maxWidth);
                     }
                 } else {        // If not back label or no front label yet
                     if (type == 'warning') {
@@ -439,8 +439,8 @@
                         }                       
                         
 
-                    } else if (type == 'recomended') {
-                        return this.bottleSpec.recomended.maxWidth;
+                    } else if (type == 'recommended') {
+                        return this.bottleSpec.recommended.maxWidth;
                     }
                 }
             },
@@ -549,7 +549,7 @@
                     this.warnHeight = CONSTANTS.lowHeightWarning;
                     this.heightWarnClass = 'red';
                     this.setInputCss('height', 'red');
-                } else if (this.height > this.getMaxHeight('recomended') && this.height <= this.getMaxHeight('warning')) { // warn
+                } else if (this.height > this.getMaxHeight('recommended') && this.height <= this.getMaxHeight('warning')) { // warn
                     this.orangeZone = true;
                     this.validHeight = true;
                     this.warnHeight = CONSTANTS.orangeZoneWarning;
@@ -588,8 +588,8 @@
                     this.warnHeightOffset = CONSTANTS.lowHeightOffsetWarning;
                     this.heightOffsetWarnClass = 'red';
                     this.setInputCss('heightOffset', 'red');
-                } else if ((offset > this.getmaxHeightOffset('recomended') && offset <= this.getmaxHeightOffset('warning')) ||
-                            (offset < this.getMinHeightOffset('recomended') && offset >= this.getMinHeightOffset('warning'))) { // warn
+                } else if ((offset > this.getmaxHeightOffset('recommended') && offset <= this.getmaxHeightOffset('warning')) ||
+                            (offset < this.getMinHeightOffset('recommended') && offset >= this.getMinHeightOffset('warning'))) { // warn
                     this.orangeZone = true;
                     this.validHeightOffset = true;
                     this.warnHeightOffset = CONSTANTS.orangeZoneWarning;
@@ -615,7 +615,7 @@
                     this.warnWidth = CONSTANTS.lowWidthWarning;
                     this.widthWarnClass = 'red';
                     this.setInputCss('width', 'red');
-                } else if (this.width > this.getMaxWidth('recomended') && this.width <= this.getMaxWidth('warning')) { // warn
+                } else if (this.width > this.getMaxWidth('recommended') && this.width <= this.getMaxWidth('warning')) { // warn
                     this.orangeZone = true;
                     this.validWidth = true;
                     this.warnWidth = CONSTANTS.orangeZoneWarning;

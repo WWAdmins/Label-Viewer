@@ -7,12 +7,12 @@
     "maxStripWidth": 90,
 
     "minLabelGap": {
-        "recomended": 20,
+        "recommended": 20,
         "warning": 10
     },
     "warpAroundDef": 0.6,
     "minVerticalLabelGap": {
-        "recomended": 5,
+        "recommended": 5,
         "warning": 3
     },
 
@@ -28,12 +28,12 @@
     },
 
     "wrapAroundMessage": "Due to limitations of out labeler, we are not able to apply a back label while applying a wraparound style label to the front",
-    "orangeZoneMeaage": "Current label measurement is outside the recomended range. This may cause longer setup, may run slower and there is a chance of bubbles. (Additional packaging charges may apply due to lower hourly output). \nThere will be no liability on dry-goods suppliers or bottler, if label application issues are encountered. By dissmissing this alert you acknowledge these risks",
+    "orangeZoneMeaage": "Current label measurement is outside the recommended range. This may cause longer setup, may run slower and there is a chance of bubbles. (Additional packaging charges may apply due to lower hourly output). \nThere will be no liability on dry-goods suppliers or bottler, if label application issues are encountered. By dissmissing this alert you acknowledge these risks",
     "helpMessage": "Unsure of how to take your measurements? \nFor height take the vertical distance from the highest to the lowest point of your label \nFor Width take the horizontal distance from the furthest left point to the furthest right point<hr>If your measurements are invalid and you wish to discuss why, feel free to contact us [help link here]",
     "helpLink": "https://www.wineworks.co.nz/",
     "bottlePreviewDisclaimer": "Preview depiction is not fully accurate for every bottle and should only be used as a estimation",
     "selectHelpMessage": "Select a bottle to continue",
-    "medalPlacementHelp": "For a this bottle it is recomended to place the medal within [measure here]mm of the virtical center of the front label to ensure optimum visibilty",
+    "medalPlacementHelp": "For a this bottle it is recommended to place the medal within [measure here]mm of the virtical center of the front label to ensure optimum visibilty",
 
     "invalidWarning": "The current label specs are invalid",
 
