@@ -435,19 +435,19 @@
             // Checks the validity of the overlap field and sets validOverlap, changes css setting of input and triggers warnings depending on validity
             validateOverlap() {
                 if (this.overlap < this.overlapMin) {  // not enough overlap (sitting too high on the label pannel)
-                    this.validHeight = false;
-                    this.warnHeight = CONSTANTS.lowOverlap;
-                    this.heightWarnClass = 'red';
+                    this.validOverlap = false;
+                    this.warnOverlap = CONSTANTS.lowOverlap;
+                    this.overlapWarnClass = 'red';
                     this.setInputCss('overlap', 'red');
                 } else if (this.overlap > this.overlapMax) { // too much overlap (medal is sitting too low on the bottle)
-                    this.validHeight = false;
-                    this.warnHeight = CONSTANTS.highOverlap;
-                    this.heightWarnClass = 'red';
+                    this.validOverlap = false;
+                    this.warnOverlap = CONSTANTS.highOverlap;
+                    this.overlapWarnClass = 'red';
                     this.setInputCss('overlap', 'red');
                 } else { // fine
-                    this.validHeight = true;
-                    this.warnHeight = null;
-                    this.heightWarnClass = '';
+                    this.validOverlap = true;
+                    this.warnOverlap = null;
+                    this.overlapWarnClass = '';
                     this.setInputCss('overlap', 'green');
                 }
             }
