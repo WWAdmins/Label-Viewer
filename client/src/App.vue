@@ -142,6 +142,7 @@
           </div>
         </div>
         <div class="row" v-show="medalMode && globalPositions.activeLabels.length != 0 && labelStatuses.filled.length == globalPositions.activeLabels.length">
+          <label class="pre-formatted medal-help" v-html="medalPlacementHelp"></label>
           <measurements-form-medals
               v-for="n in labelStatuses.medal.count"
               :key="'M' + n"
@@ -286,7 +287,8 @@
           validLabelOptions: [],
           selectHelpMessage: '',
 
-          medalMode: false  // toggle between labels and medals using button
+          medalMode: false,  // toggle between labels and medals using button
+          medalPlacementHelp: 'test'
         }
     },
 
@@ -364,6 +366,9 @@
         this.bottleSpec.recomended.minHeightOffset = Math.ceil(this.bottleSpec.recomended.minHeightOffset);
         this.bottleSpec.recomended.maxHeight = Math.floor(this.bottleSpec.recomended.maxHeight);
         this.bottleSpec.recomended.maxWidth = Math.floor(this.bottleSpec.recomended.maxWidth);
+
+        const optimumZone = Math.round(CONSTANTS.optimumMedalZoneScale * this.bottleSpec.circumference / 2);
+        this.medalPlacementHelp = CONSTANTS.medalPlacementHelp.replace("[measure here]", optimumZone);
       },
 
       // Clears bottleSpec when bottleId is removed
@@ -931,6 +936,7 @@ body{
 .multi-select {
   margin: 5px;
 }
+
 .image {
   width: 50%;
 }
@@ -963,7 +969,6 @@ body{
   left: 15%;
   width: 70%;
 }
-
 
 .help-button {
   float: right;
@@ -1003,6 +1008,12 @@ body{
   width: 100%;
   outline:none !important;
   outline-width: 0 !important;
+}
+
+.medal-help {
+  margin-left: 1.8%;
+  float: left;
+  font-size: 93%;
 }
 
 .labelPreview {

@@ -16,6 +16,8 @@
         "warning": 3
     },
 
+    "optimumMedalZoneScale": 0.25,
+
     "labelNames": {
         "F1": "Front",
         "F2": "Second front",
@@ -31,6 +33,7 @@
     "helpLink": "https://www.wineworks.co.nz/",
     "bottlePreviewDisclaimer": "Preview depiction is not fully accurate for every bottle and should only be used as a estimation",
     "selectHelpMessage": "Select a bottle to continue",
+    "medalPlacementHelp": "For a this bottle it is recomended to place the medal within [measure here]mm of the virtical center of the front label to ensure optimum visibilty",
 
     "invalidWarning": "The current label specs are invalid",
 
@@ -41,6 +44,8 @@
     "highHeightOffsetWarning": "Label application is too high",
     "lowWidthWarning": "Label is too narrow",
     "highWidthWarning": "Label is too wide",
+    "lowOverlap": "Medal is placed too high for this bottle",
+    "highOverlap": "Medal is placed too low for this bottle",
     
     "BurgundyHeight": 297,
     "BordeauxHeight": 310,

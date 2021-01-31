@@ -10,8 +10,7 @@
                     :close-on-select="true" 
                     :options="['Button medal', 'Strip medal']"
                     :multiple="false"
-                    @select="typeSelect"
-                    @remove="typeRemove"
+                    @select="selectedType()"
                 >Medal type</multiselect>
             </div>
         </div>
@@ -40,7 +39,7 @@
             <div class='col-sm-4'>
                 <label class="pre-formatted" v-html="heightDescription"></label>
             </div>
-            <div class='col-sm-2'>
+            <div class='col-sm-2' v-show="type">
                 <input
                     v-show="type == 'Strip medal'"
                     :disabled="!bottleSpec"
@@ -60,25 +59,24 @@
         <br>
         <div class="row row-cols-12">
             <div class="col-sm-6">
-                <label v-if="type" class="sub-title-formatted">Vertical inset</label>
-                <label v-else class="sub-title-formatted dissabled-text">Vertical inset</label>
+                <label v-if="type" class="sub-title-formatted">Vertical overlap</label>
             </div>
         </div>
         <div class='row row-cols-12' >
-            <div class='col-sm-5'>
-                <div class="slidecontainer">
-                    <input 
-                        type="range" 
-                        :min="VInsetMin" 
-                        :max="VInsetMax" 
-                        value=0
-                        class="slider dissabled-slider"
-                        id="verticalSlider"
-                        @input="sliderInput">
-                </div>
+            <div class='col-sm-2' v-show="type">
+                <input
+                    :disabled="!bottleSpec"
+                    class="standard-input"
+                    :id='labelId+"-input-overlap"'
+                    v-model.number="overlap"
+                    required
+                    @keyup="inputChange('overlap')"
+                    @keydown="keyDown"
+                    v-tooltip.right="{ content: warnOverlap, classes: overlapWarnClass }"
+                >
             </div>
-            <div class="col-sm-1">
-                <label class="sub-title-formatted">{{ VInset }}</label>
+            <div class='col-sm-4'>
+                <label  v-show="type" class="pre-formatted" v-html="overlapDescription"></label>
             </div>
         </div>
     </div>
@@ -109,7 +107,7 @@
                         this.validate();
                         this.updateHeightDescription();
                         this.updateWidthDescription();
-                        this.updateSliders();
+                        this.updateOverlapDescription();
                     }  
                 },
                 deep: true
@@ -132,28 +130,19 @@
 
                                     this.updateWidthDescription();
                                     this.updateHeightDescription();
-                                    this.updateSliders();
+                                    this.updateOverlapDescription();
                                 } else if (ID == 'F1') {
                                     this.validate('props');
 
                                     this.updateWidthDescription();
                                     this.updateHeightDescription();
-                                    this.updateSliders();
+                                    this.updateOverlapDescription();
                                 }
                             }
                         }, 600);
                     }
                 },
                 deep: true
-            }
-        },
-
-        computed: {
-            HPlacement: function() {
-                return this.HPlacementMax * this.HSliderPlacement / 100;
-            },
-            VPlacement: function() {
-                return this.VPlacementMax * this.VSliderPlacement / 100;
             }
         },
 
@@ -164,19 +153,22 @@
                 width: '',
                 heightDescription: "",
                 widthDescription: "",
+                overlapDescription: "",
                 delayTimer: null,
                 valid: true,
                 validHeight: true,
                 validWidth: true,
                 warnHeight: null,
                 warnWidth: null,
+                warnOverlap: null,
                 heightWarnClass: '',
                 widthWarnClass: '',
+                overlapWarnClass: '',
                 queue: [],
 
-                VInsetMin: 0,
-                VInsetMax: 0,
-                VInset: 0,
+                overlapMin: 0,
+                overlapMax: 0,
+                overlap: null,
             }
         },
 
@@ -186,51 +178,47 @@
                 if (this.type == 'Strip medal') {
                     this.updateWidthDescription();
                 }
-                this.updateSliders();
+                this.updateOverlapDescription();
             }
         },
 
         methods: {
 
-            typeSelect() {
-                document.getElementById('verticalSlider').classList.remove("dissabled-slider");
-            },
-
-            typeRemove() {
-                document.getElementById('verticalSlider').classList.add("dissabled-slider");
-            },
-
-            sliderInput(input) {
-                if (input.target.id == 'verticalSlider') {
-                    this.VInset = input.target.value;
-                }
+            selectedType() {
+                this.updateHeightDescription();
+                this.updateWidthDescription();
+                this.updateOverlapDescription();
             },
 
             // When clear button is pressed
             // Clears inputs, sets all valid tags to true,
             // clears all warning strings, sets orange zone to false, sets all inputs to standard-input css
             clearForm() {
-                this.VInsetMin = 0,
-                this.VInsetMax = 0,
-                this.VInset = 0;
+                this.overlapMin = 0;
+                this.overlapMax = 0;
+                this.overlap = null;
 
-                this.height = null,
-                this.width = null,
+                this.height = null;
+                this.width = null;
 
-                this.valid = true,
-                this.validHeight = true,
-                this.validWidth = true,
-                this.warnHeight = null,
-                this.warnWidth = null,
-                this.heightWarnClass = '',
-                this.widthWarnClass = ''
+                this.valid = true;
+                this.validHeight = true;
+                this.validWidth = true;
+                this.validOverlap = true;
+
+                this.warnHeight = null;
+                this.warnWidth = null;
+                this.warnOverlap = null;
+
+                this.heightWarnClass = '';
+                this.widthWarnClass = '';
+                this.overlapWarnClass = '';
 
                 this.setInputCss('height', 'standard');
                 this.setInputCss('width', 'standard');
+                this.setInputCss('overlap', 'standard');
 
-                this.type = null,
-                document.getElementById('verticalSlider').classList.add("dissabled-slider");
-                document.getElementById('horizontalSlider').classList.add("dissabled-slider");
+                this.type = null
             },
 
             // On key press in input fields
@@ -238,7 +226,7 @@
             // (any filtered key presses are discarded)
             // if key down is 'Tab', force update to fields without timeout (prevents updates being skipped by quick change of field resetting timeout)
             keyDown() {
-                const validKeys = ['ArrowRight','ArrowLeft','Backspace', 'Tab'];
+                const validKeys = ['ArrowRight','ArrowLeft','Backspace', 'Tab', '-'];
                 const keyRegex = /[0-9]/;
                 if (!keyRegex.test(event.key) && validKeys.indexOf(event.key) < 0) {
                     event.preventDefault();
@@ -250,7 +238,7 @@
                         if (this.type == 'Strip medal') {
                             this.updateWidthDescription();
                         }
-                        this.updateSliders();
+                        this.updateOverlapDescription();
                     }
                 }
             },
@@ -260,7 +248,7 @@
             inputChange(input) {
                 clearTimeout(this.delayTimer);
                 this.delayTimer = setTimeout(()=>{
-                    this.updateSliders();
+                    this.updateOverlapDescription();
                     this.validate(input);
                 }, 500);
             },
@@ -289,21 +277,21 @@
             },
 
 
-            updateSliders() {
+            updateOverlapDescription() {
                 if (this.globalPositions.activeLabels.includes('F2')) {
                     const F2 = this.globalPositions.front.F2;
                     if (F2 != null) {
-                        this.VInsetMax = (F2.height + F2.heightOffset) - this.bottleSpec.recomended.minHeightOffset;
-                        this.VInsetMin = (F2.height + F2.heightOffset + this.height) - this.bottleSpec.warning.maxHeight;
+                        this.overlapMax = (F2.height + F2.heightOffset) - this.bottleSpec.recomended.minHeightOffset;
+                        this.overlapMin = (F2.height + F2.heightOffset + this.height) - this.bottleSpec.warning.maxHeight;
                     }
                 } else {
                     const F1 = this.globalPositions.front.F1;
                     if (F1 != null) {
-                        this.VInsetMax = (F1.height + F1.heightOffset) - this.bottleSpec.recomended.minHeightOffset;
-                        this.VInsetMin = (F1.height + F1.heightOffset + this.height) - this.bottleSpec.warning.maxHeight;
+                        this.overlapMax = (F1.height + F1.heightOffset) - this.bottleSpec.recomended.minHeightOffset;
+                        this.overlapMin = (F1.height + F1.heightOffset + this.height) - this.bottleSpec.warning.maxHeight;
                     }
                 }
-            
+                this.overlapDescription = `Recomended between <b><b>${this.overlapMin}mm</b></b> and <b><b>${this.overlapMax}mm</b></b>`;
             },
 
             // Set the provided input to the given setting's css class
@@ -366,15 +354,23 @@
                     this.validateWidth();
                 }
 
-                this.valid = this.validHeight && this.validWidth;
+                if (this.overlap == '' || this.overlap == null) {
+                    this.validOverlap = true;
+                    this.warnoverlap = null;
+                    this.overlapWarnClass = '';
+                    this.setInputCss('overlap', 'standard');
+                } else {
+                    this.validateOverlap();
+                }
+
+                this.valid = this.validHeight && this.validWidth && this.validOverlap;
 
                 // todo: send placement info
                 const form = {
                     'height': this.height,
                     'width': this.width,
+                    'overlap': this.overlap,
                     'valid': this.valid,
-                    'HPlacement': this.HPlacement,
-                    'VPlacement': this.VPlacement,
                     'type': this.type
                 };
 
@@ -433,6 +429,26 @@
                     this.warnWidth = null;
                     this.widthWarnClass = '';
                     this.setInputCss('width', 'green');
+                }
+            },
+
+            // Checks the validity of the overlap field and sets validOverlap, changes css setting of input and triggers warnings depending on validity
+            validateOverlap() {
+                if (this.overlap < this.overlapMin) {  // not enough overlap (sitting too high on the label pannel)
+                    this.validHeight = false;
+                    this.warnHeight = CONSTANTS.lowOverlap;
+                    this.heightWarnClass = 'red';
+                    this.setInputCss('overlap', 'red');
+                } else if (this.overlap > this.overlapMax) { // too much overlap (medal is sitting too low on the bottle)
+                    this.validHeight = false;
+                    this.warnHeight = CONSTANTS.highOverlap;
+                    this.heightWarnClass = 'red';
+                    this.setInputCss('overlap', 'red');
+                } else { // fine
+                    this.validHeight = true;
+                    this.warnHeight = null;
+                    this.heightWarnClass = '';
+                    this.setInputCss('overlap', 'green');
                 }
             }
 
@@ -558,52 +574,6 @@
     visibility: visible;
     opacity: 1;
     transition: opacity .15s;
-}
-
-
-.slidecontainer {
-    width: 100%; /* Width of the outside container */
-}
-
-/* The slider itself */
-.slider {
-    -webkit-appearance: none;  /* Override default CSS styles */
-    appearance: none;
-    width: 100%; /* Full-width */
-    height: 15px; /* Specified height */
-    border-radius: 7px;
-    background: #d3d3d3; /* Grey background */
-    outline: none; /* Remove outline */
-    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-    transition: opacity .2s;
-}
-
-/* Mouse-over effects */
-.slider:hover {
-    opacity: 1; /* Fully shown on mouse-over */
-}
-
-/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
-.slider::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Override default look */
-    appearance: none;
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    border-radius: 50%;
-    background: #4CAF50; /* Green background */
-    cursor: pointer; /* Cursor on hover */
-}
-
-.slider::-moz-range-thumb {
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    background: #4CAF50; /* Green background */
-    cursor: pointer; /* Cursor on hover */
-}
-
-.dissabled-slider {
-    pointer-events:none;
 }
 
 </style>
