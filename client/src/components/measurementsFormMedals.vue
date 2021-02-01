@@ -283,14 +283,17 @@
                     const F2 = this.globalPositions.front.F2;
                     if (F2 != null) {
                         this.overlapMax = (F2.height + F2.heightOffset) - this.bottleSpec.recommended.minHeightOffset;
-                        this.overlapMin = (F2.height + F2.heightOffset + this.height) - this.bottleSpec.warning.maxHeight;
+                        this.overlapMin = (F2.height + F2.heightOffset + this.height) - (this.bottleSpec.warning.maxHeight + this.bottleSpec.recommended.minHeightOffset);
                     }
                 } else {
                     const F1 = this.globalPositions.front.F1;
                     if (F1 != null) {
                         this.overlapMax = (F1.height + F1.heightOffset) - this.bottleSpec.recommended.minHeightOffset;
-                        this.overlapMin = (F1.height + F1.heightOffset + this.height) - this.bottleSpec.warning.maxHeight;
+                        this.overlapMin = (F1.height + F1.heightOffset + this.height) - (this.bottleSpec.warning.maxHeight + this.bottleSpec.recommended.minHeightOffset);
                     }
+                }
+                if (this.overlapMin > this.height) {
+                    this.overlapMin = this.height;
                 }
                 this.overlapDescription = `recommended between <b><b>${this.overlapMin}mm</b></b> and <b><b>${this.overlapMax}mm</b></b>`;
             },
