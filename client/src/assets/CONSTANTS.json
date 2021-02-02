@@ -27,32 +27,39 @@
         "M2": "Second medal"
     },
 
-    "wrapAroundMessage": "Due to limitations of out labeler, we are not able to apply a back label while applying a wraparound style label to the front",
-    "orangeZoneMeaage": "Current label measurement is outside the recommended range. This may cause longer setup, may run slower and there is a chance of bubbles. (Additional packaging charges may apply due to lower hourly output). \nThere will be no liability on dry-goods suppliers or bottler, if label application issues are encountered. By dissmissing this alert you acknowledge these risks",
-    "helpMessage": "Unsure of how to take your measurements? \nFor height take the vertical distance from the highest to the lowest point of your label \nFor Width take the horizontal distance from the furthest left point to the furthest right point<hr>If your measurements are invalid and you wish to discuss why, feel free to contact us [help link here]",
-    "helpLink": "https://www.wineworks.co.nz/",
-    "bottlePreviewDisclaimer": "Preview depiction is not fully accurate for every bottle and should only be used as a estimation",
-    "selectHelpMessage": "Select a bottle to continue",
-    "medalPlacementHelp": "For a this bottle it is recommended to place the medal within [measure here]mm of the vertical center of the front label to ensure optimum visibilty",
+    "help": {
+        "wrapAroundMessage": "Due to limitations of out labeler, we are not able to apply a back label while applying a wraparound style label to the front",
+        "orangeZoneMeaage": "Current label measurement is outside the recommended range. This may cause longer setup, may run slower and there is a chance of bubbles. (Additional packaging charges may apply due to lower hourly output). \nThere will be no liability on dry-goods suppliers or bottler, if label application issues are encountered. By dissmissing this alert you acknowledge these risks",
+        "helpMessage": "Unsure of how to take your measurements? \nFor height take the vertical distance from the highest to the lowest point of your label \nFor Width take the horizontal distance from the furthest left point to the furthest right point<hr>If your measurements are invalid and you wish to discuss why, feel free to contact us [help link here]",
+        "helpLink": "https://www.wineworks.co.nz/",
+        "bottlePreviewDisclaimer": "Preview depiction is not fully accurate for every bottle and should only be used as a estimation",
+        "selectHelpMessage": "Select a bottle to continue",
+        "medalPlacementHelp": "For a this bottle it is recommended to place the medal within [measure here]mm of the vertical center of the front label to ensure optimum visibilty"
+    },
 
-    "invalidWarning": "The current label specs are invalid",
+    "warning": {
 
-    "orangeZoneWarning": "Label may have application issues",
-    "lowHeightWarning": "Label height is bellow the minimum applyable height",
-    "highHeightWarning": "Label exceeds the maximum allowable height",
-    "lowHeightOffsetWarning": "Label application height is too low",
-    "highHeightOffsetWarning": "Label application is too high",
-    "lowWidthWarning": "Label is too narrow",
-    "highWidthWarning": "Label is too wide",
-    "lowOverlap": "Medal is placed too high for this bottle",
-    "highOverlap": "Medal is placed too low for this bottle",
+        "invalidWarning": "The current label specs are invalid",
+
+        "orangeZoneWarning": "Label may have application issues",
+        "lowHeightWarning": "Label height is bellow the minimum applyable height",
+        "highHeightWarning": "Label exceeds the maximum allowable height",
+        "lowHeightOffsetWarning": "Label application height is too low",
+        "highHeightOffsetWarning": "Label application is too high",
+        "lowWidthWarning": "Label is too narrow",
+        "highWidthWarning": "Label is too wide",
+        "lowOverlap": "Medal is placed too high for this bottle",
+        "highOverlap": "Medal is placed too low for this bottle"
+    },
     
-    "BurgundyHeight": 297,
-    "BordeauxHeight": 310,
-    "RieslingHeight": 330,
-    "SparklingHeight": 300,
-    "MagnumHeight": 345,
-    "Premium BurgundyHeight": 298,
+    "bottleHeights": {
+        "BurgundyHeight": 297,
+        "BordeauxHeight": 310,
+        "RieslingHeight": 330,
+        "SparklingHeight": 300,
+        "MagnumHeight": 345,
+        "Premium BurgundyHeight": 298
+    },
 
     "bottleCodes": {
         "Burgundy": "BRG",
@@ -61,5 +68,19 @@
         "Sparkling": "SPK",
         "Magnum": "MAG",
         "Premium Burgundy": "PBG"
+    },
+
+    "titles": {
+        "frontLabel": "FRONT",
+        "backLabel": "BACK",
+        "medalButton": "MEDALS",
+        "labelButton": "LABELS",
+        "clearButton": "CLEAR ALL",
+        "heightLabel": "HEIGHT",
+        "widthLabel": "WIDTH",
+        "appHeightLabel": "APPLICATION\nHEIGHT",
+        "labelGapLabel": "LABEL GAP",
+        "diameterLabel": "DIAMETER",
+        "overlapLabel": "OVERLAP"
     }
 }

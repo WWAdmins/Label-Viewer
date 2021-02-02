@@ -43,7 +43,7 @@
         </div>
         <br>
 
-        <label class="sub-title-formatted" v-if="labelId[1] == 1 && bottleSpec">Application height</label>
+        <label class="sub-title-formatted" v-if="labelId[1] == 1 && bottleSpec">App height</label>
         <label class="sub-title-formatted dissabled-text" v-if="labelId[1] == 1 && !bottleSpec">Application height</label>
         <label class="sub-title-formatted" v-if="labelId[1] == 2">Label gap</label>
         <label class="sub-title-formatted dissabled-text" v-if="labelId[1] == 2 && !bottleSpec">Label gap</label>
@@ -111,6 +111,12 @@
                         this.updateHeightOffsetDescription();
                         this.updateWidthDescription();
                     }  
+                },
+                deep: true
+            },
+            isMobile: {
+                handler() {
+                    return screen.width < 576;
                 },
                 deep: true
             },
@@ -189,7 +195,9 @@
                 heightWarnClass: '',
                 heightOffsetWarnClass: '',
                 widthWarnClass: '',
-                queue: []
+                queue: [],
+
+                isMobile: false
             }
         },
 
@@ -234,6 +242,7 @@
             // (any filtered key presses are discarded)
             // if key down is 'Tab', force update to fields without timeout (prevents updates being skipped by quick change of field resetting timeout)
             keyDown() {
+                console.log(this.isMobile)
                 const validKeys = ['ArrowRight','ArrowLeft','Backspace', 'Tab'];
                 const keyRegex = /[0-9]/;
                 if (!keyRegex.test(event.key) && validKeys.indexOf(event.key) < 0) {
@@ -546,18 +555,18 @@
             validateHeight() {
                 if (this.height < CONSTANTS.minLabelHeight) {  // too low
                     this.validHeight = false;
-                    this.warnHeight = CONSTANTS.lowHeightWarning;
+                    this.warnHeight = CONSTANTS.warning.lowHeightWarning;
                     this.heightWarnClass = 'red';
                     this.setInputCss('height', 'red');
                 } else if (this.height > this.getMaxHeight('recommended') && this.height <= this.getMaxHeight('warning')) { // warn
                     this.orangeZone = true;
                     this.validHeight = true;
-                    this.warnHeight = CONSTANTS.orangeZoneWarning;
+                    this.warnHeight = CONSTANTS.warning.orangeZoneWarning;
                     this.heightWarnClass = 'orange';
                     this.setInputCss('height', 'orange');
                 } else if (this.height > this.getMaxHeight('warning')) { // too high
                     this.validHeight = false;
-                    this.warnHeight = CONSTANTS.highHeightWarning;
+                    this.warnHeight = CONSTANTS.warning.highHeightWarning;
                     this.heightWarnClass = 'red';
                     this.setInputCss('height', 'red');
                 } else { // fine
@@ -585,19 +594,19 @@
 
                 if (offset < this.getMinHeightOffset('warning')) { // too low
                     this.validHeightOffset = false;
-                    this.warnHeightOffset = CONSTANTS.lowHeightOffsetWarning;
+                    this.warnHeightOffset = CONSTANTS.warning.lowHeightOffsetWarning;
                     this.heightOffsetWarnClass = 'red';
                     this.setInputCss('heightOffset', 'red');
                 } else if ((offset > this.getmaxHeightOffset('recommended') && offset <= this.getmaxHeightOffset('warning')) ||
                             (offset < this.getMinHeightOffset('recommended') && offset >= this.getMinHeightOffset('warning'))) { // warn
                     this.orangeZone = true;
                     this.validHeightOffset = true;
-                    this.warnHeightOffset = CONSTANTS.orangeZoneWarning;
+                    this.warnHeightOffset = CONSTANTS.warning.orangeZoneWarning;
                     this.heightOffsetWarnClass = 'orange';
                     this.setInputCss('heightOffset', 'orange');
                 } else if (offset > this.getmaxHeightOffset('warning')) { // too high
                     this.validHeightOffset = false;
-                    this.warnHeightOffset = CONSTANTS.highHeightOffsetWarning;
+                    this.warnHeightOffset = CONSTANTS.warning.highHeightOffsetWarning;
                     this.heightOffsetWarnClass = 'red';
                     this.setInputCss('heightOffset', 'red');
                 } else { // fine
@@ -612,18 +621,18 @@
             validateWidth() {
                 if (this.width < CONSTANTS.minLabelWidth) { // too narrow
                     this.validWidth = false;
-                    this.warnWidth = CONSTANTS.lowWidthWarning;
+                    this.warnWidth = CONSTANTS.warning.lowWidthWarning;
                     this.widthWarnClass = 'red';
                     this.setInputCss('width', 'red');
                 } else if (this.width > this.getMaxWidth('recommended') && this.width <= this.getMaxWidth('warning')) { // warn
                     this.orangeZone = true;
                     this.validWidth = true;
-                    this.warnWidth = CONSTANTS.orangeZoneWarning;
+                    this.warnWidth = CONSTANTS.warning.orangeZoneWarning;
                     this.widthWarnClass = 'orange';
                     this.setInputCss('width', 'orange');
                 } else if (this.width > this.getMaxWidth('warning')) { // too wide
                     this.validWidth = false;
-                    this.warnWidth = CONSTANTS.highWidthWarning;
+                    this.warnWidth = CONSTANTS.warning.highWidthWarning;
                     this.widthWarnClass = 'red';
                     this.setInputCss('width', 'red');
                 } else { // fine

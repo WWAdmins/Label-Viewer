@@ -16,11 +16,11 @@
         </div>
         <div class="row row-cols-12" v-show="type">
             <div class='col-sm-6'>
-                <label v-if="type == 'Button medal'" class="sub-title-formatted">Diameter</label>
-                <label v-if="type == 'Strip medal'" class="sub-title-formatted">Height</label>
+                <label v-if="type == 'Button medal'" class="sub-title-formatted">{{titles.diameterLabel}}</label>
+                <label v-if="type == 'Strip medal'" class="sub-title-formatted">{{titles.heightLabel}}</label>
             </div>
             <div class='col-sm-6' v-show="type == 'Strip medal'">
-                <label class="sub-title-formatted">Width</label>
+                <label class="sub-title-formatted">{{titles.widthLabel}}</label>
             </div>
         </div>
         <div class="row row-cols-12" v-show="type">
@@ -53,13 +53,13 @@
                 >
             </div>
             <div class='col-sm-4'>
-                <label  v-show="type == 'Strip medal'" class="pre-formatted" v-html="widthDescription"></label>
+                <label  v-show="type == 'Strip medal'" class="pre-formatted dotted" v-html="widthDescription"></label>
             </div>
         </div>
         <br>
         <div class="row row-cols-12">
             <div class="col-sm-6">
-                <label v-if="type" class="sub-title-formatted">Vertical overlap</label>
+                <label v-if="type" class="sub-title-formatted">{{titles.overlapLabel}}</label>
             </div>
         </div>
         <div class='row row-cols-12' >
@@ -169,11 +169,14 @@
 
                 overlapMin: 0,
                 overlapMax: 0,
-                overlap: null
+                overlap: null,
+
+                titles: {}
             }
         },
 
         mounted() {
+            this.titles = CONSTANTS.titles;
             if (this.bottleSpec != null) {
                 this.updateHeightDescription();
                 if (this.type == 'Strip medal') {
@@ -420,12 +423,12 @@
 
                 if (this.width < minWidth) { // too narrow
                     this.validWidth = false;
-                    this.warnWidth = CONSTANTS.lowWidthWarning;
+                    this.warnWidth = CONSTANTS.warning.lowWidthWarning;
                     this.widthWarnClass = 'red';
                     this.setInputCss('width', 'red');
                 } else if (this.width > maxWidth) { // too wide
                     this.validWidth = false;
-                    this.warnWidth = CONSTANTS.highWidthWarning;
+                    this.warnWidth = CONSTANTS.warning.highWidthWarning;
                     this.widthWarnClass = 'red';
                     this.setInputCss('width', 'red');
                 } else { // fine
@@ -440,12 +443,12 @@
             validateOverlap() {
                 if (this.overlap < this.overlapMin) {  // not enough overlap (sitting too high on the label pannel)
                     this.validOverlap = false;
-                    this.warnOverlap = CONSTANTS.lowOverlap;
+                    this.warnOverlap = CONSTANTS.warning.lowOverlap;
                     this.overlapWarnClass = 'red';
                     this.setInputCss('overlap', 'red');
                 } else if (this.overlap > this.overlapMax) { // too much overlap (medal is sitting too low on the bottle)
                     this.validOverlap = false;
-                    this.warnOverlap = CONSTANTS.highOverlap;
+                    this.warnOverlap = CONSTANTS.warning.highOverlap;
                     this.overlapWarnClass = 'red';
                     this.setInputCss('overlap', 'red');
                 } else { // fine

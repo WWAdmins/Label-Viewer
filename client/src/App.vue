@@ -92,8 +92,8 @@
 
             <div id="front-labels" class="col-lg-6">
 
-              <label class="form-header" v-if="bottleSpec">Front labels</label>
-              <label class="form-header dissabled-text" v-else>Front labels</label>
+              <label class="form-header" v-if="bottleSpec">{{titles.frontLabel}}</label>
+              <label class="form-header dissabled-text" v-else>{{titles.frontLabel}}</label>
 
               <measurements-form
                 v-for="n in labelStatuses.front.count"
@@ -121,8 +121,8 @@
 
             <div id="back-labels" class="col-lg-6">
 
-              <label class="form-header" v-if="bottleSpec">Back labels</label>
-              <label class="form-header dissabled-text" v-else>Back labels</label>
+              <label class="form-header" v-if="bottleSpec">{{titles.backLabel}}</label>
+              <label class="form-header dissabled-text" v-else>{{titles.backLabel}}</label>
                             
               <measurements-form
                 v-for="n in labelStatuses.back.count"
@@ -153,9 +153,14 @@
               v-if='!help && !medalMode' 
               v-on:click="medalMode = !medalMode"
               :disabled="labelStatuses.filled.length < globalPositions.activeLabels.length || globalPositions.activeLabels.length == 0 || globalPositions.activeMedals == 0"
-            >Medals</button>
+            >{{titles.medalButton}}</button>
 
-            <button class="clear-button" v-if='!help' v-on:click="clearForm()" :disabled="!bottleSpec">Clear all</button>
+            <button 
+              class="clear-button" 
+              v-if='!help' 
+              v-on:click="clearForm()" 
+              :disabled="!bottleSpec"
+            >{{titles.clearButton}}</button>
 
             
 
@@ -182,9 +187,14 @@
               class='medal-button' 
               v-if='!help && medalMode' 
               v-on:click="medalMode = !medalMode"
-            >Labels</button>
+            >{{titles.labelButton}}</button>
 
-            <button class="clear-button" v-if='!help' v-on:click="clearForm()" :disabled="!bottleSpec">Clear all</button>
+            <button 
+              class="clear-button" 
+              v-if='!help' 
+              v-on:click="clearForm()" 
+              :disabled="!bottleSpec"
+            >{{titles.clearButton}}</button>
 
           </div>
 
@@ -199,8 +209,8 @@
 
               <div id="preview-header-front" class="row center">
                 <div class="col-lg-12">
-                  <label class='preview-header center' v-if="bottleSpec">Front</label>
-                  <label class='preview-header center dissabled' v-else>Front</label>
+                  <label class='preview-header center' v-if="bottleSpec">{{titles.frontLabel}}</label>
+                  <label class='preview-header center dissabled' v-else>{{titles.frontLabel}}</label>
                 </div>
               </div>
 
@@ -243,8 +253,8 @@
 
               <div id="preview-header-back" class="row">
                 <div class="col-lg-12">
-                  <label class='preview-header' v-if="bottleSpec">Back</label>
-                  <label class='preview-header dissabled' v-else>Back</label>
+                  <label class='preview-header' v-if="bottleSpec">{{titles.backLabel}}</label>
+                  <label class='preview-header dissabled' v-else>{{titles.backLabel}}</label>
                 </div>
               </div>
 
@@ -373,19 +383,23 @@
           selectHelpMessage: '',
 
           medalMode: false,  // toggle between labels and medals using button
-          medalPlacementHelp: ''
+          medalPlacementHelp: '',
+
+          titles: {}
         }
     },
 
     mounted() {
         this.loadData();
 
-        const helpLink = `<a href=${CONSTANTS.helpLink} class='alert-link'>here</a>`;
-        this.helpMessage = CONSTANTS.helpMessage.replace("[help link here]", helpLink);
+        this.titles = CONSTANTS.titles;
 
-        this.overallWarning = CONSTANTS.invalidWarning;
-        this.bottlePreviewDisclaimer = CONSTANTS.bottlePreviewDisclaimer;
-        this.selectHelpMessage = CONSTANTS.selectHelpMessage;
+        const helpLink = `<a href=${CONSTANTS.help.helpLink} class='alert-link'>here</a>`;
+        this.helpMessage = CONSTANTS.help.helpMessage.replace("[help link here]", helpLink);
+
+        this.overallWarning = CONSTANTS.help.invalidWarning;
+        this.bottlePreviewDisclaimer = CONSTANTS.help.bottlePreviewDisclaimer;
+        this.selectHelpMessage = CONSTANTS.help.selectHelpMessage;
 
         this.validLabelOptions = [CONSTANTS.labelNames.F1, CONSTANTS.labelNames.B1];
     },
@@ -453,7 +467,7 @@
         this.bottleSpec.recommended.maxWidth = Math.floor(this.bottleSpec.recommended.maxWidth);
 
         const optimumZone = Math.round(CONSTANTS.optimumMedalZoneScale * this.bottleSpec.circumference / 2);
-        this.medalPlacementHelp = CONSTANTS.medalPlacementHelp.replace("[measure here]", optimumZone);
+        this.medalPlacementHelp = CONSTANTS.help.medalPlacementHelp.replace("[measure here]", optimumZone);
       },
 
       // Clears bottleSpec when bottleId is removed
@@ -467,7 +481,7 @@
         const wrapAroundBoundry = CONSTANTS.warpAroundDef * this.bottleSpec.circumference;
         if (this.globalPositions.front.maxWidth != null && this.globalPositions.front.maxWidth > wrapAroundBoundry) {
           this.labelStatuses.back.enabled = false;
-          this.labelStatuses.back.dissableMessage = CONSTANTS.wrapAroundMessage;
+          this.labelStatuses.back.dissableMessage = CONSTANTS.help.wrapAroundMessage;
           this.labelStatuses.hasWrap = true;
           if (this.globalPositions.activeLabels.includes('F2')) {
             document.getElementById('frontF2').classList.add("hidden"); // This is done as it is simpler than trying to putting a v-show in a v-for that doesn't cover all components in the v-for
@@ -768,7 +782,7 @@
         if (warning == 'orange zone') {
           if (!this.warned) {
             this.showWarning(
-              CONSTANTS.orangeZoneMeaage,
+              CONSTANTS.help.orangeZoneMeaage,
               'Caution:'
             );
             this.warned = true;
@@ -935,7 +949,7 @@
       displayLabel(element, label) {
 
         const diamiter = this.bottleSpec.diameter;
-        const fullHeight = CONSTANTS[this.bottleType + "Height"];
+        const fullHeight = CONSTANTS.bottleHeights[this.bottleType + "Height"];
 
         document.getElementById(element).style.height = `${(label.height/fullHeight)*100}%`;
         document.getElementById(element).style.width = `${(label.adjustedWidth/diamiter)*100*0.47}%`;
