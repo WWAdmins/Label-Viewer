@@ -2,7 +2,7 @@
     <div id=inputs class="container-fluid medal-form">
         <hr v-if="labelId[1] > 1">
         <div class="row row-cols-12">
-            <div class="col-sm-12">
+            <div class="col-12">
                 <multiselect 
                     class='multi-select'
                     v-model="type" 
@@ -14,69 +14,82 @@
                 >Medal type</multiselect>
             </div>
         </div>
+
         <div class="row row-cols-12" v-show="type">
             <div class='col-sm-6'>
-                <label v-if="type == 'Button medal'" class="sub-title-formatted">{{titles.diameterLabel}}</label>
-                <label v-if="type == 'Strip medal'" class="sub-title-formatted">{{titles.heightLabel}}</label>
+
+                <div class="row">
+                    <div class="col-5">
+                        <label v-if="type == 'Button medal'" class="sub-title-formatted">{{titles.diameterLabel}}</label>
+                        <label v-if="type == 'Strip medal'" class="sub-title-formatted">{{titles.heightLabel}}</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-5">
+                        <input
+                            :disabled="!bottleSpec"
+                            class="standard-input"
+                            :id='labelId+"-input-height"'
+                            v-model.number="height"
+                            required
+                            @keyup="inputChange('height')"
+                            @keydown="keyDown"
+                            v-tooltip.right="{ content: warnHeight, classes: heightWarnClass }"
+                        >
+                    </div>
+                    <div class="col-7">
+                        <label class="pre-formatted" v-html="heightDescription"></label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-5">
+                        <label v-if="type" class="sub-title-formatted">{{titles.overlapLabel}}</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-5">
+                        <input
+                            :disabled="!bottleSpec"
+                            class="standard-input"
+                            :id='labelId+"-input-overlap"'
+                            v-model.number="overlap"
+                            required
+                            @keyup="inputChange('overlap')"
+                            @keydown="keyDown"
+                            v-tooltip.right="{ content: warnOverlap, classes: overlapWarnClass }"
+                        >
+                    </div>
+                    <div class="col-7">
+                        <label  v-show="type" class="pre-formatted" v-html="overlapDescription"></label>
+                    </div>
+                </div>
+
             </div>
             <div class='col-sm-6' v-show="type == 'Strip medal'">
-                <label class="sub-title-formatted">{{titles.widthLabel}}</label>
-            </div>
-        </div>
-        <div class="row row-cols-12" v-show="type">
-            <div class='col-sm-2'>
-                <input
-                    :disabled="!bottleSpec"
-                    class="standard-input"
-                    :id='labelId+"-input-height"'
-                    v-model.number="height"
-                    required
-                    @keyup="inputChange('height')"
-                    @keydown="keyDown"
-                    v-tooltip.right="{ content: warnHeight, classes: heightWarnClass }"
-                >
-            </div>
-            <div class='col-sm-4'>
-                <label class="pre-formatted" v-html="heightDescription"></label>
-            </div>
-            <div class='col-sm-2' v-show="type">
-                <input
-                    v-show="type == 'Strip medal'"
-                    :disabled="!bottleSpec"
-                    class="standard-input"
-                    :id='labelId+"-input-width"'
-                    v-model.number="width"
-                    required
-                    @keyup="inputChange('width')"
-                    @keydown="keyDown"
-                    v-tooltip.right="{ content: warnWidth, classes: widthWarnClass }"
-                >
-            </div>
-            <div class='col-sm-4'>
-                <label  v-show="type == 'Strip medal'" class="pre-formatted dotted" v-html="widthDescription"></label>
-            </div>
-        </div>
-        <br>
-        <div class="row row-cols-12">
-            <div class="col-sm-6">
-                <label v-if="type" class="sub-title-formatted">{{titles.overlapLabel}}</label>
-            </div>
-        </div>
-        <div class='row row-cols-12' >
-            <div class='col-sm-2' v-show="type">
-                <input
-                    :disabled="!bottleSpec"
-                    class="standard-input"
-                    :id='labelId+"-input-overlap"'
-                    v-model.number="overlap"
-                    required
-                    @keyup="inputChange('overlap')"
-                    @keydown="keyDown"
-                    v-tooltip.right="{ content: warnOverlap, classes: overlapWarnClass }"
-                >
-            </div>
-            <div class='col-sm-4'>
-                <label  v-show="type" class="pre-formatted" v-html="overlapDescription"></label>
+                <div class="row">
+                    <div class="col-5">
+                        <label class="sub-title-formatted">{{titles.widthLabel}}</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-5">
+                        <input
+                            v-show="type == 'Strip medal'"
+                            :disabled="!bottleSpec"
+                            class="standard-input"
+                            :id='labelId+"-input-width"'
+                            v-model.number="width"
+                            required
+                            @keyup="inputChange('width')"
+                            @keydown="keyDown"
+                            v-tooltip.right="{ content: warnWidth, classes: widthWarnClass }"
+                        >
+                    </div>
+                    <div class="col-7">
+                        <label  v-show="type == 'Strip medal'" class="pre-formatted" v-html="widthDescription"></label>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

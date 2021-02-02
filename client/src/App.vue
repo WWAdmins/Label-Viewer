@@ -90,7 +90,7 @@
 
           <div id="forms-labels" class="row" v-show="!medalMode || globalPositions.activeLabels.length == 0 || labelStatuses.filled.length != globalPositions.activeLabels.length">
 
-            <div id="front-labels" class="col-lg-6">
+            <div id="front-labels" class="col-sm-6">
 
               <label class="form-header" v-if="bottleSpec">{{titles.frontLabel}}</label>
               <label class="form-header dissabled-text" v-else>{{titles.frontLabel}}</label>
@@ -119,7 +119,7 @@
 
             </div>
 
-            <div id="back-labels" class="col-lg-6">
+            <div id="back-labels" class="col-sm-6">
 
               <label class="form-header" v-if="bottleSpec">{{titles.backLabel}}</label>
               <label class="form-header dissabled-text" v-else>{{titles.backLabel}}</label>

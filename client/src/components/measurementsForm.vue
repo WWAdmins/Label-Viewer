@@ -4,7 +4,7 @@
         <label class="sub-title-formatted" v-if="bottleSpec">Height</label>
         <label class="sub-title-formatted dissabled-text" v-else>Height</label>
         <div class='row'>
-            <div class='col-sm-5'>
+            <div class='col-5'>
                 <input
                     :disabled="!bottleSpec"
                     class="standard-input"
@@ -16,7 +16,7 @@
                     v-tooltip.right="{ content: warnHeight, classes: heightWarnClass }"
                 >
             </div>
-            <div class='col-sm-7'>
+            <div class='col-7'>
                 <label class="pre-formatted" v-html="heightDescription"></label>
             </div>
         </div>
@@ -25,7 +25,7 @@
         <label class="sub-title-formatted" v-if="bottleSpec">Width</label>
         <label class="sub-title-formatted dissabled-text" v-else>Width</label>
         <div class='row'>
-            <div class='col-sm-5'>
+            <div class='col-5'>
                 <input
                     :disabled="!bottleSpec"
                     class="standard-input"
@@ -37,7 +37,7 @@
                     v-tooltip.right="{ content: warnWidth, classes: widthWarnClass }"
                 >
             </div>
-            <div class='col-sm-7'>
+            <div class='col-7'>
                 <label class="pre-formatted" v-html="widthDescription"></label>
             </div>
         </div>
@@ -48,7 +48,7 @@
         <label class="sub-title-formatted" v-if="labelId[1] == 2">Label gap</label>
         <label class="sub-title-formatted dissabled-text" v-if="labelId[1] == 2 && !bottleSpec">Label gap</label>
         <div class='row'>
-            <div class='col-sm-5'>
+            <div class='col-5'>
                 <input
                     v-if="labelId[1] == 1"
                     :disabled="!bottleSpec"
@@ -72,7 +72,7 @@
                     v-tooltip.right="{ content: warnHeightOffset, classes: heightOffsetWarnClass }"
                 >
             </div>
-            <div class='col-sm-7'>
+            <div class='col-7'>
                 <label class="pre-formatted" v-html="heightOffsetDescription"></label>
             </div>
         </div>
