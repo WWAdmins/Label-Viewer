@@ -547,7 +547,7 @@
         }
 
         if (label == CONSTANTS.labelNames.B2) {
-          this.cleanLabel('B2', 'front', false);
+          this.cleanLabel('B2', 'back', false);
           this.updateMaxWidth('back');
         }
 
