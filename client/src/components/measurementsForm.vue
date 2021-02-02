@@ -4,7 +4,7 @@
         <label class="sub-title-formatted" v-if="bottleSpec">{{titles.heightLabel}}</label>
         <label class="sub-title-formatted dissabled-text" v-else>{{titles.heightLabel}}</label>
         
-        <div class='row'>
+        <div class='row edge-fixer'>
             <div class='col-5'>
                 <input
                     :disabled="!bottleSpec"
@@ -26,7 +26,7 @@
         <label class="sub-title-formatted" v-if="bottleSpec">{{titles.widthLabel}}</label>
         <label class="sub-title-formatted dissabled-text" v-else>{{titles.widthLabel}}</label>
 
-        <div class='row'>
+        <div class='row edge-fixer'>
             <div class='col-5'>
                 <input
                     :disabled="!bottleSpec"
@@ -51,7 +51,7 @@
         <label class="sub-title-formatted" v-if="labelId[1] == 2">{{titles.labelGapLabel}}</label>
         <label class="sub-title-formatted dissabled-text" v-if="labelId[1] == 2 && !bottleSpec">{{titles.labelGapLabel}}</label>
         
-        <div class='row'>
+        <div class='row edge-fixer'>
             <div class='col-5'>
                 <input
                     v-if="labelId[1] == 1"
@@ -246,15 +246,14 @@
             // Filters any key press that is not 0-9 or 'ArrowRight','ArrowLeft','Backspace', 'Tab'
             // (any filtered key presses are discarded)
             // if key down is 'Tab', force update to fields without timeout (prevents updates being skipped by quick change of field resetting timeout)
-            keyDown() {
-                console.log(this.isMobile)
+            keyDown(event) {
                 const validKeys = ['ArrowRight','ArrowLeft','Backspace', 'Tab'];
                 const keyRegex = /[0-9]/;
                 if (!keyRegex.test(event.key) && validKeys.indexOf(event.key) < 0) {
                     event.preventDefault();
                 } else if (event.key == 'Tab') {
-                    this.validate(event.path[0].id.split("-")[2]);
-                    if (event.path[0].id.split("-")[2] == 'height') {
+                    this.validate(event.target.id.split("-")[2]);
+                    if (event.target.id.split("-")[2] == 'height') {
                         this.updateHeightOffsetDescription();
                         this.updateWidthDescription();
                     }

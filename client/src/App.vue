@@ -406,7 +406,7 @@
         const helpLink = `<a href=${CONSTANTS.help.helpLink} class='alert-link'>here</a>`;
         this.helpMessage = CONSTANTS.help.helpMessage.replace("[help link here]", helpLink);
 
-        this.overallWarning = CONSTANTS.help.invalidWarning;
+        this.overallWarning = CONSTANTS.warning.invalidWarning;
         this.bottlePreviewDisclaimer = CONSTANTS.help.bottlePreviewDisclaimer;
         this.selectHelpMessage = CONSTANTS.help.selectHelpMessage;
 
@@ -815,6 +815,9 @@
         const {labelId, side, type} = payload;
 
         this.globalPositions.latest = {'id': labelId, 'side':side, 'type':type};
+        if (this.globalPositions[side][labelId] == null) {
+          this.globalPositions[side][labelId] = {};
+        }
 
         this.globalPositions[side][labelId].valid = false
 
@@ -990,11 +993,11 @@ body{
   min-width: 350px;
 }
 
-.main-backing{
+.main-backing {
   margin-top: 60px;
   margin-bottom: 60px;
   border-radius: 8px;
-  background-color: rgb(255,255,255,0.93);
+  background-color: rgba(255,255,255,0.93);
   padding: 40px;
 }
 
@@ -1002,7 +1005,7 @@ body{
   margin-top: 60px;
   margin-bottom: 60px;
   border-radius: 8px;
-  background-color: rgb(255,255,255,0.93);
+  background-color: rgba(255,255,255,0.93);
   padding: 20px;
 }
 
@@ -1140,6 +1143,10 @@ body{
 
 .dotted {
   border-style: dotted;
+}
+
+.edge-fixer {
+  border: 0.01px solid rgba(255,255,255,0);
 }
 
 .preview {
