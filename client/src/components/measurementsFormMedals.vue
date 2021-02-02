@@ -358,7 +358,7 @@
                     this.validateWidth();
                 }
 
-                if (this.overlap == '' || this.overlap == null) {
+                if (this.overlap === '' || this.overlap === null) {
                     this.validOverlap = true;
                     this.warnoverlap = null;
                     this.overlapWarnClass = '';

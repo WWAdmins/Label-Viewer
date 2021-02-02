@@ -33,7 +33,7 @@
     "helpLink": "https://www.wineworks.co.nz/",
     "bottlePreviewDisclaimer": "Preview depiction is not fully accurate for every bottle and should only be used as a estimation",
     "selectHelpMessage": "Select a bottle to continue",
-    "medalPlacementHelp": "For a this bottle it is recommended to place the medal within [measure here]mm of the virtical center of the front label to ensure optimum visibilty",
+    "medalPlacementHelp": "For a this bottle it is recommended to place the medal within [measure here]mm of the vertical center of the front label to ensure optimum visibilty",
 
     "invalidWarning": "The current label specs are invalid",
 
@@ -52,5 +52,14 @@
     "RieslingHeight": 330,
     "SparklingHeight": 300,
     "MagnumHeight": 345,
-    "Premium BurgundyHeight": 298
+    "Premium BurgundyHeight": 298,
+
+    "bottleCodes": {
+        "Burgundy": "BRG",
+        "Bordeaux": "BDX",
+        "Riesling": "RIE",
+        "Sparkling": "SPK",
+        "Magnum": "MAG",
+        "Premium Burgundy": "PBG"
+    }
 }

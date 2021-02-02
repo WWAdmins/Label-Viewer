@@ -1,56 +1,80 @@
 <template>
-  <div id="app" class="container-fluid main-backing col-lg-10 offset-lg-1">
-
-    <div class='row'>
-      <div class='col-lg-6'>
-        <div class='row'>
-          <div class='col-lg-6'>
-            <multiselect 
-              id='supplierSelect'
-              class='multi-select'
-              v-model="supplier" 
-              placeholder="select supplier"
-              :options="suppliers" 
-              :searchable="true" 
-              :close-on-select="true"
-              :select-label="''"
-              :deselect-label="''"
-              @select='supplierSelect'
-              @remove='supplierRemove'
-            >Supplier</multiselect>
-          </div>
-          <div class='col-lg-6'>
-            <multiselect 
-              class='multi-select'
-              v-model="bottleType"
-              placeholder="select bottle type" 
-              :options="bottleTypes" 
-              :searchable="true" 
-              :close-on-select="true"
-              :select-label="''"
-              :deselect-label="''"
-              @select='bottleTypeSelect'
-              @remove='bottleTypeRemove'
-              :disabled="!supplier"
-            >Bottle type</multiselect>
-          </div>
+  <div id="app">
+    <div id="header" class="container-fluid main-backing col-lg-10 offset-lg-1">
+      <div class="row">
+        <div class="col-lg-2">
+          <img class="image" alt="logo" src="./assets/logo_temp.png">
         </div>
-        <div>
+        <div class="col-lg-10">
+          <label>A really cool title that still needs to be formatted</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="body" class="container-fluid main-backing col-lg-10 offset-lg-1">
+    
+      <div id="selectors" class="row">
+
+        <div id="supplier" class="col-lg-5">
           <multiselect 
+            id='supplierSelect'
             class='multi-select'
-            v-model="bottleId"
-            placeholder="select bottle" 
-            :options="bottles" 
+            v-model="supplier" 
+            placeholder="select supplier"
+            :options="suppliers" 
             :searchable="true" 
             :close-on-select="true"
             :select-label="''"
             :deselect-label="''"
-            @select='bottleSelect'
-            @remove='bottleRemove' 
-            :disabled="!bottleType"
-          >Bottle</multiselect>
+            @select='supplierSelect'
+            @remove='supplierRemove'
+          >Supplier</multiselect>
         </div>
-        <div>
+
+        <div id="bottle-type-id" class="col-lg-7">
+          <div class="row">
+
+            <div id="bottle-type" class="col-lg-6">
+              <multiselect 
+                class='multi-select'
+                v-model="bottleType"
+                placeholder="select bottle type" 
+                :options="bottleTypes" 
+                :searchable="true" 
+                :close-on-select="true"
+                :select-label="''"
+                :deselect-label="''"
+                @select='bottleTypeSelect'
+                @remove='bottleTypeRemove'
+                :disabled="!supplier"
+              >Bottle type</multiselect>
+            </div>
+
+            <div id="bottle-id" class="col-lg-6">
+              <multiselect 
+                class='multi-select'
+                v-model="bottleId"
+                placeholder="select bottle" 
+                :options="bottles" 
+                :searchable="true" 
+                :close-on-select="true"
+                :select-label="''"
+                :deselect-label="''"
+                @select='bottleSelect'
+                @remove='bottleRemove' 
+                :disabled="!bottleType"
+              >Bottle</multiselect>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div id="container-forms-preview" class="row">
+
+        <div id="label-inputs" class="col-lg-5">
+
           <multiselect 
             class='multi-select'
             v-model="labelStatuses.selected" 
@@ -63,87 +87,84 @@
             @select='addLabel'
             @remove='removeLabel'
           >Label choice</multiselect>
-        </div>
-        <div class="row">
-          <div class='col-lg-12'>
-            <button class="clear" v-if='!help' v-on:click="clearForm()" :disabled="!bottleSpec">Clear all</button>
-            <button class='help-button' v-if='!help' v-on:click="help = true">Help</button>
+
+          <div id="forms-labels" class="row" v-show="!medalMode || globalPositions.activeLabels.length == 0 || labelStatuses.filled.length != globalPositions.activeLabels.length">
+
+            <div id="front-labels" class="col-lg-6">
+
+              <label class="form-header" v-if="bottleSpec">Front labels</label>
+              <label class="form-header dissabled-text" v-else>Front labels</label>
+
+              <measurements-form
+                v-for="n in labelStatuses.front.count"
+                :key="'F' + n"
+                :id="'frontF' + n"
+                ref=n
+                side="front"
+                :labelId="'F' + n"
+                :bottleSpec="bottleSpec"
+                :globalPositions="globalPositions"
+                v-show='labelStatuses.front.enabled'
+                @invalid="emmittedInvalidLabel"
+                @valid="emmittedValidLabel"
+                @warning="emmitedWarningCatch"
+              >Front labels</measurements-form>
+
+              <div 
+                class="alert alert-warning" 
+                role="alert" 
+                id='frontDissabledWarning' 
+                v-if="!labelStatuses.front.enabled"
+              >{{ labelStatuses.front.dissableMessage }}</div>
+
+            </div>
+
+            <div id="back-labels" class="col-lg-6">
+
+              <label class="form-header" v-if="bottleSpec">Back labels</label>
+              <label class="form-header dissabled-text" v-else>Back labels</label>
+                            
+              <measurements-form
+                v-for="n in labelStatuses.back.count"
+                :key="'B' + n"
+                :id="'backB' + n"
+                ref=n
+                side="back"
+                :labelId="'B' + n"
+                :bottleSpec="bottleSpec"
+                :globalPositions="globalPositions"
+                v-show='labelStatuses.back.enabled'
+                @invalid="emmittedInvalidLabel"
+                @valid="emmittedValidLabel"
+                @warning="emmitedWarningCatch"
+              >Back labels</measurements-form>
+                            
+              <div 
+                class="alert alert-warning invalidWarning" 
+                role="alert" 
+                id='backDissabledWarning' 
+                v-if="!labelStatuses.back.enabled"
+              >{{ labelStatuses.back.dissableMessage }}</div>
+
+            </div>
+
             <button 
               class='medal-button' 
               v-if='!help && !medalMode' 
               v-on:click="medalMode = !medalMode"
               :disabled="labelStatuses.filled.length < globalPositions.activeLabels.length || globalPositions.activeLabels.length == 0 || globalPositions.activeMedals == 0"
-              >Medals
-            </button>
-            <button class='medal-button' v-if='!help && medalMode' v-on:click="medalMode = !medalMode">Labels</button>
-            <div class="alert alert-info alert-dismissible fade show" role="alert" v-if="help">
-              <button type="close-button" class="close" data-dismiss="alert" aria-label="Close" v-on:click="help = false">
-                <span aria-hidden="true">&times;</span>
-              </button>
-              <p class="pre-formatted help" v-html="helpMessage"></p>
-            </div>
-          </div>
-        </div>
-        <div class="row" v-if='help'>
-          <div class='col-lg-12'>
-            <button class="clear" v-on:click="clearForm()" :disabled="!bottleSpec">Clear all</button>
-            <button 
-              class='medal-button' 
-              v-if='help && !medalMode' 
-              v-on:click="medalMode = !medalMode"
-              :disabled="labelStatuses.filled.length < globalPositions.activeLabels.length || globalPositions.activeLabels.length == 0 || globalPositions.activeMedals == 0"
-              >Medals
-            </button>
-            <button class='medal-button' v-if='!help && medalMode' v-on:click="medalMode = !medalMode">Labels</button>
-          </div>
-        </div>
+            >Medals</button>
 
-        <div class="row" v-show="!medalMode || globalPositions.activeLabels.length == 0 || labelStatuses.filled.length != globalPositions.activeLabels.length">
-          <div class="col-lg-6">
-            <label class="header" v-if="bottleSpec">Front labels</label>
-            <label class="header dissabled-text" v-else>Front labels</label>
-            <measurements-form
-              v-for="n in labelStatuses.front.count"
-              :key="'F' + n"
-              :id="'frontF' + n"
-              ref=n
-              side="front"
-              :labelId="'F' + n"
-              :bottleSpec="bottleSpec"
-              :globalPositions="globalPositions"
-              v-show='labelStatuses.front.enabled'
-              @invalid="emmittedInvalidLabel"
-              @valid="emmittedValidLabel"
-              @warning="emmitedWarningCatch"
-              >
-            </measurements-form>
-            <label v-if="!labelStatuses.front.enabled">{{ labelStatuses.front.dissableMessage }}</label>
-            <div class="alert alert-warning" role="alert" id='frontDissabledWarning' v-if="!labelStatuses.front.enabled">{{ labelStatuses.front.dissableMessage }}</div>
+            <button class="clear-button" v-if='!help' v-on:click="clearForm()" :disabled="!bottleSpec">Clear all</button>
+
+            
+
           </div>
-          <div class="col-lg-6">
-            <label class="header" v-if="bottleSpec">Back labels</label>
-            <label class="header dissabled-text" v-else>Back labels</label>
-            <measurements-form
-              v-for="n in labelStatuses.back.count"
-              :key="'B' + n"
-              :id="'backB' + n"
-              ref=n
-              side="back"
-              :labelId="'B' + n"
-              :bottleSpec="bottleSpec"
-              :globalPositions="globalPositions"
-              v-show='labelStatuses.back.enabled'
-              @invalid="emmittedInvalidLabel"
-              @valid="emmittedValidLabel"
-              @warning="emmitedWarningCatch"
-              >
-            </measurements-form>
-            <div class="alert alert-warning invalidWarning" role="alert" id='backDissabledWarning' v-if="!labelStatuses.back.enabled">{{ labelStatuses.back.dissableMessage }}</div>
-          </div>
-        </div>
-        <div class="row" v-show="medalMode && globalPositions.activeLabels.length != 0 && labelStatuses.filled.length == globalPositions.activeLabels.length">
-          <label class="pre-formatted medal-help" v-html="medalPlacementHelp"></label>
-          <measurements-form-medals
+
+          <div id="forms-medal" class="row" v-show="medalMode && globalPositions.activeLabels.length != 0 && labelStatuses.filled.length == globalPositions.activeLabels.length">
+            <label class="pre-formatted medal-help" v-html="medalPlacementHelp"></label>
+
+            <measurements-form-medals
               v-for="n in labelStatuses.medal.count"
               :key="'M' + n"
               :id="'medalM' + n"
@@ -155,62 +176,127 @@
               v-show='labelStatuses.medal.enabled'
               @invalid="emmittedInvalidLabel"
               @valid="emmittedValidLabel"
-              >
-          </measurements-form-medals>
+            >Medals</measurements-form-medals>
+
+            <button 
+              class='medal-button' 
+              v-if='!help && medalMode' 
+              v-on:click="medalMode = !medalMode"
+            >Labels</button>
+
+            <button class="clear-button" v-if='!help' v-on:click="clearForm()" :disabled="!bottleSpec">Clear all</button>
+
+          </div>
+
         </div>
-      </div>
 
+        <div id="previews-col" class="col-lg-7">
+          <br><br>
 
-      <div class='col-lg-6'>
-        <div class="row">
-          <button id="frontDisplayButton" class="sideToggle selected" v-on:click="displaySelect('front')">Front view</button>
-          <button id="backDisplayButton" class="sideToggle" v-on:click="displaySelect('back')">Back view</button>
-        </div>
-        <label class='header' v-if="!bottleSpec">{{ selectHelpMessage }}</label>
-        <br>
-        <div class="row">
-          <div id="preview" class="col-lg-8 offset-lg-2 preview">
+          <div id="previews" class="row">
 
-            <div class="layer-2 labelPreview" id='labelPreview1'></div>
-            <div class="layer-2 labelPreview" id='labelPreviewOverflowLeft1'></div>
-            <div class="layer-2 labelPreview" id='labelPreviewOverflowRight1'></div>
+            <div id="front-preview" class="col-lg-6 center">
 
-            <div class="layer-3 labelPreview" id='labelPreview2'></div>
-            <div class="layer-3 labelPreview" id='labelPreviewOverflowLeft2'></div>
-            <div class="layer-3 labelPreview" id='labelPreviewOverflowRight2'></div>
+              <div id="preview-header-front" class="row center">
+                <div class="col-lg-12">
+                  <label class='preview-header center' v-if="bottleSpec">Front</label>
+                  <label class='preview-header center dissabled' v-else>Front</label>
+                </div>
+              </div>
 
-            <transition name="slide-fade">
-              <img v-if="bottleType == 'Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/BRG_image.png">
-            </transition>
-            <transition name="slide-fade">
-              <img v-if="bottleType == 'Bordeaux' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/BDX_image.png">
-            </transition>
-            <transition name="slide-fade">
-              <img v-if="bottleType == 'Riesling' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/RIE_image.png">
-            </transition>
-            <transition name="slide-fade">
-              <img v-if="bottleType == 'Sparkling' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/SPK_image.png">
-            </transition>
-            <transition name="slide-fade">
-              <img v-if="bottleType == 'Magnum' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/MAG_image.png">
-            </transition>
-            <transition name="slide-fade">
-              <img v-if="bottleType == 'Premium Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/Bottle silhouettes/PBG_image.png">
-            </transition>
-            
-            <div class='layer-10'>
-              <div class="alert alert-danger p-5 font-weight-bold" role="alert" id='invalidWarning' v-show="showInvalid">{{ overallWarning }}</div>
+              <div id="preview-body-front" class="row">
+                <div class="col-lg-12">
+
+                  <div class="layer-2 labelPreview" id='frontLabelPreview1'></div>
+                  <div class="layer-2 labelPreview" id='frontLabelPreviewOverflowLeft1'></div>
+                  <div class="layer-2 labelPreview" id='frontLabelPreviewOverflowRight1'></div>
+
+                  <div class="layer-3 labelPreview" id='frontLabelPreview2'></div>
+                  <div class="layer-3 labelPreview" id='frontLabelPreviewOverflowLeft2'></div>
+                  <div class="layer-3 labelPreview" id='frontLabelPreviewOverflowRight2'></div>
+
+                  <transition name="slide-fade">
+                    <img v-if="bottleType == 'Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/BRG_image.png">
+                  </transition>
+                  <transition name="slide-fade">
+                    <img v-if="bottleType == 'Bordeaux' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/BDX_image.png">
+                  </transition>
+                  <transition name="slide-fade">
+                    <img v-if="bottleType == 'Riesling' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/RIE_image.png">
+                  </transition>
+                  <transition name="slide-fade">
+                    <img v-if="bottleType == 'Sparkling' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/SPK_image.png">
+                  </transition>
+                  <transition name="slide-fade">
+                    <img v-if="bottleType == 'Magnum' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/MAG_image.png">
+                  </transition>
+                  <transition name="slide-fade">
+                    <img v-if="bottleType == 'Premium Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/PBG_image.png">
+                  </transition>
+
+                </div>
+              </div>
+
             </div>
+
+            <div id="back-preview" class="col-lg-6">
+
+              <div id="preview-header-back" class="row">
+                <div class="col-lg-12">
+                  <label class='preview-header' v-if="bottleSpec">Back</label>
+                  <label class='preview-header dissabled' v-else>Back</label>
+                </div>
+              </div>
+
+              <div id="preview-body-back" class="row">
+                <div class="col-lg-12">
+
+                  <div class="layer-2 labelPreview" id='backLabelPreview1'></div>
+                  <div class="layer-2 labelPreview" id='backLabelPreviewOverflowLeft1'></div>
+                  <div class="layer-2 labelPreview" id='backLabelPreviewOverflowRight1'></div>
+
+                  <div class="layer-3 labelPreview" id='backLabelPreview2'></div>
+                  <div class="layer-3 labelPreview" id='backLabelPreviewOverflowLeft2'></div>
+                  <div class="layer-3 labelPreview" id='backLabelPreviewOverflowRight2'></div>
+
+                  <transition name="slide-fade">
+                    <img v-if="bottleType == 'Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/BRG_image.png">
+                  </transition>
+                  <transition name="slide-fade">
+                    <img v-if="bottleType == 'Bordeaux' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/BDX_image.png">
+                  </transition>
+                  <transition name="slide-fade">
+                    <img v-if="bottleType == 'Riesling' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/RIE_image.png">
+                  </transition>
+                  <transition name="slide-fade">
+                    <img v-if="bottleType == 'Sparkling' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/SPK_image.png">
+                  </transition>
+                  <transition name="slide-fade">
+                    <img v-if="bottleType == 'Magnum' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/MAG_image.png">
+                  </transition>
+                  <transition name="slide-fade">
+                    <img v-if="bottleType == 'Premium Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/PBG_image.png">
+                  </transition>
+
+                </div>
+              </div>
+
+            </div>
+
           </div>
-        </div>
-        <div class="row">
-          <div id="previewLabel" class="col-lg-8 offset-lg-2 preview">
-            <transition name="slide-fade">
-              <label v-if="bottleType && bottleSpec" class="disclaimer" v-html=bottlePreviewDisclaimer></label>
-            </transition>
+
+          <transition name="slide-fade">
+            <label v-if="bottleType && bottleSpec" class="disclaimer" v-html=bottlePreviewDisclaimer></label>
+          </transition>
+
+          <div class='layer-10'>
+            <div class="alert alert-danger p-5 font-weight-bold invalid-alert" role="alert" id='invalidWarning' v-show="showInvalid">{{ overallWarning }}</div>
           </div>
+
         </div>
+
       </div>
+
     </div>
   </div>
 </template>
@@ -283,7 +369,6 @@
           help: false,
           helpMessage: "",
           bottlePreviewDisclaimer: "",
-          displaySide: 'front',          // label preview stuff
           validLabelOptions: [],
           selectHelpMessage: '',
 
@@ -468,6 +553,7 @@
       // side: side the label is on {'front', 'back', 'medal'}
       // deselect: boolean tag denoting if the label needs to be removed from the currently selected labels
       cleanLabel(ID, side, deselect) {
+
         if (deselect) {
           this.labelStatuses.selected = this.arrayRemove(this.labelStatuses.selected, CONSTANTS.labelNames[ID]);
         }
@@ -547,7 +633,7 @@
         }
 
         if (label == CONSTANTS.labelNames.B2) {
-          this.cleanLabel('B2', 'front', false);
+          this.cleanLabel('B2', 'back', false);
           this.updateMaxWidth('back');
         }
 
@@ -749,26 +835,31 @@
         }
       },
 
-      // Select which side the label preview is displaying and highlight the respective side's button
-      // updates preview if there is a bottle spec
-      // side: side of bottle, must be one of {'front', 'back'}
-      displaySelect(side) {
+      displaySide(side, labels) {
+        const diamiter = this.bottleSpec.diameter;
+        const radius = diamiter/2;
 
-        this.displaySide = side;
-        switch (side) {
-          case 'front':
-            document.getElementById('frontDisplayButton').classList.add("selected");
-            document.getElementById('backDisplayButton').classList.remove("selected");
-            break;
-          case 'back':
-            document.getElementById('backDisplayButton').classList.add("selected");
-            document.getElementById('frontDisplayButton').classList.remove("selected");
-            break;
-          case 2:
+        var  label;
+        for (var x in labels[side].main) {
+          label = labels[side].main[x];
+          if (label.theta <= Math.PI) {
+            label['adjustedWidth'] = 2 * Math.sin(label.theta/2) * radius;
+          } else {
+            label['adjustedWidth'] = diamiter;
+          }
+          this.displayLabel(`${side}LabelPreview${x[1]}`, label);
         }
-        if (this.bottleSpec != null) {
-          this.clearPreview();
-          this.updatePreview();
+
+        for (var y in labels[side].overflow) {
+          label = labels[side].overflow[y];
+          if (label.theta > Math.PI) {
+            label.theta -= Math.PI;
+            label['adjustedWidth'] = radius - (Math.cos(label.theta/2) * radius);
+          } else {
+            label['adjustedWidth'] = 0;
+          }
+          this.displayLabel(`${side}LabelPreviewOverflowLeft${y[1]}`, label);
+          this.displayLabel(`${side}LabelPreviewOverflowRight${y[1]}`, label);
         }
       },
 
@@ -777,58 +868,29 @@
       // Fetches label measurements, calculates warped 2D width based on bottle size, displays label
       //    - Fetching and display functionality is handeled in helper functions
       updatePreview() {
-        const diamiter = this.bottleSpec.diameter;
-        const radius = diamiter/2;
 
-        var labels = {'front': {}, 'back': {}};
+        var labels = {'front': {'main': {}, 'overflow': {}}, 'back': {'main': {}, 'overflow': {}}};
         // loop for multi label
 
         for (var id of this.globalPositions.activeLabels) {
           if (id[0].toLowerCase() == 'f') {
-            labels.front[id] = this.fetchDisplayMeasurements('front', id, radius);
+            labels.front.main[id] = this.fetchDisplayMeasurements('front', id);
+            labels.back.overflow[id] = this.fetchDisplayMeasurements('front', id);
           } else if (id[0].toLowerCase() == 'b') {
-            labels.back[id] = this.fetchDisplayMeasurements('back', id, radius);
+            labels.back.main[id] = this.fetchDisplayMeasurements('back', id);
+            labels.front.overflow[id] = this.fetchDisplayMeasurements('back', id);
           }
         }
 
-        var main = {};
-        var overflow = {};
-        if (this.displaySide == 'front') {
-          main = labels.front;
-          overflow = labels.back;
-        } else {
-          main = labels.back;
-          overflow = labels.front;
-        }
-
-        var  label;
-        for (var x in main) {
-          label = main[x];
-          if (label.theta <= Math.PI) {
-            label['adjustedWidth'] = 2 * Math.sin(label.theta/2) * radius;
-          } else {
-            label['adjustedWidth'] = diamiter;
-          }
-          this.displayLabel("labelPreview"+x[1], label);
-        }
-
-        for (var y in overflow) {
-          label = overflow[y];
-          if (label.theta > Math.PI) {
-            label.theta -= Math.PI;
-            label['adjustedWidth'] = radius - (Math.cos(label.theta/2) * radius);
-          } else {
-            label['adjustedWidth'] = 0;
-          }
-          this.displayLabel("labelPreviewOverflowLeft"+y[1], label);
-          this.displayLabel("labelPreviewOverflowRight"+y[1], label);
-        }
+        this.displaySide('front', labels);
+        this.displaySide('back', labels);
       },
 
       // Fetches height and height offset for the specified label and calculates the width of the label as an angle on the radius of the bottle
       // Default values are 0, if a height offset of 0 is found the label is hidden
-      fetchDisplayMeasurements(side, labelId, radius) {
-
+      fetchDisplayMeasurements(side, labelId) {
+        const radius = this.bottleSpec.diameter/2;
+        
         var heightOffset = 0;
         var height = 0;
         var theta = 0;
@@ -852,13 +914,21 @@
       // Clears all labels off label preview
       clearPreview() {
         const blank = {'height': 0, 'adjustedWidth': 0, 'heightOffset': 0}
-        this.displayLabel('labelPreview1', blank);
-        this.displayLabel('labelPreviewOverflowLeft1', blank);
-        this.displayLabel('labelPreviewOverflowRight1', blank);
+        this.displayLabel('frontLabelPreview1', blank);
+        this.displayLabel('frontLabelPreviewOverflowLeft1', blank);
+        this.displayLabel('frontLabelPreviewOverflowRight1', blank);
 
-        this.displayLabel('labelPreview2', blank);
-        this.displayLabel('labelPreviewOverflowLeft2', blank);
-        this.displayLabel('labelPreviewOverflowRight2', blank);
+        this.displayLabel('frontLabelPreview2', blank);
+        this.displayLabel('frontLabelPreviewOverflowLeft2', blank);
+        this.displayLabel('frontLabelPreviewOverflowRight2', blank);
+
+        this.displayLabel('backLabelPreview1', blank);
+        this.displayLabel('backLabelPreviewOverflowLeft1', blank);
+        this.displayLabel('backLabelPreviewOverflowRight1', blank);
+
+        this.displayLabel('backLabelPreview2', blank);
+        this.displayLabel('backLabelPreviewOverflowLeft2', blank);
+        this.displayLabel('backLabelPreviewOverflowRight2', blank);
       },
 
       // Sets demensions of the label preview on the bottle and places it in the right possition
@@ -934,6 +1004,25 @@ body{
   font-size: 20px;
 }
 
+.form-header {
+  padding: 15px 10px 5px 10px;
+  text-align: center;
+  font-size: 20px;
+}
+
+.preview-header {
+  padding: 15px 10px 5px 10px;
+  text-align: center;
+  font-size: 20px;
+}
+
+.invalid-alert {
+  width: 55%;
+  font-size: 110%;
+  float: center;
+  left: 22.5%;
+}
+
 .disclaimer {
   padding: 10px;
   text-align: center;
@@ -990,19 +1079,6 @@ body{
   outline-width: 0 !important;
 }
 
-.medal-button {
-  float: left;
-  margin: 5px;
-  text-align: center;
-  padding: 3px 10px 3px;
-  border-radius: 8px;
-  border: 1px solid lightgrey;
-  background: white;
-  opacity: 0.7;
-  outline:none !important;
-  outline-width: 0 !important;
-}
-
 .close {
   background: none;
   border: none;
@@ -1039,16 +1115,32 @@ body{
   height: 100%;
 }
 
-.clear {
-  float: right;
-  margin: 5px;
+.clear-button {
+  font-size: 120%;
+  font-weight: 700;
+  margin: 2% 4% 2% 4%;
   text-align: center;
-  padding: 3px 10px 3px;
+  padding: 2%;
   border-radius: 8px;
+  width: 100%;
+  border: 1px solid lightgrey;
+  background: #ff5b5b;
+  color: white;
+  outline:none !important;
+  outline-width: 0 !important;
+}
+
+.medal-button {
+  font-size: 120%;
+  font-weight: 700;
+  margin: 2% 4% 2% 4%;
+  text-align: center;
+  padding: 2%;
+  border-radius: 8px;
+  width: 100%;
   border: 1px solid lightgrey;
   background: white;
-  opacity: 0.6;
-  color: red;
+  opacity: 0.7;
   outline:none !important;
   outline-width: 0 !important;
 }
@@ -1071,18 +1163,6 @@ body{
   opacity: 0.9;
   outline:none !important;
   outline-width: 0 !important;
-}
-
-.slide-fade-enter-active {
-  transition: all .4s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-}
-.slide-fade-leave-active {
-  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-}
-.slide-fade-enter, .slide-fade-leave-to
-/* .slide-fade-leave-active below version 2.1.8 */ {
-  /* transform: translateX(10px); */
-  opacity: 0;
 }
 
 </style>
