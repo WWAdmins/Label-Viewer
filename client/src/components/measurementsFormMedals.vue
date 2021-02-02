@@ -20,8 +20,8 @@
 
                 <div class="row">
                     <div class="col-5">
-                        <label v-if="type == 'Button medal'" class="sub-title-formatted">{{titles.diameterLabel}}</label>
-                        <label v-if="type == 'Strip medal'" class="sub-title-formatted">{{titles.heightLabel}}</label>
+                        <label v-if="type == 'Button medal'" class="sub-title-formatted-medal">{{titles.diameterLabel}}</label>
+                        <label v-if="type == 'Strip medal'" class="sub-title-formatted-medal">{{titles.heightLabel}}</label>
                     </div>
                 </div>
                 <div class="row">
@@ -44,7 +44,7 @@
 
                 <div class="row">
                     <div class="col-5">
-                        <label v-if="type" class="sub-title-formatted">{{titles.overlapLabel}}</label>
+                        <label v-if="type" class="sub-title-formatted-medal">{{titles.overlapLabel}}</label>
                     </div>
                 </div>
                 <div class="row">
@@ -69,7 +69,7 @@
             <div class='col-sm-6' v-show="type == 'Strip medal'">
                 <div class="row">
                     <div class="col-5">
-                        <label class="sub-title-formatted">{{titles.widthLabel}}</label>
+                        <label class="sub-title-formatted-medal">{{titles.widthLabel}}</label>
                     </div>
                 </div>
                 <div class="row">
@@ -277,7 +277,7 @@
                 if (this.bottleSpec == null) {
                     this.heightDescription = '';
                 } else {
-                    this.heightDescription = `recommended between <b><b>${CONSTANTS.minLabelHeight}mm</b></b> and <b><b>${CONSTANTS.maxMedalHeight}mm</b></b>`;
+                    this.heightDescription = CONSTANTS.descriptions.between.replace("${min}", CONSTANTS.minLabelHeight).replace("${max}", CONSTANTS.maxMedalHeight);
                 }
             },
 
@@ -289,7 +289,7 @@
                 if (this.bottleSpec == null) {
                     this.widthDescription = '';
                 } else {
-                    this.widthDescription = `recommended between <b><b>${CONSTANTS.minStripWidth}mm</b></b> and <b><b>${CONSTANTS.maxStripWidth}mm</b></b>`;
+                    this.widthDescription = CONSTANTS.descriptions.between.replace("${min}", CONSTANTS.minStripWidth).replace("${max}", CONSTANTS.maxStripWidth);
                 }
             },
 
@@ -311,7 +311,7 @@
                 if (this.overlapMin > this.height) {
                     this.overlapMin = this.height;
                 }
-                this.overlapDescription = `recommended between <b><b>${this.overlapMin}mm</b></b> and <b><b>${this.overlapMax}mm</b></b>`;
+                this.overlapDescription = CONSTANTS.descriptions.between.replace("${min}", this.overlapMin).replace("${max}", this.overlapMax);
             },
 
             // Set the provided input to the given setting's css class
@@ -404,14 +404,14 @@
 
             // Checks the validity of the height field and sets validHeight, changes css setting of input and triggers warnings depending on validity
             validateHeight() {
-                if (this.height < CONSTANTS.minLabelHeight) {  // too low
+                if (this.height < CONSTANTS.warning.minLabelHeight) {  // too low
                     this.validHeight = false;
-                    this.warnHeight = CONSTANTS.lowHeightWarning;
+                    this.warnHeight = CONSTANTS.warning.lowHeightWarning;
                     this.heightWarnClass = 'red';
                     this.setInputCss('height', 'red');
-                } else if (this.height > CONSTANTS.maxMedalHeight) { // too high
+                } else if (this.height > CONSTANTS.warning.maxMedalHeight) { // too high
                     this.validHeight = false;
-                    this.warnHeight = CONSTANTS.highHeightWarning;
+                    this.warnHeight = CONSTANTS.warning.highHeightWarning;
                     this.heightWarnClass = 'red';
                     this.setInputCss('height', 'red');
                 } else { // fine
@@ -481,119 +481,13 @@
 
 <style>
 
-.medal-form {
-    padding: 3%;
-}
-
-.form {
-    margin: 2%;
-}
-
-.dotted {
-    border-style: dotted;
-}
-
-.pre-formatted {
-    white-space: pre-wrap;
-    padding: 5px;
-    width: 90%;
-    font-size: 75%;
-}
-
-.sub-title-formatted {
+.sub-title-formatted-medal {
     white-space: pre-wrap;
     text-align: left;
-    margin-left: 6%;
     width: 100%;
     font-weight: bold;
-}
-
-.dissabled-text {
-    opacity: 0.7;
-}
-
-.standard-input {
     float: left;
     margin-left: 5%;
-    width: 80px;
-    padding: 6%;
-    border: 1px solid lightgrey;
-    border-radius: 8px;
-    font-size: 120%;
-    outline-width: 3px;
-    outline-color: darkgrey;
-}
-
-.green-input {
-    float: left;
-    margin-left: 6%;
-    width: 80px;
-    padding: 6%;
-    border: 3px solid green;
-    border-radius: 8px;
-    font-size: 120%;
-    outline-width: 3px;
-    outline-color: darkgrey;
-    border-color: #28a745;
-    padding-right: calc(1.5em + 0.75rem);
-    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%2328a745" class="bi bi-check2" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: 2rem 2.1rem;
-    background-position: right 0.1rem center;
-    min-width: 90px;
-}
-
-.red-input {
-    float: left;
-    margin-left: 5%;
-    width: 80px;
-    padding: 6%;
-    border: 3px solid red;
-    border-radius: 8px;
-    font-size: 120%;
-    outline-width: 3px;
-    outline-color: darkgrey;
-
-    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" fill="%23FF0000" class="bi bi-x" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: 2rem 3rem;
-    background-position: right 0rem center;
-    min-width: 90px;
-}
-
-
-.tooltip {
-    display: block !important;
-    z-index: 10000;
-}
-
-.tooltip .tooltip-inner {
-    background: none;
-    color: white;
-    border-radius: 16px;
-    font-size: 110%;
-}
-
-.red {
-    background: rgb(255, 45, 45);
-    border-radius: 16px;
-    padding: 15px;
-}
-
-.tooltip[x-placement^="right"] {
-    margin-left: 5px;
-}
-
-.tooltip[aria-hidden='true'] {
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity .15s, visibility .15s;
-}
-
-.tooltip[aria-hidden='false'] {
-    visibility: visible;
-    opacity: 1;
-    transition: opacity .15s;
 }
 
 </style>

@@ -1,12 +1,12 @@
 <template>
   <div id="app">
-    <div id="header" class="container-fluid main-backing col-lg-10 offset-lg-1">
+    <div id="header" class="container-fluid header-backing col-lg-10 offset-lg-1">
       <div class="row">
         <div class="col-lg-2">
-          <img class="image" alt="logo" src="./assets/logo_temp.png">
+          <img class="header-logo" alt="logo" src="./assets/logo_temp.png">
         </div>
         <div class="col-lg-10">
-          <label>A really cool title that still needs to be formatted</label>
+          <label>{{titles.pageHeader}}</label>
         </div>
       </div>
     </div>
@@ -157,11 +157,16 @@
 
             <button 
               class="clear-button" 
-              v-if='!help' 
+              v-if='globalPositions.activeLabels.length > 0' 
               v-on:click="clearForm()" 
-              :disabled="!bottleSpec"
+              :disabled="globalPositions.activeLabels.length == 0"
             >{{titles.clearButton}}</button>
-
+            <button 
+              class="clear-button dissabled-clear" 
+              v-else
+              v-on:click="clearForm()" 
+              :disabled="globalPositions.activeLabels.length == 0"
+            >{{titles.clearButton}}</button>
             
 
           </div>
@@ -191,9 +196,15 @@
 
             <button 
               class="clear-button" 
-              v-if='!help' 
+              v-if='globalPositions.activeLabels.length > 0' 
               v-on:click="clearForm()" 
-              :disabled="!bottleSpec"
+              :disabled="globalPositions.activeLabels.length == 0"
+            >{{titles.clearButton}}</button>
+            <button 
+              class="clear-button dissabled-clear" 
+              v-else
+              v-on:click="clearForm()" 
+              :disabled="globalPositions.activeLabels.length == 0"
             >{{titles.clearButton}}</button>
 
           </div>
@@ -203,14 +214,13 @@
         <div id="previews-col" class="col-lg-7">
           <br><br>
 
-          <div id="previews" class="row">
+          <div id="previews" class="row" v-show="bottleSpec">
 
             <div id="front-preview" class="col-lg-6 center">
 
               <div id="preview-header-front" class="row center">
                 <div class="col-lg-12">
-                  <label class='preview-header center' v-if="bottleSpec">{{titles.frontLabel}}</label>
-                  <label class='preview-header center dissabled' v-else>{{titles.frontLabel}}</label>
+                  <label class='preview-header center'>{{titles.frontLabel}}</label>
                 </div>
               </div>
 
@@ -254,7 +264,6 @@
               <div id="preview-header-back" class="row">
                 <div class="col-lg-12">
                   <label class='preview-header' v-if="bottleSpec">{{titles.backLabel}}</label>
-                  <label class='preview-header dissabled' v-else>{{titles.backLabel}}</label>
                 </div>
               </div>
 
@@ -782,7 +791,7 @@
         if (warning == 'orange zone') {
           if (!this.warned) {
             this.showWarning(
-              CONSTANTS.help.orangeZoneMeaage,
+              CONSTANTS.help.orangeZoneMessage,
               'Caution:'
             );
             this.warned = true;
@@ -986,11 +995,24 @@ body{
   margin-bottom: 60px;
   border-radius: 8px;
   background-color: rgb(255,255,255,0.93);
-  padding: 60px;
+  padding: 40px;
+}
+
+.header-backing {
+  margin-top: 60px;
+  margin-bottom: 60px;
+  border-radius: 8px;
+  background-color: rgb(255,255,255,0.93);
+  padding: 20px;
+}
+
+.header-logo {
+  width: 50%;
+  float: left;
 }
 
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Verdana;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -1001,11 +1023,6 @@ body{
 
 .hidden {
     visibility: hidden !important;
-}
-
-.pre-formatted {
-  white-space: pre-wrap;
-  padding: 5px;
 }
 
 .dissabled-text {
@@ -1021,13 +1038,13 @@ body{
 .form-header {
   padding: 15px 10px 5px 10px;
   text-align: center;
-  font-size: 20px;
+  font-size: 25px;
 }
 
 .preview-header {
   padding: 15px 10px 5px 10px;
   text-align: center;
-  font-size: 20px;
+  font-size: 25px;
 }
 
 .invalid-alert {
@@ -1132,7 +1149,7 @@ body{
 .clear-button {
   font-size: 120%;
   font-weight: 700;
-  margin: 2% 4% 2% 4%;
+  margin: 2% 3% 2% 3%;
   text-align: center;
   padding: 2%;
   border-radius: 8px;
@@ -1140,14 +1157,16 @@ body{
   border: 1px solid lightgrey;
   background: #ff5b5b;
   color: white;
-  outline:none !important;
-  outline-width: 0 !important;
+}
+
+.dissabled-clear {
+  background: #ff7373;
 }
 
 .medal-button {
   font-size: 120%;
   font-weight: 700;
-  margin: 2% 4% 2% 4%;
+  margin: 2% 3% 2% 3%;
   text-align: center;
   padding: 2%;
   border-radius: 8px;
@@ -1177,6 +1196,127 @@ body{
   opacity: 0.9;
   outline:none !important;
   outline-width: 0 !important;
+}
+
+/* Forms */
+
+.pre-formatted {
+  white-space: pre-wrap;
+  padding: 5px;
+  width: 90%;
+  font-size: 75%;
+}
+
+.dissabled-text {
+    opacity: 0.7;
+}
+
+.standard-input {
+    float: left;
+    margin-left: 4%;
+    width: 75px;
+    padding: 6%;
+    border: 1px solid lightgrey;
+    border-radius: 8px;
+    font-size: 120%;
+    outline-width: 3px;
+    outline-color: darkgrey;
+}
+
+.green-input {
+    float: left;
+    margin-left: 3%;
+    width: 80px;
+    padding: 6%;
+    border: 3px solid green;
+    border-radius: 8px;
+    font-size: 120%;
+    outline-width: 3px;
+    outline-color: darkgrey;
+    border-color: #28a745;
+    padding-right: calc(1.5em + 0.75rem);
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%2328a745" class="bi bi-check2" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/></svg>');
+    background-repeat: no-repeat;
+    background-size: 2rem 2.1rem;
+    background-position: right 0.1rem center;
+    min-width: 90px;
+}
+
+.orange-input {
+    float: left;
+    margin-left: 3%;
+    width: 80px;
+    padding: 6%;
+    border: 3px solid orange;
+    border-radius: 8px;
+    font-size: 120%;
+    outline-width: 3px;
+    outline-color: darkgrey;
+
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="orange" class="bi bi-exclamation-triangle" viewBox="0 0 16 16"><path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/><path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"/></svg>');
+    background-repeat: no-repeat;
+    background-size: 1.3rem 2rem;
+    background-position: right 0.6rem center;
+    min-width: 90px;
+}
+
+.red-input {
+    float: left;
+    margin-left: 3%;
+    width: 80px;
+    padding: 6%;
+    border: 3px solid red;
+    border-radius: 8px;
+    font-size: 120%;
+    outline-width: 3px;
+    outline-color: darkgrey;
+
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" fill="%23FF0000" class="bi bi-x" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>');
+    background-repeat: no-repeat;
+    background-size: 2rem 3rem;
+    background-position: right 0rem center;
+    min-width: 90px;
+}
+
+
+.tooltip {
+  display: block !important;
+  z-index: 10000;
+}
+
+.tooltip .tooltip-inner {
+  background: none;
+  color: white;
+  border-radius: 16px;
+  font-size: 110%;
+}
+
+.red {
+    background: rgb(255, 45, 45);
+    border-radius: 16px;
+    padding: 15px;
+}
+
+.orange {
+    background: orange;
+    border-radius: 16px;
+    padding: 10px;
+}
+
+.tooltip[x-placement^="right"] {
+  margin-left: 5px;
+}
+
+.tooltip[aria-hidden='true'] {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .15s, visibility .15s;
+}
+
+.tooltip[aria-hidden='false'] {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity .15s;
 }
 
 </style>
