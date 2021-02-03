@@ -408,12 +408,12 @@
 
             // Checks the validity of the height field and sets validHeight, changes css setting of input and triggers warnings depending on validity
             validateHeight() {
-                if (this.height < CONSTANTS.warning.minLabelHeight) {  // too low
+                if (this.height < CONSTANTS.minLabelHeight) {  // too low
                     this.validHeight = false;
                     this.warnHeight = CONSTANTS.warning.lowHeightWarning;
                     this.heightWarnClass = 'red';
                     this.setInputCss('height', 'red');
-                } else if (this.height > CONSTANTS.warning.maxMedalHeight) { // too high
+                } else if (this.height > CONSTANTS.maxMedalHeight) { // too high
                     this.validHeight = false;
                     this.warnHeight = CONSTANTS.warning.highHeightWarning;
                     this.heightWarnClass = 'red';
@@ -491,7 +491,7 @@
     width: 100%;
     font-weight: bold;
     float: left;
-    margin-left: 5%;
+    margin-left: 6%;
 }
 
 </style>

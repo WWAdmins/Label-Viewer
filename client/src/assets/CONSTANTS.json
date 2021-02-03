@@ -82,7 +82,8 @@
         "labelGapLabel": "LABEL GAP",
         "diameterLabel": "DIAMETER",
         "overlapLabel": "OVERLAP",
-        "pageHeader": "A really cool title that still needs to be formatted"
+        "pageHeaderTitle": "WineWorks Label Viewer (name tbc)",
+        "pageHeaderBody": "This sit is here to help you understand your labels and help us niform you of what we can up on your bottles"
     },
 
     "descriptions": {

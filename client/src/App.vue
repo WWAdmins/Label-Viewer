@@ -2,13 +2,18 @@
   <div id="app">
     <div id="header" class="container-fluid header-backing col-lg-10 offset-lg-1">
       <div class="row">
-        <div class="col-lg-2">
+        <div class="col-sm-atuo">
           <img class="header-logo" alt="logo" src="./assets/logo_temp.png">
         </div>
-        <div class="col-lg-10">
-          <label>{{titles.pageHeader}}</label>
+        <div class="col-sm-9">
+          <label class="main-title">{{titles.pageHeaderTitle}}</label>
+          <label class="main-title-body">{{titles.pageHeaderBody}}</label>
+        </div>
+        <div class="col-sm-1">
+          <button id="helpButton" class="help-button">i</button>
         </div>
       </div>
+      
     </div>
 
     <div id="body" class="container-fluid main-backing col-lg-10 offset-lg-1">
@@ -1009,8 +1014,21 @@ body{
 }
 
 .header-logo {
-  width: 50%;
+  width: 120%;
+  max-width: 100px;
   float: left;
+  margin-left: 20px;
+}
+
+.main-title {
+  font-size: 200%;
+  text-align: left;
+  float: left;
+}
+
+.main-title-body {
+  float: left;
+  text-align: left;
 }
 
 #app {
@@ -1103,8 +1121,8 @@ body{
   float: right;
   margin: 5px;
   text-align: center;
-  padding: 3px 10px 3px;
-  border-radius: 8px;
+  padding: 20px 30px 20px 30px;
+  border-radius: 50%;
   border: 1px solid lightgrey;
   background: #cffeff;
   opacity: 0.7;
@@ -1127,8 +1145,7 @@ body{
 }
 
 .medal-help {
-  margin-left: 1.8%;
-  float: left;
+  margin-left: 4%;
   font-size: 93%;
 }
 
@@ -1228,48 +1245,45 @@ body{
     outline-width: 3px;
     outline-color: darkgrey;
     border-color: #28a745;
-    padding-right: calc(1.5em + 0.75rem);
+    padding-right: calc(1.5rem);
     background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%2328a745" class="bi bi-check2" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/></svg>');
     background-repeat: no-repeat;
     background-size: 2rem 2.1rem;
     background-position: right 0.1rem center;
-    min-width: 90px;
 }
 
 .orange-input {
     float: left;
     margin-left: 3%;
-    width: 80px;
+    width: 76px;
     padding: 6%;
     border: 3px solid orange;
     border-radius: 8px;
     font-size: 120%;
     outline-width: 3px;
     outline-color: darkgrey;
-
+    padding-right: calc(1.5rem);
     background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="orange" class="bi bi-exclamation-triangle" viewBox="0 0 16 16"><path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/><path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"/></svg>');
     background-repeat: no-repeat;
     background-size: 1.3rem 2rem;
     background-position: right 0.6rem center;
-    min-width: 90px;
 }
 
 .red-input {
     float: left;
     margin-left: 3%;
-    width: 80px;
+    width: 76px;
     padding: 6%;
     border: 3px solid red;
     border-radius: 8px;
     font-size: 120%;
     outline-width: 3px;
     outline-color: darkgrey;
-
+    padding-right: calc(1.5rem);
     background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" fill="%23FF0000" class="bi bi-x" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>');
     background-repeat: no-repeat;
     background-size: 2rem 3rem;
     background-position: right 0rem center;
-    min-width: 90px;
 }
 
 

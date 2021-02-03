@@ -666,7 +666,7 @@
     width: 100%;
     font-weight: bold;
     float: left;
-    margin-left: 2%;
+    margin-left: 3%;
 }
 
 </style>
