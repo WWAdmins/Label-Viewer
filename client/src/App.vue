@@ -327,6 +327,26 @@
       </div>
 
     </div>
+
+    <div>
+      <b-modal 
+        ref="orangeZoneWarning" 
+        centered
+        :header-bg-variant="'warning'"
+        size="md"
+        >
+        <template #default class="rounded">
+          <label class="modal-body" v-html="orangeZoneMessage"></label>
+        </template>
+        <template #modal-header="{  }">
+          <!-- Emulate built in modal header close button action -->
+          <div class="container-fluid">
+            <p class="modal-title">Caution</p>
+          </div>
+        </template>
+      </b-modal>
+    </div>
+
   </div>
 </template>
 
@@ -403,6 +423,7 @@
 
           medalMode: false,  // toggle between labels and medals using button
           medalPlacementHelp: '',
+          orangeZoneMessage: '',
 
           titles: {}
         }
@@ -420,6 +441,7 @@
         this.overallWarning = CONSTANTS.warning.invalidWarning;
         this.bottlePreviewDisclaimer = CONSTANTS.help.bottlePreviewDisclaimer;
         this.selectHelpMessage = CONSTANTS.help.selectHelpMessage;
+        this.orangeZoneMessage = CONSTANTS.help.orangeZoneMessage;
 
         this.validLabelOptions = [CONSTANTS.labelNames.F1, CONSTANTS.labelNames.B1];
     },
@@ -801,23 +823,10 @@
 
         if (warning == 'orange zone') {
           if (!this.warned) {
-            this.showWarning(
-              CONSTANTS.help.orangeZoneMessage,
-              'Caution:'
-            );
+            this.$refs['orangeZoneWarning'].show();
             this.warned = true;
           }
         }
-      },
-
-      // Creates a popup modal to warn the user (uses simple-alert-for-vue-js)
-      // Warning will have the specified title, body message and will display
-      showWarning(Message, title) {
-        this.$alert(
-          Message,
-          title,
-          "warning"
-        );
       },
 
       // Runs when a invalid input is found in a measurement form
@@ -1088,6 +1097,7 @@ body{
   padding: 10px;
   text-align: center;
   font-size: 15px;
+  font-style: italic;
 }
 
 .multi-select {
@@ -1211,6 +1221,20 @@ body{
   background: rgba(211, 211, 211, 0.9);
   outline:none !important;
   outline-width: 0 !important;
+}
+
+/* Modal */
+
+.modal-title{
+  text-align: center;
+  font-size: 140%;
+  font-weight: bolder;
+}
+
+.modal-body{
+  text-align: center;
+  font-size: 105%;
+  white-space: pre-wrap;
 }
 
 /* Forms */

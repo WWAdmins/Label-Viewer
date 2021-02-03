@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import App from './App.vue'
-import VueSimpleAlert from "vue-simple-alert";
 import VTooltip from 'v-tooltip';
 import { BootstrapVue} from 'bootstrap-vue'
 
@@ -13,7 +12,6 @@ Vue.use(BootstrapVue)
 
 
 Vue.use(VTooltip);
-Vue.use(VueSimpleAlert);
 
 // Import Bootstrap CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
