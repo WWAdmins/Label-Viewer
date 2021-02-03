@@ -32,9 +32,11 @@
     "help": {
         "wrapAroundMessage": "Due to limitations of out labeler, we are not able to apply a back label while applying a wraparound style label to the front",
         "orangeZoneMessage": "Current label measurement is outside the recommended range. This may cause longer setup, may run slower and there is a chance of bubbles. (Additional packaging charges may apply due to lower hourly output). <hr>There will be no liability on dry-goods suppliers or bottler, if label application issues are encountered. By dissmissing this alert you acknowledge these risks",
-        "helpMessage": "Unsure of how to take your measurements? \nFor height take the vertical distance from the highest to the lowest point of your label \nFor Width take the horizontal distance from the furthest left point to the furthest right point<hr>If your measurements are invalid and you wish to discuss why, feel free to contact us [help link here]<hr>Unsure how to use this site? Check out our comprehensive label guide [label guide link here]",
+        "helpMessage": "Unsure of how to take your measurements? \nFor height take the vertical distance from the highest to the lowest point of your label \nFor Width take the horizontal distance from the furthest left point to the furthest right point<hr>If your measurements are invalid and you wish to discuss why, feel free to contact us [help link here]<hr>Unsure how to use this site? Check out our comprehensive label guide [user guide link here]",
         "helpLink": "https://www.wineworks.co.nz/",
+        "helpLinkDisplay": "here",
         "userGuideLink": "https://nz.answers.yahoo.com/question/index;_ylt=AwrT4pJQFhpgUTIANzDzZgx.;_ylu=Y29sbwNncTEEcG9zAzEEdnRpZAMEc2VjA3Nj?qid=20140922192102AAXG1vR",
+        "userGuideLinkDisplay": "here",
         "bottlePreviewDisclaimer": "*Preview depiction is not fully accurate for every bottle and should only be used as an estimation*",
         "selectHelpMessage": "Select a bottle to continue",
         "medalPlacementHelp": "For a this bottle it is recommended to place the medal within [measure here]mm of the vertical center of the front label to ensure optimum visibilty"

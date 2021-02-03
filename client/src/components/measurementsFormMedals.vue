@@ -20,8 +20,8 @@
 
                 <div class="row">
                     <div class="col-5">
-                        <label v-if="type == 'Button medal'" class="sub-title-formatted-medal">{{titles.diameterLabel}}</label>
-                        <label v-if="type == 'Strip medal'" class="sub-title-formatted-medal">{{titles.heightLabel}}</label>
+                        <label v-if="type == 'Button medal'" class="sub-title-formatted-medal" v-html="titles.diameterLabel"></label>
+                        <label v-if="type == 'Strip medal'" class="sub-title-formatted-medal" v-html="titles.heightLabel"></label>
                     </div>
                 </div>
                 <div class="row">
@@ -44,7 +44,7 @@
 
                 <div class="row">
                     <div class="col-5">
-                        <label v-if="type" class="sub-title-formatted-medal">{{titles.overlapLabel}}</label>
+                        <label v-if="type" class="sub-title-formatted-medal" v-html="titles.overlapLabel"></label>
                     </div>
                 </div>
                 <div class="row">
@@ -69,7 +69,7 @@
             <div class='col-sm-6' v-show="type == 'Strip medal'">
                 <div class="row">
                     <div class="col-5">
-                        <label class="sub-title-formatted-medal">{{titles.widthLabel}}</label>
+                        <label class="sub-title-formatted-medal" v-html="titles.widthLabel"></label>
                     </div>
                 </div>
                 <div class="row">

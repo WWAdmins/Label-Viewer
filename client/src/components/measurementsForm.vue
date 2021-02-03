@@ -1,8 +1,8 @@
 <template>
     <div id=inputs>
         <hr v-if="labelId[1] > 1"> 
-        <label class="sub-title-formatted" v-if="bottleSpec">{{titles.heightLabel}}</label>
-        <label class="sub-title-formatted dissabled-text" v-else>{{titles.heightLabel}}</label>
+        <label class="sub-title-formatted" v-if="bottleSpec" v-html="titles.heightLabel"></label>
+        <label class="sub-title-formatted dissabled-text" v-else v-html="titles.heightLabel"></label>
         
         <div class='row edge-fixer'>
             <div class='col-5'>
@@ -23,8 +23,8 @@
         </div>
         <br>
 
-        <label class="sub-title-formatted" v-if="bottleSpec">{{titles.widthLabel}}</label>
-        <label class="sub-title-formatted dissabled-text" v-else>{{titles.widthLabel}}</label>
+        <label class="sub-title-formatted" v-if="bottleSpec" v-html="titles.widthLabel"></label>
+        <label class="sub-title-formatted dissabled-text" v-else v-html="titles.widthLabel"></label>
 
         <div class='row edge-fixer'>
             <div class='col-5'>
@@ -46,10 +46,10 @@
         <br>
 
 
-        <label class="sub-title-formatted" v-if="labelId[1] == 1 && bottleSpec">{{titles.appHeightLabel}}</label>
-        <label class="sub-title-formatted dissabled-text" v-if="labelId[1] == 1 && !bottleSpec">{{titles.appHeightLabel}}</label>
-        <label class="sub-title-formatted" v-if="labelId[1] == 2">{{titles.labelGapLabel}}</label>
-        <label class="sub-title-formatted dissabled-text" v-if="labelId[1] == 2 && !bottleSpec">{{titles.labelGapLabel}}</label>
+        <label class="sub-title-formatted" v-if="labelId[1] == 1 && bottleSpec" v-html="titles.appHeightLabel"></label>
+        <label class="sub-title-formatted dissabled-text" v-if="labelId[1] == 1 && !bottleSpec" v-html="titles.appHeightLabel"></label>
+        <label class="sub-title-formatted" v-if="labelId[1] == 2" v-html="titles.labelGapLabel"></label>
+        <label class="sub-title-formatted dissabled-text" v-if="labelId[1] == 2 && !bottleSpec" v-html="titles.labelGapLabel"></label>
         
         <div class='row edge-fixer'>
             <div class='col-5'>

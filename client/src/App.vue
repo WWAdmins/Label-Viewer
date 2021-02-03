@@ -6,8 +6,8 @@
           <img class="header-logo" alt="logo" src="./assets/logo_temp.png">
         </div>
         <div class="col-sm-7 mr-auto">
-          <label class="main-title">{{titles.pageHeaderTitle}}</label>
-          <label class="main-title-body">{{titles.pageHeaderBody}}</label>
+          <label class="main-title" v-html="titles.pageHeaderTitle"></label>
+          <label class="main-title-body" v-html="titles.pageHeaderBody"></label>
         </div>
         <div class="col-sm-2 right-col">
           <b-link v-b-toggle.collapse-1 class="help-button">Help</b-link>
@@ -102,8 +102,8 @@
 
             <div id="front-labels" class="col-sm-6">
 
-              <label class="form-header" v-if="bottleSpec">{{titles.frontLabel}}</label>
-              <label class="form-header dissabled-text" v-else>{{titles.frontLabel}}</label>
+              <label class="form-header" v-if="bottleSpec" v-html="titles.frontLabel"></label>
+              <label class="form-header dissabled-text" v-else v-html="titles.frontLabel"></label>
 
               <measurements-form
                 v-for="n in labelStatuses.front.count"
@@ -131,8 +131,8 @@
 
             <div id="back-labels" class="col-sm-6">
 
-              <label class="form-header" v-if="bottleSpec">{{titles.backLabel}}</label>
-              <label class="form-header dissabled-text" v-else>{{titles.backLabel}}</label>
+              <label class="form-header" v-if="bottleSpec" v-html="titles.backLabel"></label>
+              <label class="form-header dissabled-text" v-else v-html="titles.backLabel"></label>
                             
               <measurements-form
                 v-for="n in labelStatuses.back.count"
@@ -154,7 +154,8 @@
                 role="alert" 
                 id='backDissabledWarning' 
                 v-if="!labelStatuses.back.enabled"
-              >{{ labelStatuses.back.dissableMessage }}</div>
+                v-html="labelStatuses.back.dissableMessage"
+              ></div>
 
             </div>
 
@@ -163,21 +164,23 @@
               v-if='!help && !medalMode' 
               v-on:click="medalMode = !medalMode"
               :disabled="labelStatuses.filled.length < globalPositions.activeLabels.length || globalPositions.activeLabels.length == 0 || globalPositions.activeMedals == 0"
-            >{{titles.medalButton}}</button>
+              v-html="titles.medalButton"
+            ></button>
 
             <button 
               class="clear-button" 
               v-if='globalPositions.activeLabels.length > 0' 
               v-on:click="clearForm()" 
               :disabled="globalPositions.activeLabels.length == 0"
-            >{{titles.clearButton}}</button>
+              v-html="titles.clearButton"
+            ></button>
             <button 
               class="clear-button dissabled-clear" 
               v-else
               v-on:click="clearForm()" 
               :disabled="globalPositions.activeLabels.length == 0"
-            >{{titles.clearButton}}</button>
-            
+              v-html="titles.clearButton"
+            ></button>
 
           </div>
 
@@ -202,20 +205,23 @@
               class='medal-button' 
               v-if='!help && medalMode' 
               v-on:click="medalMode = !medalMode"
-            >{{titles.labelButton}}</button>
+              v-html="titles.labelButton"
+            ></button>
 
             <button 
               class="clear-button" 
               v-if='globalPositions.activeLabels.length > 0' 
               v-on:click="clearForm()" 
               :disabled="globalPositions.activeLabels.length == 0"
-            >{{titles.clearButton}}</button>
+              v-html="titles.clearButton"
+            ></button>
             <button 
               class="clear-button dissabled-clear" 
               v-else
               v-on:click="clearForm()" 
               :disabled="globalPositions.activeLabels.length == 0"
-            >{{titles.clearButton}}</button>
+              v-html="titles.clearButton"
+            ></button>
 
           </div>
 
@@ -223,14 +229,14 @@
 
         <div id="previews-col" class="col-lg-7">
           <br><br>
-
+          <label class="preview-header center" v-if="!bottleSpec" v-html="selectHelpMessage"></label>
           <div id="previews" class="row" v-show="bottleSpec">
 
             <div id="front-preview" class="col-lg-6 center">
 
               <div id="preview-header-front" class="row center">
                 <div class="col-lg-12">
-                  <label class='preview-header center'>{{titles.frontLabel}}</label>
+                  <label class='preview-header center' v-html="titles.frontLabel"></label>
                 </div>
               </div>
 
@@ -273,7 +279,7 @@
 
               <div id="preview-header-back" class="row">
                 <div class="col-lg-12">
-                  <label class='preview-header' v-if="bottleSpec">{{titles.backLabel}}</label>
+                  <label class='preview-header' v-if="bottleSpec" v-html="titles.backLabel"></label>
                 </div>
               </div>
 
@@ -319,7 +325,7 @@
           </transition>
 
           <div class='layer-10'>
-            <div class="alert alert-danger p-5 font-weight-bold invalid-alert" role="alert" id='invalidWarning' v-show="showInvalid">{{ overallWarning }}</div>
+            <div class="alert alert-danger p-5 font-weight-bold invalid-alert" role="alert" id='invalidWarning' v-show="showInvalid" v-html="overallWarning"></div>
           </div>
 
         </div>
@@ -434,9 +440,9 @@
 
         this.titles = CONSTANTS.titles;
 
-        const helpLink = `<a href=${CONSTANTS.help.helpLink} target="_blank" class='alert-link'>here</a>`;
-        const guideLink = `<a href=${CONSTANTS.help.userGuideLink} target="_blank" class='alert-link'>here</a>`;
-        this.helpMessage = CONSTANTS.help.helpMessage.replace("[help link here]", helpLink).replace("[label guide link here]", guideLink);
+        const helpLink = `<a href=${CONSTANTS.help.helpLink} target="_blank" class='alert-link'>${CONSTANTS.help.helpLinkDisplay}</a>`;
+        const guideLink = `<a href=${CONSTANTS.help.userGuideLink} target="_blank" class='alert-link'>${CONSTANTS.help.userGuideLinkDisplay}</a>`;
+        this.helpMessage = CONSTANTS.help.helpMessage.replace("[help link here]", helpLink).replace("[user guide link here]", guideLink);
 
         this.overallWarning = CONSTANTS.warning.invalidWarning;
         this.bottlePreviewDisclaimer = CONSTANTS.help.bottlePreviewDisclaimer;
@@ -1042,12 +1048,14 @@ body{
 .main-title {
   font-size: 200%;
   text-align: left;
+  white-space: pre-wrap;
   float: left;
 }
 
 .main-title-body {
   float: left;
   text-align: left;
+  white-space: pre-wrap;
 }
 
 #app {
@@ -1072,18 +1080,24 @@ body{
   padding: 15px 10px 5px 10px;
   text-align: center;
   font-size: 20px;
+  white-space: pre-wrap;
 }
 
 .form-header {
   padding: 15px 10px 5px 10px;
   text-align: center;
   font-size: 25px;
+  white-space: pre-wrap;
 }
 
 .preview-header {
   padding: 15px 10px 5px 10px;
-  text-align: center;
   font-size: 25px;
+  white-space: pre-wrap;
+}
+
+.alert {
+  white-space: pre-wrap;
 }
 
 .invalid-alert {
@@ -1098,6 +1112,7 @@ body{
   text-align: center;
   font-size: 15px;
   font-style: italic;
+  white-space: pre-wrap;
 }
 
 .multi-select {
@@ -1142,6 +1157,7 @@ body{
   text-align: center;
   padding: 8px 30px 20px 30px;
   font-size: 110%;
+  white-space: pre-wrap;
 }
 
 .close {
@@ -1156,11 +1172,13 @@ body{
   width: 100%;
   outline:none !important;
   outline-width: 0 !important;
+  white-space: pre-wrap;
 }
 
 .medal-help {
   margin-left: 4%;
   font-size: 93%;
+  white-space: pre-wrap;
 }
 
 .labelPreview {
@@ -1192,6 +1210,7 @@ body{
   border: 1px solid lightgrey;
   background: #ff5b5b;
   color: white;
+  white-space: pre-wrap;
 }
 
 .dissabled-clear {
@@ -1210,17 +1229,7 @@ body{
   background: rgba(255, 255, 255, 0.7);
   outline:none !important;
   outline-width: 0 !important;
-}
-
-.sideToggle {
-  margin: 5px;
-  text-align: center;
-  padding: 3px 10px 3px;
-  border-radius: 6px;
-  border: 2px groove darkgray;
-  background: rgba(211, 211, 211, 0.9);
-  outline:none !important;
-  outline-width: 0 !important;
+  white-space: pre-wrap;
 }
 
 /* Modal */
@@ -1229,6 +1238,7 @@ body{
   text-align: center;
   font-size: 140%;
   font-weight: bolder;
+  white-space: pre-wrap;
 }
 
 .modal-body{
@@ -1328,15 +1338,15 @@ body{
 }
 
 .red {
-    background: rgb(255, 45, 45);
-    border-radius: 16px;
-    padding: 15px;
+  background: rgb(255, 45, 45);
+  border-radius: 16px;
+  padding: 15px;
 }
 
 .orange {
-    background: orange;
-    border-radius: 16px;
-    padding: 10px;
+  background: orange;
+  border-radius: 16px;
+  padding: 10px;
 }
 
 .tooltip[x-placement^="right"] {
