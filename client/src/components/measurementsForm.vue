@@ -118,12 +118,6 @@
                 },
                 deep: true
             },
-            isMobile: {
-                handler() {
-                    return screen.width < 576;
-                },
-                deep: true
-            },
             globalPositions: {
                 // {'id': labelId, 'side':side, 'type':type}
                 // Update for multi label
@@ -288,10 +282,10 @@
                     // Min height is a constant, but max height will vary with height offset and potential addition labels
                     var maxHeightRecommended = this.getMaxHeight('recommended');
 
-                    if (maxHeightRecommended <= CONSTANTS.minLabelHeight) {
-                        this.heightDescription = CONSTANTS.descriptions.value.replace("${value}", CONSTANTS.minLabelHeight);
+                    if (maxHeightRecommended <= CONSTANTS.data.minLabelHeight) {
+                        this.heightDescription = CONSTANTS.descriptions.value.replace("${value}", CONSTANTS.data.minLabelHeight);
                     } else {
-                        this.heightDescription = CONSTANTS.descriptions.between.replace("${min}", CONSTANTS.minLabelHeight).replace("${max}", maxHeightRecommended);
+                        this.heightDescription = CONSTANTS.descriptions.between.replace("${min}", CONSTANTS.data.minLabelHeight).replace("${max}", maxHeightRecommended);
                     }
                 }
             },
@@ -332,7 +326,7 @@
                     this.widthDescription = '';
                 } else {
                     var maxWidthrecommended = this.getMaxWidth('recommended');
-                    this.widthDescription = CONSTANTS.descriptions.between.replace("${min}", CONSTANTS.minLabelWidth).replace("${max}", maxWidthrecommended);
+                    this.widthDescription = CONSTANTS.descriptions.between.replace("${min}", CONSTANTS.data.minLabelWidth).replace("${max}", maxWidthrecommended);
                 }
             },
 
@@ -345,14 +339,14 @@
                 var maxHeight;
                 if ((this.labelId == 'F1' && this.globalPositions.activeLabels.includes('F2')) || 
                     (this.labelId == 'B1' && this.globalPositions.activeLabels.includes('B2'))) { // If X1 label and X2 label exists
-                    maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.minVerticalLabelGap.recommended - CONSTANTS.minLabelHeight - 4; // -4 to account for extra potential drift
+                    maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.data.minVerticalLabelGap.recommended - CONSTANTS.data.minLabelHeight - 4; // -4 to account for extra potential drift
                 } else if (this.labelId == 'F2' || this.labelId == 'B2') {  // If label is an X2
-                    maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.minVerticalLabelGap.recommended - CONSTANTS.minLabelHeight;
+                    maxHeight = this.bottleSpec[type].maxHeight - CONSTANTS.data.minVerticalLabelGap.recommended - CONSTANTS.data.minLabelHeight;
 
                     if (this.globalPositions[this.side][this.labelId[0] + '1'] != null) {   // if the measurements for X1 exist
                         const X1 = this.globalPositions[this.side][this.labelId[0] + '1'];
-                        if (X1.height != '' && X1.height > CONSTANTS.minLabelHeight) {  // If the height exists and it is greater than the min height
-                            maxHeight -= X1.height - CONSTANTS.minLabelHeight;
+                        if (X1.height != '' && X1.height > CONSTANTS.data.minLabelHeight) {  // If the height exists and it is greater than the min height
+                            maxHeight -= X1.height - CONSTANTS.data.minLabelHeight;
                         }
                         if (X1.heightOffset != '') {
                             maxHeight -= X1.heightOffset - this.bottleSpec.recommended.minHeightOffset;
@@ -376,24 +370,24 @@
                 var maxHeightOffset;
                 const X1 = this.globalPositions[this.side][this.labelId[0]+'1'];
                 if (this.labelId[1] != 1 && X1 != null) {   // If label is secondary and the primary label has measurements
-                    maxHeightOffset = this.bottleSpec[type].maxHeight - (X1.height + X1.heightOffset - this.bottleSpec.recommended.minHeightOffset) - CONSTANTS.minVerticalLabelGap.recommended - CONSTANTS.minLabelHeight;
+                    maxHeightOffset = this.bottleSpec[type].maxHeight - (X1.height + X1.heightOffset - this.bottleSpec.recommended.minHeightOffset) - CONSTANTS.data.minVerticalLabelGap.recommended - CONSTANTS.data.minLabelHeight;
 
-                    if (this.height != null && this.height >= CONSTANTS.minLabelHeight) { // If height is filled in
-                        maxHeightOffset -= this.height - CONSTANTS.minLabelHeight;
+                    if (this.height != null && this.height >= CONSTANTS.data.minLabelHeight) { // If height is filled in
+                        maxHeightOffset -= this.height - CONSTANTS.data.minLabelHeight;
                     }
 
-                    if (maxHeightOffset < CONSTANTS.minVerticalLabelGap.recommended) {
-                        maxHeightOffset = CONSTANTS.minVerticalLabelGap.recommended;
+                    if (maxHeightOffset < CONSTANTS.data.minVerticalLabelGap.recommended) {
+                        maxHeightOffset = CONSTANTS.data.minVerticalLabelGap.recommended;
                     }
                 } else {
                     if ((this.labelId == 'F1' && this.globalPositions.activeLabels.includes('F2')) || 
                         (this.labelId == 'B1' && this.globalPositions.activeLabels.includes('B2'))) { // If X1 label and X2 label exists
-                        maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec.recommended.minHeightOffset - CONSTANTS.minLabelHeight - CONSTANTS.minLabelHeight - CONSTANTS.minVerticalLabelGap.recommended
+                        maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec.recommended.minHeightOffset - CONSTANTS.data.minLabelHeight - CONSTANTS.data.minLabelHeight - CONSTANTS.data.minVerticalLabelGap.recommended
                     } else {
-                        maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec.recommended.minHeightOffset - CONSTANTS.minLabelHeight;
+                        maxHeightOffset = this.bottleSpec[type].maxHeight + this.bottleSpec.recommended.minHeightOffset - CONSTANTS.data.minLabelHeight;
                     }
-                    if (this.height !== null && this.height >= CONSTANTS.minLabelHeight) {
-                        maxHeightOffset -= this.height - CONSTANTS.minLabelHeight;
+                    if (this.height !== null && this.height >= CONSTANTS.data.minLabelHeight) {
+                        maxHeightOffset -= this.height - CONSTANTS.data.minLabelHeight;
                     }
                 }
                 return maxHeightOffset;
@@ -407,7 +401,7 @@
                 var minHeightOffset;
                 const X1 = this.globalPositions[this.side][this.labelId[0]+'1'];
                 if (this.labelId[1] != 1 && X1 != null) {
-                    minHeightOffset = CONSTANTS.minVerticalLabelGap[type];
+                    minHeightOffset = CONSTANTS.data.minVerticalLabelGap[type];
                 } else {
                     minHeightOffset = this.bottleSpec[type].minHeightOffset;
                 }
@@ -423,7 +417,7 @@
             // Type: {'warning', 'recommended'}
             getMaxWidth(type) {
                 var heightAccountedMax = this.bottleSpec.warning.maxWidth;
-                const wrapAroundBoundry = CONSTANTS.warpAroundDef * this.bottleSpec.circumference;
+                const wrapAroundBoundry = CONSTANTS.data.warpAroundDef * this.bottleSpec.circumference;
                 if (this.side == 'back' && this.globalPositions.front.maxWidth != null) { // If back label, account for front label width
                     var sideAccountedMax;
                     if (type == 'warning') {
@@ -433,12 +427,12 @@
                             heightAccountedMax = ( (this.height - warningInfo.UpointY) * ( (warningInfo.VpointX - warningInfo.maxWidth)/(warningInfo.maxHeight - warningInfo.UpointY) ) ) + warningInfo.maxWidth;
                         }
                         
-                        sideAccountedMax = this.bottleSpec.circumference - (2 * CONSTANTS.minLabelGap.warning) - Math.round(this.globalPositions.front.maxWidth);
+                        sideAccountedMax = this.bottleSpec.circumference - (2 * CONSTANTS.data.minLabelGap.warning) - Math.round(this.globalPositions.front.maxWidth);
                         
                         return Math.min(sideAccountedMax, heightAccountedMax, this.bottleSpec.warning.maxWidth, wrapAroundBoundry);
 
                     } else if (type == 'recommended') {
-                        sideAccountedMax = this.bottleSpec.circumference - (2 * CONSTANTS.minLabelGap.recommended) - Math.round(this.globalPositions.front.maxWidth);
+                        sideAccountedMax = this.bottleSpec.circumference - (2 * CONSTANTS.data.minLabelGap.recommended) - Math.round(this.globalPositions.front.maxWidth);
                         return Math.min(sideAccountedMax, this.bottleSpec.recommended.maxWidth);
                     }
                 } else {        // If not back label or no front label yet
@@ -561,7 +555,7 @@
 
             // Checks the validity of the height field and sets validHeight, changes css setting of input and triggers warnings depending on validity
             validateHeight() {
-                if (this.height < CONSTANTS.minLabelHeight) {  // too low
+                if (this.height < CONSTANTS.data.minLabelHeight) {  // too low
                     this.validHeight = false;
                     this.warnHeight = CONSTANTS.warning.lowHeightWarning;
                     this.heightWarnClass = 'red';
@@ -627,7 +621,7 @@
 
             // Checks the validity of the width field and sets validHeightOffset, changes css setting of input and triggers warnings depending on validity
             validateWidth() {
-                if (this.width < CONSTANTS.minLabelWidth) { // too narrow
+                if (this.width < CONSTANTS.data.minLabelWidth) { // too narrow
                     this.validWidth = false;
                     this.warnWidth = CONSTANTS.warning.lowWidthWarning;
                     this.widthWarnClass = 'red';

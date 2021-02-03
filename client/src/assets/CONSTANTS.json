@@ -1,22 +1,24 @@
 {
-    "minLabelHeight": 18,
-    "minLabelWidth": 12,
+    "data": {
+        "minLabelHeight": 18,
+        "minLabelWidth": 12,
 
-    "maxMedalHeight": 50,
-    "minStripWidth": 30,
-    "maxStripWidth": 90,
+        "maxMedalHeight": 50,
+        "minStripWidth": 30,
+        "maxStripWidth": 90,
 
-    "minLabelGap": {
-        "recommended": 20,
-        "warning": 10
+        "minLabelGap": {
+            "recommended": 20,
+            "warning": 10
+        },
+        "warpAroundDef": 0.6,
+        "minVerticalLabelGap": {
+            "recommended": 5,
+            "warning": 3
+        },
+
+        "optimumMedalZoneScale": 0.25
     },
-    "warpAroundDef": 0.6,
-    "minVerticalLabelGap": {
-        "recommended": 5,
-        "warning": 3
-    },
-
-    "optimumMedalZoneScale": 0.25,
 
     "labelNames": {
         "F1": "Front",

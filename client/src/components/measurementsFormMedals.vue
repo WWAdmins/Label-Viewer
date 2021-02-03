@@ -281,7 +281,7 @@
                 if (this.bottleSpec == null) {
                     this.heightDescription = '';
                 } else {
-                    this.heightDescription = CONSTANTS.descriptions.between.replace("${min}", CONSTANTS.minLabelHeight).replace("${max}", CONSTANTS.maxMedalHeight);
+                    this.heightDescription = CONSTANTS.descriptions.between.replace("${min}", CONSTANTS.data.minLabelHeight).replace("${max}", CONSTANTS.data.maxMedalHeight);
                 }
             },
 
@@ -293,7 +293,7 @@
                 if (this.bottleSpec == null) {
                     this.widthDescription = '';
                 } else {
-                    this.widthDescription = CONSTANTS.descriptions.between.replace("${min}", CONSTANTS.minStripWidth).replace("${max}", CONSTANTS.maxStripWidth);
+                    this.widthDescription = CONSTANTS.descriptions.between.replace("${min}", CONSTANTS.data.minStripWidth).replace("${max}", CONSTANTS.data.maxStripWidth);
                 }
             },
 
@@ -408,12 +408,12 @@
 
             // Checks the validity of the height field and sets validHeight, changes css setting of input and triggers warnings depending on validity
             validateHeight() {
-                if (this.height < CONSTANTS.minLabelHeight) {  // too low
+                if (this.height < CONSTANTS.data.minLabelHeight) {  // too low
                     this.validHeight = false;
                     this.warnHeight = CONSTANTS.warning.lowHeightWarning;
                     this.heightWarnClass = 'red';
                     this.setInputCss('height', 'red');
-                } else if (this.height > CONSTANTS.maxMedalHeight) { // too high
+                } else if (this.height > CONSTANTS.data.maxMedalHeight) { // too high
                     this.validHeight = false;
                     this.warnHeight = CONSTANTS.warning.highHeightWarning;
                     this.heightWarnClass = 'red';
@@ -431,11 +431,11 @@
                 var minWidth;
                 var maxWidth;
                 if (this.type == 'Button medal') {
-                    minWidth = CONSTANTS.minLabelHeight;
-                    maxWidth = CONSTANTS.maxMedalHeight;
+                    minWidth = CONSTANTS.data.minLabelHeight;
+                    maxWidth = CONSTANTS.data.maxMedalHeight;
                 } else if (this.type == 'Strip medal') {
-                    minWidth = CONSTANTS.minStripWidth;
-                    maxWidth = CONSTANTS.maxStripWidth;
+                    minWidth = CONSTANTS.data.minStripWidth;
+                    maxWidth = CONSTANTS.data.maxStripWidth;
                 }
 
                 if (this.width < minWidth) { // too narrow

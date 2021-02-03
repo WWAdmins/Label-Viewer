@@ -508,7 +508,7 @@
         this.bottleSpec.recommended.maxHeight = Math.floor(this.bottleSpec.recommended.maxHeight);
         this.bottleSpec.recommended.maxWidth = Math.floor(this.bottleSpec.recommended.maxWidth);
 
-        const optimumZone = Math.round(CONSTANTS.optimumMedalZoneScale * this.bottleSpec.circumference / 2);
+        const optimumZone = Math.round(CONSTANTS.data.optimumMedalZoneScale * this.bottleSpec.circumference / 2);
         this.medalPlacementHelp = CONSTANTS.help.medalPlacementHelp.replace("[measure here]", optimumZone);
       },
 
@@ -520,7 +520,7 @@
       // Dissables the back label if front label max width would define it as a wrap around
       checkWrapAround() {
 
-        const wrapAroundBoundry = CONSTANTS.warpAroundDef * this.bottleSpec.circumference;
+        const wrapAroundBoundry = CONSTANTS.data.warpAroundDef * this.bottleSpec.circumference;
         if (this.globalPositions.front.maxWidth != null && this.globalPositions.front.maxWidth > wrapAroundBoundry) {
           this.labelStatuses.back.enabled = false;
           this.labelStatuses.back.dissableMessage = CONSTANTS.help.wrapAroundMessage;
