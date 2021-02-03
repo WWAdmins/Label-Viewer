@@ -2,7 +2,7 @@
     <div id=inputs class="container-fluid medal-form">
         <hr v-if="labelId[1] > 1">
         <div class="row row-cols-12">
-            <div class="col-sm-12">
+            <div class="col-12">
                 <multiselect 
                     class='multi-select'
                     v-model="type" 
@@ -14,69 +14,82 @@
                 >Medal type</multiselect>
             </div>
         </div>
+
         <div class="row row-cols-12" v-show="type">
             <div class='col-sm-6'>
-                <label v-if="type == 'Button medal'" class="sub-title-formatted">Diameter</label>
-                <label v-if="type == 'Strip medal'" class="sub-title-formatted">Height</label>
+
+                <div class="row">
+                    <div class="col-5">
+                        <label v-if="type == 'Button medal'" class="sub-title-formatted-medal" v-html="titles.diameterLabel"></label>
+                        <label v-if="type == 'Strip medal'" class="sub-title-formatted-medal" v-html="titles.heightLabel"></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-5">
+                        <input
+                            :disabled="!bottleSpec"
+                            class="standard-input"
+                            :id='labelId+"-input-height"'
+                            v-model.number="height"
+                            required
+                            @keyup="inputChange('height')"
+                            @keydown="keyDown"
+                            v-tooltip.right="{ content: warnHeight, classes: heightWarnClass }"
+                        >
+                    </div>
+                    <div class="col-7">
+                        <label class="pre-formatted" v-html="heightDescription"></label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-5">
+                        <label v-if="type" class="sub-title-formatted-medal" v-html="titles.overlapLabel"></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-5">
+                        <input
+                            :disabled="!bottleSpec"
+                            class="standard-input"
+                            :id='labelId+"-input-overlap"'
+                            v-model.number="overlap"
+                            required
+                            @keyup="inputChange('overlap')"
+                            @keydown="keyDown"
+                            v-tooltip.right="{ content: warnOverlap, classes: overlapWarnClass }"
+                        >
+                    </div>
+                    <div class="col-7">
+                        <label  v-show="type" class="pre-formatted" v-html="overlapDescription"></label>
+                    </div>
+                </div>
+
             </div>
             <div class='col-sm-6' v-show="type == 'Strip medal'">
-                <label class="sub-title-formatted">Width</label>
-            </div>
-        </div>
-        <div class="row row-cols-12" v-show="type">
-            <div class='col-sm-2'>
-                <input
-                    :disabled="!bottleSpec"
-                    class="standard-input"
-                    :id='labelId+"-input-height"'
-                    v-model.number="height"
-                    required
-                    @keyup="inputChange('height')"
-                    @keydown="keyDown"
-                    v-tooltip.right="{ content: warnHeight, classes: heightWarnClass }"
-                >
-            </div>
-            <div class='col-sm-4'>
-                <label class="pre-formatted" v-html="heightDescription"></label>
-            </div>
-            <div class='col-sm-2' v-show="type">
-                <input
-                    v-show="type == 'Strip medal'"
-                    :disabled="!bottleSpec"
-                    class="standard-input"
-                    :id='labelId+"-input-width"'
-                    v-model.number="width"
-                    required
-                    @keyup="inputChange('width')"
-                    @keydown="keyDown"
-                    v-tooltip.right="{ content: warnWidth, classes: widthWarnClass }"
-                >
-            </div>
-            <div class='col-sm-4'>
-                <label  v-show="type == 'Strip medal'" class="pre-formatted" v-html="widthDescription"></label>
-            </div>
-        </div>
-        <br>
-        <div class="row row-cols-12">
-            <div class="col-sm-6">
-                <label v-if="type" class="sub-title-formatted">Vertical overlap</label>
-            </div>
-        </div>
-        <div class='row row-cols-12' >
-            <div class='col-sm-2' v-show="type">
-                <input
-                    :disabled="!bottleSpec"
-                    class="standard-input"
-                    :id='labelId+"-input-overlap"'
-                    v-model.number="overlap"
-                    required
-                    @keyup="inputChange('overlap')"
-                    @keydown="keyDown"
-                    v-tooltip.right="{ content: warnOverlap, classes: overlapWarnClass }"
-                >
-            </div>
-            <div class='col-sm-4'>
-                <label  v-show="type" class="pre-formatted" v-html="overlapDescription"></label>
+                <div class="row">
+                    <div class="col-5">
+                        <label class="sub-title-formatted-medal" v-html="titles.widthLabel"></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-5">
+                        <input
+                            v-show="type == 'Strip medal'"
+                            :disabled="!bottleSpec"
+                            class="standard-input"
+                            :id='labelId+"-input-width"'
+                            v-model.number="width"
+                            required
+                            @keyup="inputChange('width')"
+                            @keydown="keyDown"
+                            v-tooltip.right="{ content: warnWidth, classes: widthWarnClass }"
+                        >
+                    </div>
+                    <div class="col-7">
+                        <label  v-show="type == 'Strip medal'" class="pre-formatted" v-html="widthDescription"></label>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -169,11 +182,14 @@
 
                 overlapMin: 0,
                 overlapMax: 0,
-                overlap: null
+                overlap: null,
+
+                titles: {}
             }
         },
 
         mounted() {
+            this.titles = CONSTANTS.titles;
             if (this.bottleSpec != null) {
                 this.updateHeightDescription();
                 if (this.type == 'Strip medal') {
@@ -219,6 +235,10 @@
                 this.setInputCss('width', 'standard');
                 this.setInputCss('overlap', 'standard');
 
+                this.updateWidthDescription();
+                this.updateHeightDescription();
+                this.updateOverlapDescription();
+
                 this.type = null
             },
 
@@ -261,7 +281,7 @@
                 if (this.bottleSpec == null) {
                     this.heightDescription = '';
                 } else {
-                    this.heightDescription = `recommended between <b><b>${CONSTANTS.minLabelHeight}mm</b></b> and <b><b>${CONSTANTS.maxMedalHeight}mm</b></b>`;
+                    this.heightDescription = CONSTANTS.descriptions.between.replace("${min}", CONSTANTS.data.minLabelHeight).replace("${max}", CONSTANTS.data.maxMedalHeight);
                 }
             },
 
@@ -273,7 +293,7 @@
                 if (this.bottleSpec == null) {
                     this.widthDescription = '';
                 } else {
-                    this.widthDescription = `recommended between <b><b>${CONSTANTS.minStripWidth}mm</b></b> and <b><b>${CONSTANTS.maxStripWidth}mm</b></b>`;
+                    this.widthDescription = CONSTANTS.descriptions.between.replace("${min}", CONSTANTS.data.minStripWidth).replace("${max}", CONSTANTS.data.maxStripWidth);
                 }
             },
 
@@ -295,7 +315,7 @@
                 if (this.overlapMin > this.height) {
                     this.overlapMin = this.height;
                 }
-                this.overlapDescription = `recommended between <b><b>${this.overlapMin}mm</b></b> and <b><b>${this.overlapMax}mm</b></b>`;
+                this.overlapDescription = CONSTANTS.descriptions.between.replace("${min}", this.overlapMin).replace("${max}", this.overlapMax);
             },
 
             // Set the provided input to the given setting's css class
@@ -358,7 +378,7 @@
                     this.validateWidth();
                 }
 
-                if (this.overlap == '' || this.overlap == null) {
+                if (this.overlap === '' || this.overlap === null) {
                     this.validOverlap = true;
                     this.warnoverlap = null;
                     this.overlapWarnClass = '';
@@ -388,14 +408,14 @@
 
             // Checks the validity of the height field and sets validHeight, changes css setting of input and triggers warnings depending on validity
             validateHeight() {
-                if (this.height < CONSTANTS.minLabelHeight) {  // too low
+                if (this.height < CONSTANTS.data.minLabelHeight) {  // too low
                     this.validHeight = false;
-                    this.warnHeight = CONSTANTS.lowHeightWarning;
+                    this.warnHeight = CONSTANTS.warning.lowHeightWarning;
                     this.heightWarnClass = 'red';
                     this.setInputCss('height', 'red');
-                } else if (this.height > CONSTANTS.maxMedalHeight) { // too high
+                } else if (this.height > CONSTANTS.data.maxMedalHeight) { // too high
                     this.validHeight = false;
-                    this.warnHeight = CONSTANTS.highHeightWarning;
+                    this.warnHeight = CONSTANTS.warning.highHeightWarning;
                     this.heightWarnClass = 'red';
                     this.setInputCss('height', 'red');
                 } else { // fine
@@ -411,21 +431,21 @@
                 var minWidth;
                 var maxWidth;
                 if (this.type == 'Button medal') {
-                    minWidth = CONSTANTS.minLabelHeight;
-                    maxWidth = CONSTANTS.maxMedalHeight;
+                    minWidth = CONSTANTS.data.minLabelHeight;
+                    maxWidth = CONSTANTS.data.maxMedalHeight;
                 } else if (this.type == 'Strip medal') {
-                    minWidth = CONSTANTS.minStripWidth;
-                    maxWidth = CONSTANTS.maxStripWidth;
+                    minWidth = CONSTANTS.data.minStripWidth;
+                    maxWidth = CONSTANTS.data.maxStripWidth;
                 }
 
                 if (this.width < minWidth) { // too narrow
                     this.validWidth = false;
-                    this.warnWidth = CONSTANTS.lowWidthWarning;
+                    this.warnWidth = CONSTANTS.warning.lowWidthWarning;
                     this.widthWarnClass = 'red';
                     this.setInputCss('width', 'red');
                 } else if (this.width > maxWidth) { // too wide
                     this.validWidth = false;
-                    this.warnWidth = CONSTANTS.highWidthWarning;
+                    this.warnWidth = CONSTANTS.warning.highWidthWarning;
                     this.widthWarnClass = 'red';
                     this.setInputCss('width', 'red');
                 } else { // fine
@@ -440,12 +460,12 @@
             validateOverlap() {
                 if (this.overlap < this.overlapMin) {  // not enough overlap (sitting too high on the label pannel)
                     this.validOverlap = false;
-                    this.warnOverlap = CONSTANTS.lowOverlap;
+                    this.warnOverlap = CONSTANTS.warning.lowOverlap;
                     this.overlapWarnClass = 'red';
                     this.setInputCss('overlap', 'red');
                 } else if (this.overlap > this.overlapMax) { // too much overlap (medal is sitting too low on the bottle)
                     this.validOverlap = false;
-                    this.warnOverlap = CONSTANTS.highOverlap;
+                    this.warnOverlap = CONSTANTS.warning.highOverlap;
                     this.overlapWarnClass = 'red';
                     this.setInputCss('overlap', 'red');
                 } else { // fine
@@ -465,119 +485,13 @@
 
 <style>
 
-.medal-form {
-    padding: 3%;
-}
-
-.form {
-    margin: 2%;
-}
-
-.dotted {
-    border-style: dotted;
-}
-
-.pre-formatted {
-    white-space: pre-wrap;
-    padding: 5px;
-    width: 90%;
-    font-size: 75%;
-}
-
-.sub-title-formatted {
+.sub-title-formatted-medal {
     white-space: pre-wrap;
     text-align: left;
-    margin-left: 6%;
     width: 100%;
     font-weight: bold;
-}
-
-.dissabled-text {
-    opacity: 0.7;
-}
-
-.standard-input {
-    float: left;
-    margin-left: 5%;
-    width: 80px;
-    padding: 6%;
-    border: 1px solid lightgrey;
-    border-radius: 8px;
-    font-size: 120%;
-    outline-width: 3px;
-    outline-color: darkgrey;
-}
-
-.green-input {
     float: left;
     margin-left: 6%;
-    width: 80px;
-    padding: 6%;
-    border: 3px solid green;
-    border-radius: 8px;
-    font-size: 120%;
-    outline-width: 3px;
-    outline-color: darkgrey;
-    border-color: #28a745;
-    padding-right: calc(1.5em + 0.75rem);
-    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%2328a745" class="bi bi-check2" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: 2rem 2.1rem;
-    background-position: right 0.1rem center;
-    min-width: 90px;
-}
-
-.red-input {
-    float: left;
-    margin-left: 5%;
-    width: 80px;
-    padding: 6%;
-    border: 3px solid red;
-    border-radius: 8px;
-    font-size: 120%;
-    outline-width: 3px;
-    outline-color: darkgrey;
-
-    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" fill="%23FF0000" class="bi bi-x" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>');
-    background-repeat: no-repeat;
-    background-size: 2rem 3rem;
-    background-position: right 0rem center;
-    min-width: 90px;
-}
-
-
-.tooltip {
-    display: block !important;
-    z-index: 10000;
-}
-
-.tooltip .tooltip-inner {
-    background: none;
-    color: white;
-    border-radius: 16px;
-    font-size: 110%;
-}
-
-.red {
-    background: rgb(255, 45, 45);
-    border-radius: 16px;
-    padding: 15px;
-}
-
-.tooltip[x-placement^="right"] {
-    margin-left: 5px;
-}
-
-.tooltip[aria-hidden='true'] {
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity .15s, visibility .15s;
-}
-
-.tooltip[aria-hidden='false'] {
-    visibility: visible;
-    opacity: 1;
-    transition: opacity .15s;
 }
 
 </style>
