@@ -1043,6 +1043,7 @@ body{
   max-width: 100px;
   float: left;
   margin-left: 20px;
+  margin-right: 5px;
 }
 
 .main-title {
@@ -1254,6 +1255,15 @@ body{
   padding: 5px;
   width: 90%;
   font-size: 75%;
+}
+
+.pre-formatted-left {
+  white-space: pre-wrap;
+  padding: 0px 5px 0px 10px;
+  width: 90%;
+  font-size: 75%;
+  text-align: left;
+  float: left;
 }
 
 .dissabled-text {

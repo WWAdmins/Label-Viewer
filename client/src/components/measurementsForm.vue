@@ -18,7 +18,7 @@
                 >
             </div>
             <div class='col-7'>
-                <label class="pre-formatted" v-html="heightDescription"></label>
+                <label class="pre-formatted-left" v-html="heightDescription"></label>
             </div>
         </div>
         <br>
@@ -40,7 +40,7 @@
                 >
             </div>
             <div class='col-7'>
-                <label class="pre-formatted" v-html="widthDescription"></label>
+                <label class="pre-formatted-left" v-html="widthDescription"></label>
             </div>
         </div>
         <br>
@@ -77,7 +77,7 @@
                 >
             </div>
             <div class='col-7'>
-                <label class="pre-formatted" v-html="heightOffsetDescription"></label>
+                <label class="pre-formatted-left" v-html="heightOffsetDescription"></label>
             </div>
         </div>
         <br>

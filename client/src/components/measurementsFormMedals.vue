@@ -38,7 +38,7 @@
                         >
                     </div>
                     <div class="col-7">
-                        <label class="pre-formatted" v-html="heightDescription"></label>
+                        <label class="pre-formatted-left" v-html="heightDescription"></label>
                     </div>
                 </div>
 
@@ -61,7 +61,7 @@
                         >
                     </div>
                     <div class="col-7">
-                        <label  v-show="type" class="pre-formatted" v-html="overlapDescription"></label>
+                        <label  v-show="type" class="pre-formatted-left" v-html="overlapDescription"></label>
                     </div>
                 </div>
 
@@ -87,7 +87,7 @@
                         >
                     </div>
                     <div class="col-7">
-                        <label  v-show="type == 'Strip medal'" class="pre-formatted" v-html="widthDescription"></label>
+                        <label  v-show="type == 'Strip medal'" class="pre-formatted-left" v-html="widthDescription"></label>
                     </div>
                 </div>
             </div>
