@@ -855,7 +855,6 @@
         }
 
         this.checkGlobalInvalid();
-
         if (form != null) {
           this.updatePreview();
         }
@@ -1135,10 +1134,8 @@ body{
 
 .labelPreview {
   width: 0%;
-  left: 50%;
   height: 0%;
-  background-color: lightgrey;
-  opacity: 80%;
+  background-color: rgba(211, 211, 211, 0.85);
 }
 
 .dotted {
@@ -1179,8 +1176,7 @@ body{
   border-radius: 8px;
   width: 100%;
   border: 1px solid lightgrey;
-  background: white;
-  opacity: 0.7;
+  background: rgba(255, 255, 255, 0.7);
   outline:none !important;
   outline-width: 0 !important;
 }
@@ -1191,16 +1187,7 @@ body{
   padding: 3px 10px 3px;
   border-radius: 6px;
   border: 2px groove darkgray;
-  background: lightgray;
-  opacity: 0.9;
-  outline:none !important;
-  outline-width: 0 !important;
-}
-
-.selected {
-  /* border-style: inset; */
-  border: 2.5px inset #4ddbf7;
-  opacity: 0.9;
+  background: rgba(211, 211, 211, 0.9);
   outline:none !important;
   outline-width: 0 !important;
 }

@@ -240,6 +240,10 @@
                 this.heightWarnClass = '';
                 this.heightOffsetWarnClass = '';
                 this.widthWarnClass = '';
+
+                this.updateHeightDescription();
+                this.updateHeightOffsetDescription();
+                this.updateWidthDescription();
             },
 
             // On key press in input fields

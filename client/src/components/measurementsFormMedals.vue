@@ -235,6 +235,10 @@
                 this.setInputCss('width', 'standard');
                 this.setInputCss('overlap', 'standard');
 
+                this.updateWidthDescription();
+                this.updateHeightDescription();
+                this.updateOverlapDescription();
+
                 this.type = null
             },
 
