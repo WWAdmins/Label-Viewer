@@ -5,20 +5,25 @@
         <div class="col-sm-atuo">
           <img class="header-logo" alt="logo" src="./assets/logo_temp.png">
         </div>
-        <div class="col-sm-9">
+        <div class="col-sm-7 mr-auto">
           <label class="main-title">{{titles.pageHeaderTitle}}</label>
           <label class="main-title-body">{{titles.pageHeaderBody}}</label>
         </div>
-        <div class="col-sm-1">
-          <button id="helpButton" class="help-button">i</button>
+        <div class="col-sm-2 right-col">
+          <b-link v-b-toggle.collapse-1 class="help-button">Help</b-link>
         </div>
       </div>
+        <b-collapse id="collapse-1" class="mt-2">
+          <b-card>
+            <p class="card-text" v-html="helpMessage"></p>
+          </b-card>
+        </b-collapse>
       
     </div>
 
     <div id="body" class="container-fluid main-backing col-lg-10 offset-lg-1">
     
-      <div id="selectors" class="row">
+      <div id="selectors" class="row pad-row">
 
         <div id="supplier" class="col-lg-5">
           <multiselect 
@@ -76,7 +81,7 @@
 
       </div>
 
-      <div id="container-forms-preview" class="row">
+      <div id="container-forms-preview" class="row pad-row">
 
         <div id="label-inputs" class="col-lg-5">
 
@@ -408,8 +413,9 @@
 
         this.titles = CONSTANTS.titles;
 
-        const helpLink = `<a href=${CONSTANTS.help.helpLink} class='alert-link'>here</a>`;
-        this.helpMessage = CONSTANTS.help.helpMessage.replace("[help link here]", helpLink);
+        const helpLink = `<a href=${CONSTANTS.help.helpLink} target="_blank" class='alert-link'>here</a>`;
+        const guideLink = `<a href=${CONSTANTS.help.userGuideLink} target="_blank" class='alert-link'>here</a>`;
+        this.helpMessage = CONSTANTS.help.helpMessage.replace("[help link here]", helpLink).replace("[label guide link here]", guideLink);
 
         this.overallWarning = CONSTANTS.warning.invalidWarning;
         this.bottlePreviewDisclaimer = CONSTANTS.help.bottlePreviewDisclaimer;
@@ -1005,6 +1011,10 @@ body{
   padding: 40px;
 }
 
+.pad-row {
+  padding-right: 15px;
+}
+
 .header-backing {
   margin-top: 60px;
   margin-bottom: 60px;
@@ -1119,15 +1129,9 @@ body{
 
 .help-button {
   float: right;
-  margin: 5px;
   text-align: center;
-  padding: 20px 30px 20px 30px;
-  border-radius: 50%;
-  border: 1px solid lightgrey;
-  background: #cffeff;
-  opacity: 0.7;
-  outline:none !important;
-  outline-width: 0 !important;
+  padding: 8px 30px 20px 30px;
+  font-size: 110%;
 }
 
 .close {
