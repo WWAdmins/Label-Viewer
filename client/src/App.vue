@@ -459,7 +459,7 @@
         }
         this.bottleId = null;
         this.bottleSpec = null;
-        this.bottleImgUrl = CONSTANTS.images.imgBaseUrl + CONSTANTS.images.bottleImgFolder + CONSTANTS.bottleCodes[bottleTypeSelection] + CONSTANTS.images.bottleImgUrlPostfix;
+        this.bottleImgUrl = CONSTANTS.images.imgBaseUrl + CONSTANTS.images.bottleImgFolder + CONSTANTS.bottleCodes[bottleTypeSelection] + CONSTANTS.images.bottleImgUrlSuffix;
       },
 
       // Clears all fields that require bottleType when the bottleType is removed
