@@ -17,7 +17,10 @@
             "warning": 3
         },
 
-        "optimumMedalZoneScale": 0.25
+        "optimumMedalZoneScale": 0.25,
+
+        "bottleImgBaseUrl": "https://wineworksgroup.sharepoint.com/ProdPlan/Production/Technical/Labels/Label%20viewer%20resources/BottleSilhouettes/",
+        "bottleImgUrlPostfix": "_image.png"
     },
 
     "labelNames": {

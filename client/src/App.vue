@@ -3,7 +3,7 @@
     <div id="header" class="container-fluid header-backing col-lg-10 offset-lg-1">
       <div class="row">
         <div class="col-sm-atuo">
-          <img class="header-logo" alt="logo" src="./assets/logo_temp.png">
+          <img class="header-logo" alt="logo" :src="logoUrl">
         </div>
         <div class="col-sm-7 mr-auto">
           <label class="main-title" v-html="titles.pageHeaderTitle"></label>
@@ -252,22 +252,7 @@
                   <div class="layer-3 labelPreview" id='frontLabelPreviewOverflowRight2'></div>
 
                   <transition name="slide-fade">
-                    <img v-if="bottleType == 'Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/BRG_image.png">
-                  </transition>
-                  <transition name="slide-fade">
-                    <img v-if="bottleType == 'Bordeaux' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/BDX_image.png">
-                  </transition>
-                  <transition name="slide-fade">
-                    <img v-if="bottleType == 'Riesling' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/RIE_image.png">
-                  </transition>
-                  <transition name="slide-fade">
-                    <img v-if="bottleType == 'Sparkling' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/SPK_image.png">
-                  </transition>
-                  <transition name="slide-fade">
-                    <img v-if="bottleType == 'Magnum' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/MAG_image.png">
-                  </transition>
-                  <transition name="slide-fade">
-                    <img v-if="bottleType == 'Premium Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/PBG_image.png">
+                    <img v-show=" bottleSpec" class="image layer-1" alt="bottle sihouette" :src="bottleImgUrl">
                   </transition>
 
                 </div>
@@ -295,22 +280,7 @@
                   <div class="layer-3 labelPreview" id='backLabelPreviewOverflowRight2'></div>
 
                   <transition name="slide-fade">
-                    <img v-if="bottleType == 'Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/BRG_image.png">
-                  </transition>
-                  <transition name="slide-fade">
-                    <img v-if="bottleType == 'Bordeaux' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/BDX_image.png">
-                  </transition>
-                  <transition name="slide-fade">
-                    <img v-if="bottleType == 'Riesling' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/RIE_image.png">
-                  </transition>
-                  <transition name="slide-fade">
-                    <img v-if="bottleType == 'Sparkling' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/SPK_image.png">
-                  </transition>
-                  <transition name="slide-fade">
-                    <img v-if="bottleType == 'Magnum' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/MAG_image.png">
-                  </transition>
-                  <transition name="slide-fade">
-                    <img v-if="bottleType == 'Premium Burgundy' && bottleSpec" class="image layer-1" alt="bottle sihouette" src="./assets/BottleSilhouettes/PBG_image.png">
+                    <img v-show=" bottleSpec" class="image layer-1" alt="bottle sihouette" :src="bottleImgUrl">
                   </transition>
 
                 </div>
@@ -431,12 +401,17 @@
           medalPlacementHelp: '',
           orangeZoneMessage: '',
 
-          titles: {}
+          titles: {},
+
+          logoUrl: '',
+          bottleImgUrl: ''
         }
     },
 
     mounted() {
         this.loadData();
+
+        this.logoUrl = 'https://wineworksgroup.sharepoint.com/ProdPlan/Production/Technical/Labels/Label%20viewer%20resources/logo.png';
 
         this.titles = CONSTANTS.titles;
 
@@ -485,6 +460,7 @@
         }
         this.bottleId = null;
         this.bottleSpec = null;
+        this.bottleImgUrl = CONSTANTS.data.bottleImgBaseUrl + CONSTANTS.bottleCodes[bottleTypeSelection] + CONSTANTS.data.bottleImgUrlPostfix;
       },
 
       // Clears all fields that require bottleType when the bottleType is removed
@@ -1010,7 +986,7 @@
 <style>
 
 body{
-  background-image: url('./assets/background.jpg');
+  background-image: url('https://wineworksgroup.sharepoint.com/ProdPlan/Production/Technical/Labels/Label%20viewer%20resources/background.jpg');
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
