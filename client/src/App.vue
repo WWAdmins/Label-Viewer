@@ -21,7 +21,7 @@
       
     </div>
 
-    <div id="body" class="container-fluid main-backing col-lg-10 offset-lg-1">
+    <div id="main-body" class="container-fluid main-backing col-lg-10 offset-lg-1">
     
       <div id="selectors" class="row pad-row">
 
@@ -290,9 +290,7 @@
 
           </div>
 
-          <transition name="slide-fade">
-            <label v-if="bottleType && bottleSpec" class="disclaimer" v-html=bottlePreviewDisclaimer></label>
-          </transition>
+          <label v-if="bottleType && bottleSpec" class="disclaimer" v-html=bottlePreviewDisclaimer></label>
 
           <div class='layer-10'>
             <div class="alert alert-danger p-5 font-weight-bold invalid-alert" role="alert" id='invalidWarning' v-show="showInvalid" v-html="overallWarning"></div>
@@ -411,7 +409,8 @@
     mounted() {
         this.loadData();
 
-        this.logoUrl = 'https://wineworksgroup.sharepoint.com/ProdPlan/Production/Technical/Labels/Label%20viewer%20resources/logo.png';
+        this.logoUrl = CONSTANTS.images.imgBaseUrl + CONSTANTS.images.logo;
+        document.body.style.backgroundImage = `url('${CONSTANTS.images.imgBaseUrl + CONSTANTS.images.background}')`;
 
         this.titles = CONSTANTS.titles;
 
@@ -460,7 +459,7 @@
         }
         this.bottleId = null;
         this.bottleSpec = null;
-        this.bottleImgUrl = CONSTANTS.data.bottleImgBaseUrl + CONSTANTS.bottleCodes[bottleTypeSelection] + CONSTANTS.data.bottleImgUrlPostfix;
+        this.bottleImgUrl = CONSTANTS.images.imgBaseUrl + CONSTANTS.images.bottleImgFolder + CONSTANTS.bottleCodes[bottleTypeSelection] + CONSTANTS.images.bottleImgUrlPostfix;
       },
 
       // Clears all fields that require bottleType when the bottleType is removed
@@ -986,7 +985,6 @@
 <style>
 
 body{
-  background-image: url('https://wineworksgroup.sharepoint.com/ProdPlan/Production/Technical/Labels/Label%20viewer%20resources/background.jpg');
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
@@ -1207,6 +1205,15 @@ body{
   outline:none !important;
   outline-width: 0 !important;
   white-space: pre-wrap;
+}
+
+.slide-fade-enter-active {
+  transition: all .4s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter
+/* .slide-fade-leave-active below version 2.1.8 */  {
+  transform: translateX(10px);
+  opacity: 0;
 }
 
 /* Modal */
