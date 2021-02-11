@@ -5,19 +5,24 @@
         <div class="col-sm-atuo">
           <img class="header-logo" alt="logo" :src="logoUrl">
         </div>
-        <div class="col-sm-7 mr-auto">
+        <div class="col-sm-10">
           <label class="main-title" v-html="titles.pageHeaderTitle"></label>
-          <label class="main-title-body" v-html="titles.pageHeaderBody"></label>
+          <label 
+            class="main-title-body" 
+            v-html="titles.pageHeaderBody"
+            id="title-body"
+          ></label>
+          <b-tooltip target="title-body" variant="light" custom-class="wideTooltip">{{ titles.pageHeaderDisclaimer }}</b-tooltip>
         </div>
-        <div class="col-sm-2 right-col">
-          <b-link v-b-toggle.collapse-1 class="help-button">Help</b-link>
+        <div class="col-sm-1 pull-right">
+          <b-link v-b-toggle.collapse-1 class="help-button float-right">Help</b-link>
         </div>
       </div>
-        <b-collapse id="collapse-1" class="mt-2">
-          <b-card>
-            <p class="card-text" v-html="helpMessage"></p>
-          </b-card>
-        </b-collapse>
+      <b-collapse id="collapse-1" class="mt-2">
+        <b-card>
+          <p class="card-text" v-html="helpMessage"></p>
+        </b-card>
+      </b-collapse>
       
     </div>
 
@@ -25,12 +30,12 @@
     
       <div id="selectors" class="row pad-row">
 
-        <div id="supplier" class="col-lg-5">
+        <div id="supplier" class="col-xl-5">
           <multiselect 
             id='supplierSelect'
             class='multi-select'
             v-model="supplier" 
-            placeholder="select supplier"
+            :placeholder="titles.supplierSelectDefault"
             :options="suppliers" 
             :searchable="true" 
             :close-on-select="true"
@@ -41,14 +46,14 @@
           >Supplier</multiselect>
         </div>
 
-        <div id="bottle-type-id" class="col-lg-7">
+        <div id="bottle-type-id" class="col-xl-7">
           <div class="row">
 
-            <div id="bottle-type" class="col-lg-6">
+            <div id="bottle-type" class="col-xl-6">
               <multiselect 
                 class='multi-select'
                 v-model="bottleType"
-                placeholder="select bottle type" 
+                :placeholder="titles.bottleTypeSelectDefault"
                 :options="bottleTypes" 
                 :searchable="true" 
                 :close-on-select="true"
@@ -60,11 +65,11 @@
               >Bottle type</multiselect>
             </div>
 
-            <div id="bottle-id" class="col-lg-6">
+            <div id="bottle-id" class="col-xl-6">
               <multiselect 
                 class='multi-select'
                 v-model="bottleId"
-                placeholder="select bottle" 
+                :placeholder="titles.bottleSelectDefault" 
                 :options="bottles" 
                 :searchable="true" 
                 :close-on-select="true"
@@ -291,6 +296,8 @@
           </div>
 
           <label v-if="bottleType && bottleSpec" class="disclaimer" v-html=bottlePreviewDisclaimer></label>
+          <br>
+          <label v-if="bottleType && bottleSpec" class="disclaimer" v-html=labelGuideDisclaimer></label>
 
           <div class='layer-10'>
             <div class="alert alert-danger p-5 font-weight-bold invalid-alert" role="alert" id='invalidWarning' v-show="showInvalid" v-html="overallWarning"></div>
@@ -315,7 +322,7 @@
         <template #modal-header="{  }">
           <!-- Emulate built in modal header close button action -->
           <div class="container-fluid">
-            <p class="modal-title">Caution</p>
+            <p class="modal-title" v-html="titles.popupTitle"></p>
           </div>
         </template>
       </b-modal>
@@ -398,6 +405,7 @@
           medalMode: false,  // toggle between labels and medals using button
           medalPlacementHelp: '',
           orangeZoneMessage: '',
+          labelGuideDisclaimer: '',
 
           titles: {},
 
@@ -415,8 +423,10 @@
         this.titles = CONSTANTS.titles;
 
         const helpLink = `<a href=${CONSTANTS.help.helpLink} target="_blank" class='alert-link'>${CONSTANTS.help.helpLinkDisplay}</a>`;
-        const guideLink = `<a href=${CONSTANTS.help.userGuideLink} target="_blank" class='alert-link'>${CONSTANTS.help.userGuideLinkDisplay}</a>`;
-        this.helpMessage = CONSTANTS.help.helpMessage.replace("[help link here]", helpLink).replace("[user guide link here]", guideLink);
+        const guideLinkHere = `<a href=${CONSTANTS.help.userGuideLink} target="_blank" class='alert-link'>${CONSTANTS.help.userGuideLinkDisplay}</a>`;
+        const guideLinkGuide = `<a href=${CONSTANTS.help.userGuideLink} target="_blank" class='alert-link'>${CONSTANTS.help.guideDisclaimerDisplay}</a>`;
+        this.helpMessage = CONSTANTS.help.helpMessage.replace("[help link here]", helpLink).replace("[user guide link here]", guideLinkHere);
+        this.labelGuideDisclaimer = CONSTANTS.help.labelGuideDisclaimer.replace("[WW label guide link]", guideLinkGuide);
 
         this.overallWarning = CONSTANTS.warning.invalidWarning;
         this.bottlePreviewDisclaimer = CONSTANTS.help.bottlePreviewDisclaimer;
@@ -519,6 +529,16 @@
         }
       },
 
+      validListSort() {
+          var ordering = {};
+          for (var i=0; i<CONSTANTS.labelSortTemplate.length; i++)
+              ordering[CONSTANTS.labelSortTemplate[i]] = i;
+
+          this.validLabelOptions = this.validLabelOptions.sort( function(a, b) {
+              return (ordering[a] - ordering[b]) || a.localeCompare(b);
+          });
+      },
+
       // When label selected in multi select
       // Updates label counts
       // Updates validLabelOptions
@@ -547,6 +567,8 @@
         } else if (label == CONSTANTS.labelNames.M1) {
           this.validLabelOptions.push(CONSTANTS.labelNames.M2);
         }
+
+        this.validListSort();
 
 
         switch (label) {
@@ -1025,9 +1047,18 @@ body{
   text-align: left;
   white-space: pre-wrap;
   float: left;
+  font-weight: 700;
+  color: rgba(65,65,65,1);
 }
 
 .main-title-body {
+  float: left;
+  text-align: left;
+  white-space: pre-wrap;
+}
+
+.main-title-disclaimer {
+  font-size: 75%;
   float: left;
   text-align: left;
   white-space: pre-wrap;
@@ -1130,9 +1161,13 @@ body{
 .help-button {
   float: right;
   text-align: center;
-  padding: 8px 30px 20px 30px;
+  padding: 8px 0px 20px 30px;
   font-size: 110%;
   white-space: pre-wrap;
+}
+
+.right-col {
+  margin-right: 5px;
 }
 
 .close {
@@ -1323,6 +1358,15 @@ body{
   z-index: 10000;
 }
 
+.wideTooltip .tooltip-inner {
+  background: none;
+  color: white;
+  border-radius: 16px;
+  font-size: 110%;  
+  max-width: 800px !important;
+  width: 400px !important;
+}
+
 .tooltip .tooltip-inner {
   background: none;
   color: white;
@@ -1343,7 +1387,7 @@ body{
 }
 
 .tooltip[x-placement^="right"] {
-  margin-left: 5px;
+  margin-top: 5px;
 }
 
 .tooltip[aria-hidden='true'] {
