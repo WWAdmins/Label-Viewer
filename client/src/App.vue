@@ -4,6 +4,7 @@
       <div class="row">
         <div class="col-sm-atuo">
           <img class="header-logo" alt="logo" :src="logoUrl">
+          <!-- <img class="header-logo" alt="logo" src="./assets/logo.png"> -->
         </div>
         <div class="col-sm-10">
           <label class="main-title" v-html="titles.pageHeaderTitle"></label>
@@ -46,7 +47,7 @@
           >Supplier</multiselect>
         </div>
 
-        <div id="bottle-type-id" class="col-xl-7">
+        <div id="bottle-type-id" class="col-xl-7" v-show="!stockCodeSearch">
           <div class="row">
 
             <div id="bottle-type" class="col-xl-6">
@@ -82,6 +83,22 @@
             </div>
 
           </div>
+        </div>
+
+        <div id="bottle-type-id" class="col-xl-7" v-show="stockCodeSearch">
+          <multiselect 
+            class='multi-select'
+            v-model="stockCodeDisplay"
+            :placeholder="titles.stockSearchPrompt"
+            :options="stockCodeOptions" 
+            :searchable="true" 
+            :close-on-select="true"
+            :select-label="''"
+            :deselect-label="''"
+            :disabled="!supplier"
+            @select='stockCodeSelect'
+            @remove='stockCodeRemove'
+          >Stock Code</multiselect>
         </div>
 
       </div>
@@ -410,7 +427,13 @@
           titles: {},
 
           logoUrl: '',
-          bottleImgUrl: ''
+          bottleImgUrl: '',
+
+          stockCodeSearch: false,
+          stockCodeOptions: [],
+          stockCodeKey: {},
+          stockCodeDisplay: null,
+          stockCode: ''
         }
     },
 
@@ -443,11 +466,34 @@
           this.data = dataImport;
 
           this.suppliers = Object.keys(this.data);
+          this.suppliers.push(CONSTANTS.titles.stockSearchOption)
       },
 
       // When the supplier is selected, sets the list of options for the bottle types and clears all flieds that require supplier
       supplierSelect(supplierSelection) {
-        this.bottleTypes = Object.keys(this.data[supplierSelection]);
+        if (supplierSelection != CONSTANTS.titles.stockSearchOption) {
+          this.stockCodeSearch = false;
+          this.bottleTypes = Object.keys(this.data[supplierSelection]);
+          this.bottleTypes = this.targetSort(this.bottleTypes, CONSTANTS.bottleSortTemplate);
+        } else {
+          this.stockCodeSearch = true;
+          var bottleData;
+          var stockCodeStr;
+          for (var supplier in this.data) {
+            for (var bottleType in this.data[supplier]) {
+              for (var bottle in this.data[supplier][bottleType]) {
+                bottleData = this.data[supplier][bottleType][bottle];
+                for (var stockCode in bottleData.stockCodes) {
+                  stockCodeStr = `${bottleData.stockCodes[stockCode]} | ${bottleType}, ${bottleData.name} - ${bottle}`;
+                  this.stockCodeOptions.push(stockCodeStr);
+                  this.stockCodeKey[stockCodeStr] = {"id":bottle, "type":bottleType, "supplier":supplier};
+                }
+              }
+            }
+          }
+          this.stockCodeOptions.sort();
+        }
+
         this.bottleType = null;
         this.bottleId = null;
         this.bottleSpec = null;
@@ -460,16 +506,38 @@
         this.bottleSpec = null;
       },
 
+      stockCodeSelect(stockCodeSelection) {
+        this.stockCode = stockCodeSelection.split(' | ')[0];
+        this.bottleId = this.stockCodeKey[stockCodeSelection].id;
+        this.bottleType = this.stockCodeKey[stockCodeSelection].type;
+        const supplier = this.stockCodeKey[stockCodeSelection].supplier
+        this.bottleSpec = this.data[supplier][this.bottleType][this.bottleId];
+
+        this.specPrep();
+      },
+
+      stockCodeRemove() {
+        this.stockCode = null;
+        this.bottleId = null;
+        this.bottleType = null;
+        this.bottleSpec = null;
+      },
+
       // When bottle type is selected and clears all flieds that require bottleType
       // Sets list of bottle ids and adds bottle name along side each bottle id (in form ("id - name"))
       bottleTypeSelect(bottleTypeSelection) {
         this.bottles = Object.keys(this.data[this.supplier][bottleTypeSelection]);
+        var sortKey = {};
+        var code;
         for (var x in this.bottles) {
-          this.bottles[x] += " - " + this.data[this.supplier][bottleTypeSelection][this.bottles[x]].name
+          code = this.bottles[x];
+          this.bottles[x] += " - " + this.data[this.supplier][bottleTypeSelection][code].name;
+          sortKey[this.bottles[x]] = this.data[this.supplier][bottleTypeSelection][code].order;
         }
+        this.bottles.sort((a, b) => (sortKey[a] > sortKey[b]) ? 1 : -1);
+
         this.bottleId = null;
         this.bottleSpec = null;
-        this.bottleImgUrl = CONSTANTS.images.imgBaseUrl + CONSTANTS.images.bottleImgFolder + CONSTANTS.bottleCodes[bottleTypeSelection] + CONSTANTS.images.bottleImgUrlSuffix;
       },
 
       // Clears all fields that require bottleType when the bottleType is removed
@@ -484,7 +552,11 @@
       bottleSelect(bottleIdSelection) {
         const bottleId = bottleIdSelection.split(" ")[0]; // Seperate name from the id and take the ID only
         this.bottleSpec = this.data[this.supplier][this.bottleType][bottleId];
+        this.specPrep();
+      },
 
+      specPrep() {
+        this.bottleImgUrl = CONSTANTS.images.imgBaseUrl + CONSTANTS.images.bottleImgFolder + CONSTANTS.bottleCodes[this.bottleType] + CONSTANTS.images.bottleImgUrlSuffix;
         // All spec variables are rounded as fractional mm are not improtatant to this context
         // Rounding is always done in a direction to tighten constraints
         this.bottleSpec.circumference = Math.floor(this.bottleSpec.diameter * Math.PI);
@@ -529,14 +601,15 @@
         }
       },
 
-      validListSort() {
+      targetSort(list, target) {
           var ordering = {};
-          for (var i=0; i<CONSTANTS.labelSortTemplate.length; i++)
-              ordering[CONSTANTS.labelSortTemplate[i]] = i;
+          for (var i=0; i<target.length; i++)
+              ordering[target[i]] = i;
 
-          this.validLabelOptions = this.validLabelOptions.sort( function(a, b) {
+          list = list.sort( function(a, b) {
               return (ordering[a] - ordering[b]) || a.localeCompare(b);
           });
+        return list;
       },
 
       // When label selected in multi select
@@ -568,7 +641,7 @@
           this.validLabelOptions.push(CONSTANTS.labelNames.M2);
         }
 
-        this.validListSort();
+        this.validLabelOptions = this.targetSort(this.validLabelOptions, CONSTANTS.labelSortTemplate);
 
 
         switch (label) {
@@ -728,6 +801,7 @@
       //    - Refs call is used as this is an event and it is not sutable to change the child's state
       // Resets globalPositions and labelStatuses, then calls checkWrapAround() and checkGlobalInvalid() to clear and reset any errors
       clearForm() {
+        console.log(this.bottleId, "||", this.bottleType, "||", this.bottleSpec);
         
         // Clear the orange zone warning as well? Just to be safe
         this.warned = false;

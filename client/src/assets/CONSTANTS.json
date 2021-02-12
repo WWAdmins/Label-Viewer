@@ -53,7 +53,6 @@
         "medalPlacementHelp": "For a this bottle it is recommended to place the medal within [measure here]mm of the vertical center of the front label to ensure optimum visibilty",
         "labelGuideDisclaimer": "OK. Size isn’t everything: Embossing, High-build, Foiling, Plastic labels and other embellishments can also affect application success. \nCheck out the [WW label guide link] for more detail and talk to us if you’re not sure.",
         "guideDisclaimerDisplay": "WineWorks Label Guide"
-        
     },
 
     "warning": {
@@ -89,6 +88,8 @@
         "Premium Burgundy": "PBG"
     },
 
+    "bottleSortTemplate": ["Bordeaux", "Burgundy", "Premium Burgundy", "Riesling", "Sparkling", "Magnum"], 
+
     "titles": {
         "frontLabel": "FRONT",
         "backLabel": "BACK",
@@ -107,7 +108,9 @@
         "popupTitle": "Uh Oh!",
         "supplierSelectDefault": "Select supplier",
         "bottleTypeSelectDefault": "Select bottle type",
-        "bottleSelectDefault": "Select bottle"
+        "bottleSelectDefault": "Select bottle",
+        "stockSearchOption": "I know my WineWorks stock code",
+        "stockSearchPrompt": "Start typing"
     },
 
     "descriptions": {
