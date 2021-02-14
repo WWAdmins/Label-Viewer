@@ -479,12 +479,14 @@
           this.stockCodeSearch = true;
           var bottleData;
           var stockCodeStr;
+          var codeData;
           for (var supplier in this.data) {
             for (var bottleType in this.data[supplier]) {
               for (var bottle in this.data[supplier][bottleType]) {
                 bottleData = this.data[supplier][bottleType][bottle];
                 for (var stockCode in bottleData.stockCodes) {
-                  stockCodeStr = `${bottleData.stockCodes[stockCode]} | ${bottleType}, ${bottleData.name} - ${bottle}`;
+                  codeData = bottleData.stockCodes[stockCode];
+                  stockCodeStr = `${codeData.code} - ${codeData.name} - Mould ${bottle}`;
                   this.stockCodeOptions.push(stockCodeStr);
                   this.stockCodeKey[stockCodeStr] = {"id":bottle, "type":bottleType, "supplier":supplier};
                 }
@@ -507,7 +509,7 @@
       },
 
       stockCodeSelect(stockCodeSelection) {
-        this.stockCode = stockCodeSelection.split(' | ')[0];
+        this.stockCode = stockCodeSelection.split(' - ')[0];
         this.bottleId = this.stockCodeKey[stockCodeSelection].id;
         this.bottleType = this.stockCodeKey[stockCodeSelection].type;
         const supplier = this.stockCodeKey[stockCodeSelection].supplier

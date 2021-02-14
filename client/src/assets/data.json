@@ -4,7 +4,14 @@
             {
             "31555": {
                 "name": "Punted 417gm",
-                "stockCodes": [1, 92, 93, 94],
+                "stockCodes": [
+                    {"code": 250559, "name": "WW BT BVS A/G BRG 750ml VS10011629 417g"},
+                    {"code": 415868, "name": "WW BT BVS A/G BRG 750ml VS10011629 417g"},
+                    {"code": 415869, "name": "WW BT BVS F/G BRG 750ml VS10012177 417g"},
+                    {"code": 421368, "name": "WW BT BVS ART BRG 750ml VS10012165 417g"},
+                    {"code": 500958, "name": "WW BT BVS F/G BRG 750ml VS10012177 417g"},
+                    {"code": 500997, "name": "WW BT BVS ART BRG 750ml VS10012165 417g"}
+                ],
                 "order": 1,
                 "diameter": 80,
                 "warning": {
@@ -22,7 +29,11 @@
             },
             "30733": {
                 "name": "Punted 450gm",
-                "stockCodes": [2],
+                "stockCodes": [
+                    {"code": 207823, "name": "WW BT BVS A/G BRG 750ml VS10011704 450g"},
+                    {"code": 219654, "name": "WW BT BVS ART BRG 750ml VS17611 450g *Disc. **BOO**"},
+                    {"code": 408212, "name": "WW BT BVS F/G BRG 750ml VS10011602 450g **BOO**"}
+                ],
                 "order": 2,
                 "diameter": 80,
                 "warning": {
@@ -40,7 +51,11 @@
             },
             "3662" : {
                 "name": "Traditional 656gm",
-                "stockCodes": [3],
+                "stockCodes": [
+                    {"code": 200013, "name": "WW BT BVS A/G BRG 750ml VS10011711 565g Traditional"},
+                    {"code": 200025, "name": "WW BT BVS F/G BRG 750ml VS10011708 565g Traditional"},
+                    {"code": 404077, "name": "WW BT BVS A/G BRG 750ml VS10011711 565g Traditional"}
+                ],
                 "order": 3,
                 "diameter": 82,
                 "warning": {
@@ -58,7 +73,9 @@
             },
             "31549": {
                 "name": "Traditional Square Heel 565gm",
-                "stockCodes": [4],
+                "stockCodes": [
+                    {"code": 505799, "name": "WW BT BVS A/G BRG 750ml VS12023171 565g Traditional Sq heel **BOO**"}
+                ],
                 "order": 4,
                 "diameter": 82,
                 "warning": {
@@ -78,7 +95,10 @@
         "Premium Burgundy": {
             "31532": {
                 "name": "Premium Square Heel 545gm",
-                "stockCodes": [5],
+                "stockCodes": [
+                    {"code": 500019, "name": "WW BT BVS A/G PBG 750ml VS12024096 545g Square Heel"},
+                    {"code": 518804, "name": "WW BT BVS A/G PBG 750ml VS12026712 555g Square Heel v2"}
+                ],
                 "order": 1,
                 "diameter": 86,
                 "warning": {
@@ -96,7 +116,10 @@
             },
             "30105": {
                 "name": "Premium 545gm",
-                "stockCodes": [6],
+                "stockCodes": [
+                    {"code": 200035,"name": "WW BT BVS A/G PBG 750ml VS10011707 545g"},
+                    {"code": 404084, "name": "WW BT BVS A/G PBG 750ml VS10011707 545g"}
+                ],
                 "order": 2,
                 "diameter": 86,
                 "warning": {
@@ -114,7 +137,9 @@
             },
             "31296": {
                 "name": "Ultra 825gm",
-                "stockCodes": [7],
+                "stockCodes": [
+                    {"code": 422830, "name": "WW BT BVS A/G GBG 750ml VS10011790 825g Ultra **BOO**"}
+                ],
                 "order": 3,
                 "diameter": 88.6,
                 "warning": {
@@ -132,7 +157,10 @@
             },
             "31103": {
                 "name": "Grande 700gm",
-                "stockCodes": [8],
+                "stockCodes": [
+                    {"code": 200017, "name": "WW BT BVS A/G GBG 750ml VS10011705 700g"},
+                    {"code": 413049, "name": "WW BT BVS A/G GBG 750ml VS10011705 700g"}
+                ],
                 "order": 4,
                 "diameter": 87.2,
                 "warning": {
@@ -150,7 +178,9 @@
             },
             "31550": {
                 "name": "Grande Square Heel 700gm",
-                "stockCodes": [9],
+                "stockCodes": [
+                    {"code": 500650, "name": "WW BT BVS A/G GBG 750ml VS12023156 700g Square Heel"}
+                ],
                 "order": 5,
                 "diameter": 87.2,
                 "warning": {
@@ -168,9 +198,16 @@
             }
         },
         "Bordeaux": {
-            "31256": {
+            "31568": {
                 "name": "Punted 417gm",
-                "stockCodes": [10],
+                "stockCodes": [
+                    {"code": 419978, "name": "WW BT BVS F/G BDX 750ml VS10011676 417g"},
+                    {"code": 421369, "name": "WW BT BVS A/G BDX 750ml VS10012319 417g"},
+                    {"code": 421370, "name": "WW BT BVS ART BDX 750ml VS10012188 417g"},
+                    {"code": 503714, "name": "WW BT BVS A/G BDX 750ml VS10012319 417g"},
+                    {"code": 503729, "name": "WW BT BVS ART BDX 750ml VS10012188 417g"},
+                    {"code": 503755, "name": "WW BT BVS F/G BDX 750ml VS10012178 417g **BOO**"}
+                ],
                 "order": 1,
                 "diameter": 75.3,
                 "warning": {
@@ -188,7 +225,9 @@
             },
             "30750": {
                 "name": "Punted 450gm",
-                "stockCodes": [11],
+                "stockCodes": [
+                    {"code": 408899, "name": "WW BT BVS F/G BDX 750ml VS18341 450g"}
+                ],
                 "order": 2,
                 "diameter": 75.8,
                 "warning": {
@@ -206,7 +245,12 @@
             },
             "30053": {
                 "name": "Premium 580gm",
-                "stockCodes": [12],
+                "stockCodes": [
+                    {"code": 200018, "name": "WW BT BVS A/G PBX 750ml VS10011603 580g **BOO**"},
+                    {"code": 201106, "name": "WW BT BVS F/G PBX 750ml VS10011599 580g Premium **BOO**"},
+                    {"code": 404067, "name": "WW BT BVS A/G PBX 750ml VS10011603 580g"},
+                    {"code": 404079, "name": "WW BT BVS F/G PBX 750ml VS10011599 580g"}
+                ],
                 "order": 3,
                 "diameter": 76.2,
                 "warning": {
@@ -226,7 +270,10 @@
         "Riesling": {
             "3663": {
                 "name": "Riesling 518gm",
-                "stockCodes": [13],
+                "stockCodes": [
+                    {"code": 200015, "name": "WW BT BVS A/G RIE 750ml VS10011593 518g"},
+                    {"code": 404086, "name": "WW BT BVS A/G RIE 750ml VS10011593 518g"}
+                ],
                 "order": 1,
                 "diameter": 76.2,
                 "warning": {
@@ -244,7 +291,10 @@
             },
             "30646": {
                 "name": "Premium 650gm",
-                "stockCodes": [14],
+                "stockCodes": [
+                    {"code": 211167, "name": "WW BT BVS A/G RIE 750ml VS10011728 650g Premium **BOO**"},
+                    {"code": 505661, "name": "WW BT BVS A/G RIE 750ml VS10011728 650g Premium **BOO**"}
+                ],
                 "order": 2,
                 "diameter": 80.2,
                 "warning": {
@@ -266,7 +316,11 @@
         "Burgundy": {
             "CR404": {
                 "name": "Legere 420gm",
-                "stockCodes": [15],
+                "stockCodes": [
+                    {"code": 235485, "name": "WW BT BVS ANT BRG 750ml CR404-ANT 417g Legere V2"},
+                    {"code": 237708, "name": "WW BT BVS FLT BRG 750ml CR404-FLT 417g Legere"},
+                    {"code": 239165, "name": "WW BT BVS F/G BRG 750ml CR404-FG 417g Legere V2"}
+                ],
                 "order": 1,
                 "diameter": 80,
                 "warning": {
@@ -284,7 +338,9 @@
             },
             "CR403": {
                 "name": "Export 480gm",
-                "stockCodes": [16],
+                "stockCodes": [
+                    {"code": 220071, "name": "WW BT BVS ANT BRG 750ml CR403-ANT 480g Export"}
+                ],
                 "order": 2,
                 "diameter": 80,
                 "warning": {
@@ -302,7 +358,9 @@
             },
             "CR401": {
                 "name": "Traditional 555gm",
-                "stockCodes": [17],
+                "stockCodes": [
+                    {"code": 246121, "name": "WW BT BVS ANT BRG 750ml CR401-ANT Traditional 550g **BOO**"}
+                ],
                 "order": 3,
                 "diameter": 81.5,
                 "warning": {
@@ -322,7 +380,9 @@
         "Premium Burgundy": {
             "CR409": {
                 "name": "Grandeur 675gm",
-                "stockCodes": [18],
+                "stockCodes": [
+                    {"code": 513812, "name": "WW BT BVS ANT GBG 750ml CR409-ANT 675g Grandeur"}
+                ],
                 "order": 1,
                 "diameter": 87,
                 "warning": {
@@ -340,7 +400,9 @@
             },
             "CR408": {
                 "name": "Premier 555gm",
-                "stockCodes": [19],
+                "stockCodes": [
+                    {"code": 220097, "name": "WW BT BVS ANT PBG 750ml CR408-ANT 550g Premier"}
+                ],
                 "order": 2,
                 "diameter": 85.8,
                 "warning": {
@@ -358,7 +420,10 @@
             },
             "CR4015": {
                 "name": "Avignon 605gm",
-                "stockCodes": [20],
+                "stockCodes": [
+                    {"code": 246308, "name": "WW BT BVS FLT PBG 750ml CR4015-FLT 590g Avignon"},
+                    {"code": 508594, "name": "WW BT BVS FLT PBG 750ml CR4015-FLT 590g Avignon"}
+                ],
                 "order": 3,
                 "diameter": 87.4,
                 "warning": {
@@ -376,7 +441,10 @@
             },
             "CR407": {
                 "name": "Passion 800gm",
-                "stockCodes": [21],
+                "stockCodes": [
+                    {"code": 222191, "name": "WW BT BVS ANT GBG 750ml CR407-ANT 800g Passion"},
+                    {"code": 419074, "name": "WW BT BVS ANT GBG 750ml CR407-ANT 800g Passion"}
+                ],
                 "order": 4,
                 "diameter": 88,
                 "warning": {
@@ -393,8 +461,8 @@
                 }
             },
             "CR478": {
-                "name": "Alba 820gm",
-                "stockCodes": [22],
+                "name": "Alba 820gm (*requires WW approval)",
+                "stockCodes": [],
                 "order": 5,
                 "diameter": 86.2,
                 "warning": {
@@ -414,7 +482,10 @@
         "Magnum": {
             "CR4021": {
                 "name": "Prestige 950gm",
-                "stockCodes": [23],
+                "stockCodes": [
+                    {"code": 500042, "name": "WW BT BVS FLT BRG 1500ml CR4021-FLT 880g"},
+                    {"code": 515410, "name": "WW BT BVS A/G BRG 1500ml CR4021-ANT Prestige Magnum 880g"}
+                ],
                 "order": 1,
                 "diameter": 107.2,
                 "warning": {
@@ -434,7 +505,9 @@
         "Bordeaux": {
             "CR501": {
                 "name": "Svelte 415gm",
-                "stockCodes": [24],
+                "stockCodes": [
+                    {"code": 232622, "name": "WW BT BVS FLT BDX 750ml CR501-FLT 415g Svelte"}
+                ],
                 "order": 1,
                 "diameter": 75.2,
                 "warning": {
@@ -452,7 +525,10 @@
             },
             "CR507": {
                 "name": "Export 510gm",
-                "stockCodes": [25],
+                "stockCodes": [
+                    {"code": 226699, "name": "WW BT BVS ANT PBX 750ml CR507-ANT 510g Premium Export"},
+                    {"code": 501536, "name": "WW BT BVS FLT PBX 750ml CR507-FLT 510g Premium"}
+                ],
                 "order": 2,
                 "diameter": 75.4,
                 "warning": {
@@ -469,8 +545,8 @@
                 }
             },
             "CR5015": {
-                "name": "Superior 550gm",
-                "stockCodes": [26],
+                "name": "Superior 550gm (*requires WW approval)",
+                "stockCodes": [],
                 "order": 3,
                 "diameter": 84.5,
                 "warning": {
@@ -488,7 +564,9 @@
             },
             "CR508": {
                 "name": "Premium 580gm",
-                "stockCodes": [27],
+                "stockCodes": [
+                    {"code": 236116, "name": "WW BT BVS FLT PBX 750ml CR508-FLT 580g Prem *BOO*"}
+                ],
                 "order": 4,
                 "diameter": 76.2,
                 "warning": {
@@ -505,8 +583,8 @@
                 }
             },
             "CR5011": {
-                "name": "Resolute 695gm",
-                "stockCodes": [28],
+                "name": "Resolute 695gm (*requires WW approval)",
+                "stockCodes": [],
                 "order": 5,
                 "diameter": 74.8,
                 "warning": {
@@ -526,7 +604,10 @@
         "Riesling": {
             "CR302": {
                 "name": "Primo 475gm",
-                "stockCodes": [29],
+                "stockCodes": [
+                    {"code": 222158, "name": "WW BT BVS ANT RIE 750ml CR302-ANT 480g Primo"},
+                    {"code": 227224, "name": "WW BT BVS FLT RIE 750ml CR302-FLT 480g Primo"}
+                ],
                 "order": 1,
                 "diameter": 75.3,
                 "warning": {
@@ -545,8 +626,8 @@
         },
         "Sparkling": {
             "CR982": {
-                "name": "Carbeco 680gm",
-                "stockCodes": [30],
+                "name": "Carbeco 680gm (*requires WW approval)",
+                "stockCodes": [],
                 "order": 1,
                 "diameter": 84.6,
                 "warning": {
@@ -563,8 +644,8 @@
                 }
             },
             "CR988": {
-                "name": "Beaumont 795gm",
-                "stockCodes": [31],
+                "name": "Beaumont 795gm (*requires WW approval)",
+                "stockCodes": [],
                 "order": 2,
                 "diameter": 86.5,
                 "warning": {
@@ -582,7 +663,9 @@
             },
             "CR989": {
                 "name": "Gallivant 800gm",
-                "stockCodes": [32],
+                "stockCodes": [
+                    {"code": 414409, "name": "WW BT CRN ANT SPA 750ml CR989-ANT 800g Gallivant"}
+                ],
                 "order": 3,
                 "diameter": 85.5,
                 "warning": {
@@ -599,8 +682,8 @@
                 }
             },
             "CR983": {
-                "name": "Brut 880gm",
-                "stockCodes": [33],
+                "name": "Brut 880gm (*requires WW approval)",
+                "stockCodes": [],
                 "order": 4,
                 "diameter": 95.5,
                 "warning": {
