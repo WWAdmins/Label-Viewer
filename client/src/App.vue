@@ -1117,7 +1117,7 @@ body{
 }
 
 .main-title {
-  font-size: 220%;
+  font-size: 230%;
   text-align: left;
   white-space: pre-wrap;
   float: left;
