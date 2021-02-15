@@ -1119,7 +1119,7 @@ body{
 }
 
 .main-title {
-  font-size: 200%;
+  font-size: 220%;
   text-align: left;
   white-space: pre-wrap;
   float: left;
@@ -1128,6 +1128,7 @@ body{
 }
 
 .main-title-body {
+  font-size: 110%;
   float: left;
   text-align: left;
   white-space: pre-wrap;
@@ -1141,7 +1142,7 @@ body{
 }
 
 #app {
-  font-family: Verdana;
+  font-family: Arial;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
