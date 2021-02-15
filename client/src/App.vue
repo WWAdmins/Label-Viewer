@@ -3,8 +3,7 @@
     <div id="header" class="container-fluid header-backing col-lg-10 offset-lg-1">
       <div class="row">
         <div class="col-sm-atuo">
-          <img class="header-logo" alt="logo" :src="logoUrl">
-          <!-- <img class="header-logo" alt="logo" src="./assets/logo.png"> -->
+          <img class="header-logo" alt="logo" src="./assets/logo.png">
         </div>
         <div class="col-sm-10">
           <label class="main-title" v-html="titles.pageHeaderTitle"></label>
@@ -356,6 +355,8 @@
   import dataImport from './assets/data.json';
   import CONSTANTS from './assets/CONSTANTS.json';
 
+  import * as silhouettes from './assets/bottle_silhouette';
+
 
   export default {
     name: 'App',
@@ -426,7 +427,6 @@
 
           titles: {},
 
-          logoUrl: '',
           bottleImgUrl: '',
 
           stockCodeSearch: false,
@@ -439,9 +439,6 @@
 
     mounted() {
         this.loadData();
-
-        this.logoUrl = CONSTANTS.images.imgBaseUrl + CONSTANTS.images.logo;
-        document.body.style.backgroundImage = `url('${CONSTANTS.images.imgBaseUrl + CONSTANTS.images.background}')`;
 
         this.titles = CONSTANTS.titles;
 
@@ -558,7 +555,7 @@
       },
 
       specPrep() {
-        this.bottleImgUrl = CONSTANTS.images.imgBaseUrl + CONSTANTS.images.bottleImgFolder + CONSTANTS.bottleCodes[this.bottleType] + CONSTANTS.images.bottleImgUrlSuffix;
+        this.bottleImgUrl = silhouettes[CONSTANTS.bottleCodes[this.bottleType] + "Image"];
         // All spec variables are rounded as fractional mm are not improtatant to this context
         // Rounding is always done in a direction to tighten constraints
         this.bottleSpec.circumference = Math.floor(this.bottleSpec.diameter * Math.PI);
@@ -1083,6 +1080,7 @@
 <style>
 
 body{
+  background-image: url('./assets/background blue.png');
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;
