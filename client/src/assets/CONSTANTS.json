@@ -3,8 +3,8 @@
         "minLabelHeight": 18,
         "minLabelWidth": 12,
 
-        "maxMedalHeight": 50,
-        "minStripWidth": 30,
+        "maxButtonHeight": 50,
+        "minStripWidth": 18,
         "maxStripWidth": 90,
 
         "minLabelGap": {
@@ -41,7 +41,7 @@
         "userGuideLinkDisplay": "here",
         "bottlePreviewDisclaimer": "*Preview depiction is not fully accurate for every bottle and should only be used as an estimation*",
         "selectHelpMessage": "Select a bottle to continue",
-        "medalPlacementHelp": "For a this bottle it is recommended to place the medal within [measure here]mm of the vertical center of the front label to ensure optimum visibilty",
+        "medalPlacementHelp": "Helpful Hint: to maximise visibility of a medal label, it is recommended to place it within [measure here]mm of the vertical centre of the front label.",
         "labelGuideDisclaimer": "OK. Size isn’t everything: Embossing, High-build, Foiling, Plastic labels and other embellishments can also affect application success. \nCheck out the [WW label guide link] for more detail and talk to us if you’re not sure.",
         "guideDisclaimerDisplay": "WineWorks Label Guide"
     },

@@ -142,9 +142,9 @@
                 :bottleSpec="bottleSpec"
                 :globalPositions="globalPositions"
                 v-show='labelStatuses.front.enabled'
-                @invalid="emmittedInvalidLabel"
-                @valid="emmittedValidLabel"
-                @warning="emmitedWarningCatch"
+                @invalid="emittedInvalidLabel"
+                @valid="emittedValidLabel"
+                @warning="emittedWarningCatch"
               >Front labels</measurements-form>
 
               <div 
@@ -171,9 +171,9 @@
                 :bottleSpec="bottleSpec"
                 :globalPositions="globalPositions"
                 v-show='labelStatuses.back.enabled'
-                @invalid="emmittedInvalidLabel"
-                @valid="emmittedValidLabel"
-                @warning="emmitedWarningCatch"
+                @invalid="emittedInvalidLabel"
+                @valid="emittedValidLabel"
+                @warning="emittedWarningCatch"
               >Back labels</measurements-form>
                             
               <div 
@@ -224,8 +224,8 @@
               :bottleSpec="bottleSpec"
               :globalPositions="globalPositions"
               v-show='labelStatuses.medal.enabled'
-              @invalid="emmittedInvalidLabel"
-              @valid="emmittedValidLabel"
+              @invalid="emittedInvalidLabel"
+              @valid="emittedValidLabel"
             >Medals</measurements-form-medals>
 
             <button 
@@ -277,6 +277,8 @@
                   <div class="layer-3 labelPreview" id='frontLabelPreview2'></div>
                   <div class="layer-3 labelPreview" id='frontLabelPreviewOverflowLeft2'></div>
                   <div class="layer-3 labelPreview" id='frontLabelPreviewOverflowRight2'></div>
+
+                  <div class="layer-4 medalPreview" id='medalLabelPreview1'></div>
 
                   <transition name="slide-fade">
                     <img v-show=" bottleSpec" class="image layer-1" alt="bottle sihouette" :src="bottleImgUrl">
@@ -396,7 +398,9 @@
               {
                 'maxWidth': null
               },
-            'medal': {},
+            'medal': {
+
+            },
             'activeLabels': [],
             'activeMedals': []
           },
@@ -806,7 +810,6 @@
       //    - Refs call is used as this is an event and it is not sutable to change the child's state
       // Resets globalPositions and labelStatuses, then calls checkWrapAround() and checkGlobalInvalid() to clear and reset any errors
       clearForm() {
-        console.log(this.bottleId, "||", this.bottleType, "||", this.bottleSpec);
         
         // Clear the orange zone warning as well? Just to be safe
         this.warned = false;
@@ -833,7 +836,9 @@
             {
               'maxWidth': null
             },
-          'medal': {},
+          'medal': {
+
+          },
           'activeLabels': activeLabels,
           'activeMedals': activeMedals
         },
@@ -879,7 +884,7 @@
       // Run when a warning (orange zone) is found in a measurement form
       // Updates globalPositions
       // Shows orange zone popup warning if not yet shown or a form has been reset
-      emmitedWarningCatch(payload) {
+      emittedWarningCatch(payload) {
         const {warning, labelId, side, type, form} = payload;
 
         this.globalPositions.latest = {'id': labelId, 'side':side, 'type':type};
@@ -913,7 +918,7 @@
 
       // Runs when a invalid input is found in a measurement form
       // Updates globalPositions
-      emmittedInvalidLabel(payload) {
+      emittedInvalidLabel(payload) {
         const {labelId, side, type} = payload;
 
         this.globalPositions.latest = {'id': labelId, 'side':side, 'type':type};
@@ -935,7 +940,7 @@
       // Runs when a valid input is found in a measurement form
       // UpdatesglobalPositions
       // Checks and updates (if needed) the maxWidth value for the given labels side
-      emmittedValidLabel(payload) {
+      emittedValidLabel(payload) {
 
         const {form, labelId, side, type} = payload;
 
@@ -962,13 +967,13 @@
         }
       },
 
-      displaySide(side, labels) {
+      displayMain(side, main) {
         const diamiter = this.bottleSpec.diameter;
         const radius = diamiter/2;
 
         var  label;
-        for (var x in labels[side].main) {
-          label = labels[side].main[x];
+        for (var x in main) {
+          label = main[x];
           if (label.theta <= Math.PI) {
             label['adjustedWidth'] = 2 * Math.sin(label.theta/2) * radius;
           } else {
@@ -976,9 +981,15 @@
           }
           this.displayLabel(`${side}LabelPreview${x[1]}`, label);
         }
+      },
 
-        for (var y in labels[side].overflow) {
-          label = labels[side].overflow[y];
+      displayOverflow(side, overflow) {
+        const diamiter = this.bottleSpec.diameter;
+        const radius = diamiter/2;
+
+        var  label;
+        for (var y in overflow) {
+          label = overflow[y];
           if (label.theta > Math.PI) {
             label.theta -= Math.PI;
             label['adjustedWidth'] = radius - (Math.cos(label.theta/2) * radius);
@@ -990,13 +1001,12 @@
         }
       },
 
-      // Todo: multi label support
 
       // Fetches label measurements, calculates warped 2D width based on bottle size, displays label
       //    - Fetching and display functionality is handeled in helper functions
       updatePreview() {
 
-        var labels = {'front': {'main': {}, 'overflow': {}}, 'back': {'main': {}, 'overflow': {}}};
+        var labels = {'front': {'main': {}, 'overflow': {}}, 'back': {'main': {}, 'overflow': {}}, 'medal': {} }; 
         // loop for multi label
 
         for (var id of this.globalPositions.activeLabels) {
@@ -1009,8 +1019,23 @@
           }
         }
 
-        this.displaySide('front', labels);
-        this.displaySide('back', labels);
+        if (this.globalPositions.medal.M1) {
+          id = this.globalPositions.activeMedals[0];
+          labels.medal[id] = this.fetchDisplayMeasurements('medal', id);
+
+
+          if (this.globalPositions.medal.M1.type == 'Button medal') {
+            document.getElementById("medalLabelPreview1").style.borderRadius = '50%';
+          } else if (this.globalPositions.medal.M1.type == 'Strip medal') {
+            document.getElementById("medalLabelPreview1").style.borderRadius = '10000px';
+          }
+        }
+
+        this.displayMain('front', labels.front.main);
+        this.displayOverflow('front', labels.front.overflow);
+        this.displayMain('back', labels.back.main);
+        this.displayOverflow('back', labels.back.overflow);
+        this.displayMain('medal', labels.medal);
       },
 
       // Fetches height and height offset for the specified label and calculates the width of the label as an angle on the radius of the bottle
@@ -1056,6 +1081,8 @@
         this.displayLabel('backLabelPreview2', blank);
         this.displayLabel('backLabelPreviewOverflowLeft2', blank);
         this.displayLabel('backLabelPreviewOverflowRight2', blank);
+
+        this.displayLabel('medalLabelPreview1', blank);
       },
 
       // Sets demensions of the label preview on the bottle and places it in the right possition
@@ -1232,7 +1259,7 @@ body{
 .layer-4 {
   z-index: 6;
   position: absolute;
-  border-radius: 50%;
+  border-radius: 10000px; /* using px instead of % to only round the corners and not round the whole width and height */
 }
 
 .layer-10 {
@@ -1281,6 +1308,12 @@ body{
   width: 0%;
   height: 0%;
   background-color: rgba(211, 211, 211, 0.85);
+}
+
+.medalPreview {
+  width: 0%;
+  height: 0%;
+  background-color: rgba(226, 164, 47, 0.85);
 }
 
 .dotted {

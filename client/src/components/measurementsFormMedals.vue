@@ -10,7 +10,8 @@
                     :close-on-select="true" 
                     :options="['Button medal', 'Strip medal']"
                     :multiple="false"
-                    @select="selectedType()"
+                    @select="selectedType"
+                    @remove="validate('type clear');"
                 >Medal type</multiselect>
             </div>
         </div>
@@ -117,10 +118,13 @@
             bottleSpec: {
                 handler() {
                     if (this.bottleSpec != null) {
-                        this.validate();
+                        this.maxStripHeight = this.bottleSpec.recommended.maxHeight;
+
                         this.updateHeightDescription();
                         this.updateWidthDescription();
                         this.updateOverlapDescription();
+
+                        this.validate();
                     }  
                 },
                 deep: true
@@ -139,17 +143,17 @@
                                 ID = this.queue.shift();
 
                                 if (this.globalPositions.activeLabels.includes('F2') && ID == 'F2') {
-                                    this.validate('props');
-
+                                    this.updateOverlapDescription();
                                     this.updateWidthDescription();
                                     this.updateHeightDescription();
-                                    this.updateOverlapDescription();
+
+                                    this.validate('props');
                                 } else if (ID == 'F1') {
-                                    this.validate('props');
-
+                                    this.updateOverlapDescription();
                                     this.updateWidthDescription();
                                     this.updateHeightDescription();
-                                    this.updateOverlapDescription();
+
+                                    this.validate('props');
                                 }
                             }
                         }, 600);
@@ -164,25 +168,32 @@
                 type: null,
                 height: '',
                 width: '',
+
                 heightDescription: "",
                 widthDescription: "",
                 overlapDescription: "",
+
                 delayTimer: null,
                 valid: true,
                 validHeight: true,
                 validWidth: true,
                 validOverlap: true,
+
                 warnHeight: null,
                 warnWidth: null,
                 warnOverlap: null,
                 heightWarnClass: '',
                 widthWarnClass: '',
                 overlapWarnClass: '',
+
                 queue: [],
 
                 overlapMin: 0,
                 overlapMax: 0,
                 overlap: null,
+                heightOffset: null,
+                labelsTop: null,
+                maxStripHeight: null,
 
                 titles: {}
             }
@@ -191,20 +202,28 @@
         mounted() {
             this.titles = CONSTANTS.titles;
             if (this.bottleSpec != null) {
+                this.maxStripHeight = this.bottleSpec.recommended.maxHeight;
+
                 this.updateHeightDescription();
                 if (this.type == 'Strip medal') {
                     this.updateWidthDescription();
                 }
                 this.updateOverlapDescription();
             }
+
+            
         },
 
         methods: {
 
-            selectedType() {
+            selectedType(selection) {
+                this.type = selection;
+
                 this.updateHeightDescription();
                 this.updateWidthDescription();
                 this.updateOverlapDescription();
+
+                this.validate('type select');
             },
 
             // When clear button is pressed
@@ -214,6 +233,8 @@
                 this.overlapMin = 0;
                 this.overlapMax = 0;
                 this.overlap = null;
+                this.heightOffset = null;
+                this.labelsTop = null;
 
                 this.height = null;
                 this.width = null;
@@ -281,7 +302,11 @@
                 if (this.bottleSpec == null) {
                     this.heightDescription = '';
                 } else {
-                    this.heightDescription = CONSTANTS.descriptions.between.replace("${min}", CONSTANTS.data.minLabelHeight).replace("${max}", CONSTANTS.data.maxMedalHeight);
+                    if (this.type == "Button medal") {
+                        this.heightDescription = CONSTANTS.descriptions.between.replace("${min}", CONSTANTS.data.minLabelHeight).replace("${max}", CONSTANTS.data.maxButtonHeight);
+                    } else if (this.type == "Strip medal") {
+                        this.heightDescription = CONSTANTS.descriptions.between.replace("${min}", CONSTANTS.data.minLabelHeight).replace("${max}", this.maxStripHeight);
+                    }
                 }
             },
 
@@ -304,12 +329,14 @@
                     if (F2 != null) {
                         this.overlapMax = (F2.height + F2.heightOffset) - this.bottleSpec.recommended.minHeightOffset;
                         this.overlapMin = (F2.height + F2.heightOffset + this.height) - (this.bottleSpec.warning.maxHeight + this.bottleSpec.recommended.minHeightOffset);
+                        this.labelsTop = F2.height + F2.heightOffset;
                     }
                 } else {
                     const F1 = this.globalPositions.front.F1;
                     if (F1 != null) {
                         this.overlapMax = (F1.height + F1.heightOffset) - this.bottleSpec.recommended.minHeightOffset;
                         this.overlapMin = (F1.height + F1.heightOffset + this.height) - (this.bottleSpec.warning.maxHeight + this.bottleSpec.recommended.minHeightOffset);
+                        this.labelsTop = F1.height + F1.heightOffset;
                     }
                 }
                 if (this.overlapMin > this.height) {
@@ -356,8 +383,12 @@
             // emits events for valid, invalid and orange zone (warning)
             // Validation details are handeled by helper functions
             validate(input) {
+                if (input == 'type clear') {
+                    this.$emit('invalid', {'labelId':this.labelId, 'side':'medal', 'type': input});
+                    return;
+                }
                 if (this.type == "Button medal") {
-                    this.width - this.height;
+                    this.width = this.height;
                 }
 
                 if (this.height == '' || this.height == null) {
@@ -387,13 +418,15 @@
                     this.validateOverlap();
                 }
 
-                this.valid = this.validHeight && this.validWidth && this.validOverlap;
+                this.valid = this.validHeight && this.validWidth && this.validOverlap && this.overlap;
 
+                this.heightOffset = this.labelsTop - this.overlap;
+                
                 // todo: send placement info
                 const form = {
                     'height': this.height,
                     'width': this.width,
-                    'overlap': this.overlap,
+                    'heightOffset': this.heightOffset,
                     'valid': this.valid,
                     'type': this.type
                 };
@@ -408,12 +441,19 @@
 
             // Checks the validity of the height field and sets validHeight, changes css setting of input and triggers warnings depending on validity
             validateHeight() {
+                var maxHeight;
+                if (this.type == "Button medal") {
+                    maxHeight = CONSTANTS.data.maxButtonHeight;
+                } else if (this.type == "Button medal") {
+                    maxHeight = this.maxStripHeight;
+                }
+
                 if (this.height < CONSTANTS.data.minLabelHeight) {  // too low
                     this.validHeight = false;
                     this.warnHeight = CONSTANTS.warning.lowHeightWarning;
                     this.heightWarnClass = 'red';
                     this.setInputCss('height', 'red');
-                } else if (this.height > CONSTANTS.data.maxMedalHeight) { // too high
+                } else if (this.height > maxHeight) { // too high
                     this.validHeight = false;
                     this.warnHeight = CONSTANTS.warning.highHeightWarning;
                     this.heightWarnClass = 'red';
@@ -432,7 +472,7 @@
                 var maxWidth;
                 if (this.type == 'Button medal') {
                     minWidth = CONSTANTS.data.minLabelHeight;
-                    maxWidth = CONSTANTS.data.maxMedalHeight;
+                    maxWidth = CONSTANTS.data.maxButtonHeight;
                 } else if (this.type == 'Strip medal') {
                     minWidth = CONSTANTS.data.minStripWidth;
                     maxWidth = CONSTANTS.data.maxStripWidth;
