@@ -1,6 +1,6 @@
 {"Visy Glass NZ": 
     {
-        "Burgundy":
+        "Burgundy (Light/Trad etc)":
             {
             "31555": {
                 "name": "Punted 417gm",
@@ -50,7 +50,7 @@
                 }
             },
             "3662" : {
-                "name": "Traditional 656gm",
+                "name": "Traditional 565gm",
                 "stockCodes": [
                     {"code": 200013, "name": "WW BT BVS A/G BRG 750ml VS10011711 565g Traditional"},
                     {"code": 200025, "name": "WW BT BVS F/G BRG 750ml VS10011708 565g Traditional"},
@@ -92,7 +92,7 @@
                 }
             }
         },
-        "Premium Burgundy": {
+        "Burgundy (Prem/Grand etc)": {
             "31532": {
                 "name": "Premium Square Heel 545gm",
                 "stockCodes": [
@@ -313,7 +313,7 @@
         }
     },
     "Chandler Glass & Packaging": {
-        "Burgundy": {
+        "Burgundy (Light/Trad etc)": {
             "CR404": {
                 "name": "Legere 420gm",
                 "stockCodes": [
@@ -377,7 +377,7 @@
                 }
             }
         },
-        "Premium Burgundy": {
+        "Burgundy (Prem/Grand etc)": {
             "CR409": {
                 "name": "Grandeur 675gm",
                 "stockCodes": [
@@ -463,7 +463,7 @@
             "CR478": {
                 "name": "Alba 820gm (*requires WW approval)",
                 "stockCodes": [],
-                "order": 5,
+                "order": 100,
                 "diameter": 86.2,
                 "warning": {
                     "minHeightOffset": 24,
@@ -547,7 +547,7 @@
             "CR5015": {
                 "name": "Superior 550gm (*requires WW approval)",
                 "stockCodes": [],
-                "order": 3,
+                "order": 100,
                 "diameter": 84.5,
                 "warning": {
                     "minHeightOffset": 18,
@@ -585,7 +585,7 @@
             "CR5011": {
                 "name": "Resolute 695gm (*requires WW approval)",
                 "stockCodes": [],
-                "order": 5,
+                "order": 100,
                 "diameter": 74.8,
                 "warning": {
                     "minHeightOffset": 21,
@@ -628,7 +628,7 @@
             "CR982": {
                 "name": "Carbeco 680gm (*requires WW approval)",
                 "stockCodes": [],
-                "order": 1,
+                "order": 100,
                 "diameter": 84.6,
                 "warning": {
                     "minHeightOffset": 19,
@@ -646,7 +646,7 @@
             "CR988": {
                 "name": "Beaumont 795gm (*requires WW approval)",
                 "stockCodes": [],
-                "order": 2,
+                "order": 100,
                 "diameter": 86.5,
                 "warning": {
                     "minHeightOffset": 18,
@@ -684,7 +684,7 @@
             "CR983": {
                 "name": "Brut 880gm (*requires WW approval)",
                 "stockCodes": [],
-                "order": 4,
+                "order": 100,
                 "diameter": 95.5,
                 "warning": {
                     "minHeightOffset": 10.8,

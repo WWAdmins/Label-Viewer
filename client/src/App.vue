@@ -1,21 +1,27 @@
 <template>
   <div id="app">
     <div id="header" class="container-fluid header-backing col-lg-10 offset-lg-1">
-      <div class="row">
-        <div class="col-sm-atuo">
-          <img class="header-logo" alt="logo" src="./assets/logo.png">
+      <div class="row justify-content-end">
+        <div class="col">
+          <div class="row">
+            <div class="col-xs-atuo">
+              <img class="header-logo" alt="logo" src="./assets/logo.png">
+            </div>
+            <div class="col-md">
+              <div class="row">
+                <label class="main-title" v-html="titles.pageHeaderTitle"></label>
+                  <label 
+                    class="main-title-body" 
+                    v-html="titles.pageHeaderBody"
+                    id="title-body"
+                  ></label>
+                  <b-tooltip target="title-body" variant="light" custom-class="wideTooltip">{{ titles.pageHeaderDisclaimer }}</b-tooltip>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="col-sm-10">
-          <label class="main-title" v-html="titles.pageHeaderTitle"></label>
-          <label 
-            class="main-title-body" 
-            v-html="titles.pageHeaderBody"
-            id="title-body"
-          ></label>
-          <b-tooltip target="title-body" variant="light" custom-class="wideTooltip">{{ titles.pageHeaderDisclaimer }}</b-tooltip>
-        </div>
-        <div class="col-sm-1 pull-right">
-          <b-link v-b-toggle.collapse-1 class="help-button float-right">Help</b-link>
+        <div class="col-xs-1">
+          <b-link v-b-toggle.collapse-1 class="help-button">Help</b-link>
         </div>
       </div>
       <b-collapse id="collapse-1" class="mt-2">
@@ -1089,7 +1095,7 @@ body{
 }
 
 .main-backing {
-  margin-top: 60px;
+  margin-top: 40px;
   margin-bottom: 60px;
   border-radius: 8px;
   background-color: rgba(255,255,255,0.93);
@@ -1101,8 +1107,8 @@ body{
 }
 
 .header-backing {
-  margin-top: 60px;
-  margin-bottom: 60px;
+  margin-top: 20px;
+  margin-bottom: 40px;
   border-radius: 8px;
   background-color: rgba(255,255,255,0.93);
   padding: 20px;
@@ -1119,6 +1125,7 @@ body{
 .main-title {
   font-size: 230%;
   text-align: left;
+  margin-left: 10px;
   white-space: pre-wrap;
   float: left;
   font-weight: 700;
@@ -1127,6 +1134,7 @@ body{
 
 .main-title-body {
   font-size: 110%;
+  margin-left: 10px;
   float: left;
   text-align: left;
   white-space: pre-wrap;
@@ -1167,13 +1175,15 @@ body{
 .form-header {
   padding: 15px 10px 5px 10px;
   text-align: center;
-  font-size: 25px;
+  font-weight: 600;
+  font-size: 140%;
   white-space: pre-wrap;
 }
 
 .preview-header {
   padding: 15px 10px 5px 10px;
-  font-size: 25px;
+  font-weight: 600;
+  font-size: 140%;
   white-space: pre-wrap;
 }
 
@@ -1239,6 +1249,7 @@ body{
   padding: 8px 0px 20px 30px;
   font-size: 110%;
   white-space: pre-wrap;
+  margin-right: 10px;
 }
 
 .right-col {
