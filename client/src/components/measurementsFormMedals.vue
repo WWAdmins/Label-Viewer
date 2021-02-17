@@ -383,10 +383,6 @@
             // emits events for valid, invalid and orange zone (warning)
             // Validation details are handeled by helper functions
             validate(input) {
-                if (input == 'type clear') {
-                    this.$emit('invalid', {'labelId':this.labelId, 'side':'medal', 'type': input});
-                    return;
-                }
                 if (this.type == "Button medal") {
                     this.width = this.height;
                 }
@@ -409,7 +405,7 @@
                     this.validateWidth();
                 }
 
-                if (this.overlap === '' || this.overlap === null) {
+                if (!parseInt(this.overlap)) {
                     this.validOverlap = true;
                     this.warnoverlap = null;
                     this.overlapWarnClass = '';
@@ -418,9 +414,13 @@
                     this.validateOverlap();
                 }
 
-                this.valid = this.validHeight && this.validWidth && this.validOverlap && this.overlap;
+                this.valid = this.validHeight && this.validWidth && this.validOverlap;
 
-                this.heightOffset = this.labelsTop - this.overlap;
+                if (!(this.overlap && parseInt(this.overlap))) {
+                    this.heightOffset = '';
+                } else {
+                    this.heightOffset = this.labelsTop - this.overlap;
+                }
                 
                 // todo: send placement info
                 const form = {
