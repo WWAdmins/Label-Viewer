@@ -511,8 +511,13 @@
             // Calls: setInputCss
             // Calls: validateHeight, validateHeightOffset and validateWidth
             validate(input) {
-                if (this.labelId[1] != 1 && this.globalPositions[this.side][this.labelId[0]+'1'] != null) {
-                    this.heightOffset = this.labelGap + this.globalPositions[this.side][this.labelId[0]+'1'].height + this.globalPositions[this.side][this.labelId[0]+'1'].heightOffset;
+                if (this.labelId[1] != 1 && this.globalPositions[this.side][this.labelId[0]+'1'] != null) { // If secondary label and primary label is not null
+                    const X1 = this.globalPositions[this.side][this.labelId[0]+'1'];
+                    if (X1.heightOffset != 0 && X1.heightOffset != null && this.labelGap != '') {
+                        this.heightOffset = this.labelGap + X1.height + X1.heightOffset;
+                    } else {
+                        this.heightOffset = '';
+                    }
                 } else {
                     this.heightOffset = this.applicationHeight;
                 }
@@ -604,20 +609,27 @@
                     this.heightOffsetWarnClass = '';
                     return;
                 }
+                
+                var offset;
+                if (this.labelId[1] == 1) { // If this is a first label
+                    offset = this.heightOffset;
+                } else {    // If this is a second label
+                    offset = this.labelGap;
+                }
 
-                if (this.heightOffset < this.getMinHeightOffset('warning')) { // too low
+                if (offset < this.getMinHeightOffset('warning')) { // too low
                     this.validHeightOffset = false;
                     this.warnHeightOffset = CONSTANTS.warning.lowHeightOffsetWarning;
                     this.heightOffsetWarnClass = 'red';
                     this.setInputCss('heightOffset', 'red');
-                } else if ((this.heightOffset > this.getmaxHeightOffset('recommended') && this.heightOffset <= this.getmaxHeightOffset('warning')) ||
-                            (this.heightOffset < this.getMinHeightOffset('recommended') && this.heightOffset >= this.getMinHeightOffset('warning'))) { // warn
+                } else if ((offset > this.getmaxHeightOffset('recommended') && offset <= this.getmaxHeightOffset('warning')) ||
+                            (offset < this.getMinHeightOffset('recommended') && offset >= this.getMinHeightOffset('warning'))) { // warn
                     this.orangeZone = true;
                     this.validHeightOffset = true;
                     this.warnHeightOffset = CONSTANTS.warning.orangeZoneWarning;
                     this.heightOffsetWarnClass = 'orange';
                     this.setInputCss('heightOffset', 'orange');
-                } else if (this.heightOffset > this.getmaxHeightOffset('warning')) { // too high
+                } else if (offset > this.getmaxHeightOffset('warning')) { // too high
                     this.validHeightOffset = false;
                     this.warnHeightOffset = CONSTANTS.warning.highHeightOffsetWarning;
                     this.heightOffsetWarnClass = 'red';
