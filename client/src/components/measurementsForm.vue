@@ -246,6 +246,10 @@
             // Filters any key press that is not 0-9 or 'ArrowRight','ArrowLeft','Backspace', 'Tab'
             // (any filtered key presses are discarded)
             // If key down is 'Tab', force update to fields without timeout (prevents updates being skipped by quick change of field resetting timeout)
+            // Note: validate should be called before the height offset description is updated as it checks if the current height
+            //  is valid while updating (see updateHeightOffsetDescription for more info)
+            // Calls validate
+            // Calls updateHeightOffsetDescription (if needed)
             // event: key press event
             keyDown(event) {
                 const validKeys = ['ArrowRight','ArrowLeft','Backspace', 'Tab'];
@@ -256,14 +260,15 @@
                     this.validate(event.target.id.split("-")[2]);
                     if (event.target.id.split("-")[2] == 'height') {
                         this.updateHeightOffsetDescription();
-                        this.updateWidthDescription();
                     }
                 }
             },
             
             // Tiggered on keyup event in the form inputs. Delays action by 500ms to prevent unessacary calling while user is still typing
-            // Note: validate should be called before the height offset description is updated as it checks if the current height 
-            // is valid while updating (see updateHeightOffsetDescription for more info)
+            // Note: validate should be called before the height offset description is updated as it checks if the current height
+            //  is valid while updating (see updateHeightOffsetDescription for more info)
+            // Calls validate
+            // Calls updateHeightOffsetDescription
             // input: the input that the change has come from 
             inputChange(input) {
                 clearTimeout(this.delayTimer);
@@ -271,7 +276,6 @@
                     this.validate(input);
                     if (input == 'height') {
                         this.updateHeightOffsetDescription();
-                        this.updateWidthDescription();
                     }
                 }, 500);
             },

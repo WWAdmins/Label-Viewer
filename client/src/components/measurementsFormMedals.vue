@@ -143,17 +143,21 @@
                                 ID = this.queue.shift();
 
                                 if (this.globalPositions.activeLabels.includes('F2') && ID == 'F2') {
-                                    this.updateOverlapDescription();
-                                    this.updateWidthDescription();
-                                    this.updateHeightDescription();
-
                                     this.validate('props');
+                                    
+                                    this.updateOverlapDescription();
+                                    if (this.type == 'Strip medal') {
+                                        this.updateWidthDescription();
+                                    }
+                                    this.updateHeightDescription();
                                 } else if (ID == 'F1') {
-                                    this.updateOverlapDescription();
-                                    this.updateWidthDescription();
-                                    this.updateHeightDescription();
-
                                     this.validate('props');
+
+                                    this.updateOverlapDescription();
+                                    if (this.type == 'Strip medal') {
+                                        this.updateWidthDescription();
+                                    }
+                                    this.updateHeightDescription();
                                 }
                             }
                         }, 600);
@@ -216,19 +220,26 @@
 
         methods: {
 
+            // Called when the type of medal is selected
+            // Manually sets selection as v-bind is slow
+            // Calls updateHeightDescription, updateWidthDescription, updateOverlapDescription
+            // selection: the selected type of medal (v-bind is slow so type is manually set)
             selectedType(selection) {
                 this.type = selection;
 
-                this.updateHeightDescription();
-                this.updateWidthDescription();
-                this.updateOverlapDescription();
-
                 this.validate('type select');
+
+                this.updateHeightDescription();
+                if (this.type == 'Strip medal') {
+                    this.updateWidthDescription();
+                }
+                this.updateOverlapDescription();
             },
 
             // When clear button is pressed
             // Clears inputs, sets all valid tags to true,
-            // clears all warning strings, sets orange zone to false, sets all inputs to standard-input css
+            // Clears all warning strings, sets orange zone to false, sets all inputs to standard-input css
+            // Calls: updateWidthDescription, updateHeightDescription and updateOverlapDescription
             clearForm() {
                 this.overlapMin = 0;
                 this.overlapMax = 0;
@@ -266,8 +277,13 @@
             // On key press in input fields
             // Filters any key press that is not 0-9 or 'ArrowRight','ArrowLeft','Backspace', 'Tab'
             // (any filtered key presses are discarded)
-            // if key down is 'Tab', force update to fields without timeout (prevents updates being skipped by quick change of field resetting timeout)
-            keyDown() {
+            // If key down is 'Tab', force update to fields without timeout (prevents updates being skipped by quick change of field resetting timeout)
+            // Note: validate should be called before the overlap description is updated as it checks if the current height
+            //  is valid while updating (see updateOverlapDescription for more info)
+            // Calls validate
+            // Calls updateOverlapDescription (if needed)
+            // event: key press event
+            keyDown(event) {
                 const validKeys = ['ArrowRight','ArrowLeft','Backspace', 'Tab', '-'];
                 const keyRegex = /[0-9]/;
                 if (!keyRegex.test(event.key) && validKeys.indexOf(event.key) < 0) {
@@ -276,22 +292,22 @@
                     // Todo: check this
                     this.validate(event.path[0].id.split("-")[2]);
                     if (event.path[0].id.split("-")[2] == 'height') {
-                        this.updateHeightDescription();
-                        if (this.type == 'Strip medal') {
-                            this.updateWidthDescription();
-                        }
                         this.updateOverlapDescription();
                     }
                 }
             },
             
             // Tiggered on keyup event in the form inputs. Delays action by 500ms to prevent unessacary calling while user is still typing
-            // Input is the field that has been modified, this function can be expanded for more input
+            // Note: validate should be called before the overlap description is updated as it checks if the current height
+            //  is valid while updating (see updateOverlapDescription for more info)
+            // Calls validate
+            // Calls updateOverlapDescription
+            // input: the input that the change has come from 
             inputChange(input) {
                 clearTimeout(this.delayTimer);
                 this.delayTimer = setTimeout(()=>{
-                    this.updateOverlapDescription();
                     this.validate(input);
+                    this.updateOverlapDescription();
                 }, 500);
             },
 
@@ -322,21 +338,26 @@
                 }
             },
 
-
+            // Updates the display of the current recommended boundry values for overlap
+            // The overlapDescription must be displayed using a v-html directive for the formatting to display propperly (ie <label v-html='textVar'></label>)
+            // Only updates if there is a valid height
+            // ovarlapMin and overlapMax are derived from the current height and offset of the top label in relation to the label pannel
             updateOverlapDescription() {
+                if (!this.validHeight) {
+                    return;
+                }
+                
                 if (this.globalPositions.activeLabels.includes('F2')) {
                     const F2 = this.globalPositions.front.F2;
                     if (F2 != null) {
                         this.overlapMax = (F2.height + F2.heightOffset) - this.bottleSpec.recommended.minHeightOffset;
                         this.overlapMin = (F2.height + F2.heightOffset + this.height) - (this.bottleSpec.warning.maxHeight + this.bottleSpec.recommended.minHeightOffset);
-                        this.labelsTop = F2.height + F2.heightOffset;
                     }
                 } else {
                     const F1 = this.globalPositions.front.F1;
                     if (F1 != null) {
                         this.overlapMax = (F1.height + F1.heightOffset) - this.bottleSpec.recommended.minHeightOffset;
                         this.overlapMin = (F1.height + F1.heightOffset + this.height) - (this.bottleSpec.warning.maxHeight + this.bottleSpec.recommended.minHeightOffset);
-                        this.labelsTop = F1.height + F1.heightOffset;
                     }
                 }
                 if (this.overlapMin > this.height) {
@@ -382,6 +403,13 @@
             // If a field is blank, validation is skipped and it is considered valid, but it's css class is set to standard-input
             // emits events for valid, invalid and orange zone (warning)
             // Validation details are handeled by helper functions
+
+            // Takes the provided user measurments and validates them against the currently selected spec
+            // Calculates current height offset using top of the highest label and medal overlap
+            // If a field is blank, validation is skipped and it is considered valid, but it's css class is set to standard-input
+            // emits events for valid or invalid
+            // Calls: setInputCss
+            // Calls: validateHeight, validateOverlap and validateWidth
             validate(input) {
                 if (this.type == "Button medal") {
                     this.width = this.height;
@@ -419,10 +447,16 @@
                 if (!(this.overlap && parseInt(this.overlap))) {
                     this.heightOffset = '';
                 } else {
+                    if (this.globalPositions.activeLabels.includes('F2')) {
+                        const F2 = this.globalPositions.front.F2;
+                        this.labelsTop = F2.height + F2.heightOffset;
+                    } else {
+                        const F1 = this.globalPositions.front.F1;
+                        this.labelsTop = F1.height + F1.heightOffset;
+                    }
                     this.heightOffset = this.labelsTop - this.overlap;
                 }
                 
-                // todo: send placement info
                 const form = {
                     'height': this.height,
                     'width': this.width,
@@ -439,7 +473,9 @@
                 }
             },
 
-            // Checks the validity of the height field and sets validHeight, changes css setting of input and triggers warnings depending on validity
+            // Checks the validity of the height field and sets validHeight
+            // Calls: setInputCss
+            // Triggers warnings depending on validity and sets apprepreate warning strings
             validateHeight() {
                 var maxHeight;
                 if (this.type == "Button medal") {
@@ -466,7 +502,9 @@
                 }
             },
 
-            // Checks the validity of the width field and sets validWidth, changes css setting of input and triggers warnings depending on validity
+            // Checks the validity of the width field and sets validWidth
+            // Calls: setInputCss
+            // Triggers warnings depending on validity and sets apprepreate warning strings
             validateWidth() {
                 var minWidth;
                 var maxWidth;
@@ -496,7 +534,9 @@
                 }
             },
 
-            // Checks the validity of the overlap field and sets validOverlap, changes css setting of input and triggers warnings depending on validity
+            // Checks the validity of the overlap field and sets validOverlap
+            // Calls: setInputCss
+            // Triggers warnings depending on validity and sets apprepreate warning strings
             validateOverlap() {
                 if (this.overlap < this.overlapMin) {  // not enough overlap (sitting too high on the label pannel)
                     this.validOverlap = false;
