@@ -143,17 +143,9 @@
                             while(this.queue.length > 0) {
                                 ID = this.queue.shift();
 
-                                if (this.globalPositions.activeLabels.includes('F2') && ID == 'F2') {
+                                if (ID == 'F1' || ID == 'F2') {
                                     this.validate('props');
                                     
-                                    this.updateOverlapDescription();
-                                    if (this.type == 'Strip medal') {
-                                        this.updateWidthDescription();
-                                    }
-                                    this.updateHeightDescription();
-                                } else if (ID == 'F1') {
-                                    this.validate('props');
-
                                     this.updateOverlapDescription();
                                     if (this.type == 'Strip medal') {
                                         this.updateWidthDescription();

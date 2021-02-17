@@ -159,11 +159,16 @@
                 heightDescription: "",
                 heightOffsetDescription: "",
                 widthDescription: "",
+
                 delayTimer: null,
+                delayWatcherTimer: null,
+                queue: [],
+
                 valid: true,
                 validHeight: true,
                 validHeightOffset: true,
                 validWidth: true,
+
                 warnHeight: null,
                 warnHeightOffset: null,
                 warnWidth: null,
@@ -171,7 +176,6 @@
                 heightWarnClass: '',
                 heightOffsetWarnClass: '',
                 widthWarnClass: '',
-                queue: [],
 
                 titles: {}
             }
