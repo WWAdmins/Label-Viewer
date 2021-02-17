@@ -452,7 +452,7 @@
 
                 this.titles = CONSTANTS.titles;
 
-                const helpLink = `<a href=${CONSTANTS.help.helpLink} target="_blank" class='alert-link'>${CONSTANTS.help.helpLinkDisplay}</a>`;
+                const helpLink = `<a href=mailto:${CONSTANTS.help.helpLink} target="_blank" class='alert-link'>${CONSTANTS.help.helpLinkDisplay}</a>`;
                 const guideLinkHere = `<a href=${CONSTANTS.help.userGuideLink} target="_blank" class='alert-link'>${CONSTANTS.help.userGuideLinkDisplay}</a>`;
                 const guideLinkGuide = `<a href=${CONSTANTS.help.userGuideLink} target="_blank" class='alert-link'>${CONSTANTS.help.guideDisclaimerDisplay}</a>`;
                 this.helpMessage = CONSTANTS.help.helpMessage.replace("[help link here]", helpLink).replace("[user guide link here]", guideLinkHere);
@@ -577,10 +577,18 @@
 
             // Sets bottle image
             // Calculates bottle circumference and adds it to bottle spec
+            // Ensures the min application height is above the absolute minimum
             // All numeric fields are rounded. (mins are rounded down and max is rounded up)
             // Calculates "optimum" medal placement zone and sets the medal help message using this
             specPrep() {
                 this.bottleImgUrl = silhouettes[CONSTANTS.bottleCodes[this.bottleType] + "Image"];
+                if (this.bottleSpec.warning.minHeightOffset < CONSTANTS.data.minHeightOffset) {
+                    this.bottleSpec.warning.minHeightOffset = CONSTANTS.data.minHeightOffset;
+                }
+                if (this.bottleSpec.recommended.minHeightOffset < CONSTANTS.data.minHeightOffset) {
+                    this.bottleSpec.recommended.minHeightOffset = CONSTANTS.data.minHeightOffset;
+                }
+
                 // All spec variables are rounded as fractional mm are not improtatant to this context
                 // Rounding is always done in a direction to tighten constraints
                 this.bottleSpec.circumference = Math.floor(this.bottleSpec.diameter * Math.PI);

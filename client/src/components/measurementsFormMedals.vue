@@ -92,6 +92,7 @@
                     </div>
                 </div>
             </div>
+            <label id="singleMedalMessage" class="single-medal-help" v-show="labelId[1] > 1 && type" v-html="singleMedalDisclaimer"></label>
         </div>
     </div>
 </template>
@@ -199,12 +200,14 @@
                 labelsTop: null,
                 maxStripHeight: null,
 
-                titles: {}
+                titles: {},
+                singleMedalDisclaimer: ''
             }
         },
 
         mounted() {
             this.titles = CONSTANTS.titles;
+            this.singleMedalDisclaimer = CONSTANTS.help.singleMedalDisclaimer;
             if (this.bottleSpec != null) {
                 this.maxStripHeight = this.bottleSpec.recommended.maxHeight;
 
@@ -572,6 +575,13 @@
     font-weight: bold;
     float: left;
     margin-left: 6%;
+}
+
+.single-medal-help {
+    white-space: pre-wrap;
+    text-align: left;
+    margin: 2% 4% 1% 4%;
+    font-style: italic;
 }
 
 </style>
