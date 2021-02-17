@@ -536,7 +536,7 @@
                 this.specPrep();
             },
 
-            // Whena stock code is deselected, clears all dependent fields
+            // When a stock code is deselected, clears all dependent fields
             stockCodeRemove() {
                 this.stockCode = null;
                 this.bottleId = null;
@@ -544,7 +544,7 @@
                 this.bottleSpec = null;
             },
 
-            // When bottle type is selected and clears all flieds that require bottleType
+            // When bottle type is selected and clears all fields that require bottleType
             // Sets list of bottle ids and adds bottle name along side each bottle id (in form ("id - name"))
             // Sorts bottleID list based on specified order from data file. Sort is assending order (1 -> 100)
             // stockCodeSelection: selected bottleType (v-bind is slow so this is used to generate bottleID list)
@@ -641,13 +641,14 @@
             // target: list containing the target order of list (must include all entries in list, but may also contain more)
             // returns: sorted list
             targetSort(list, target) {
-                    var ordering = {};
-                    for (var i=0; i<target.length; i++)
-                            ordering[target[i]] = i;
+                var ordering = {};
+                for (var i=0; i<target.length; i++) {
+                    ordering[target[i]] = i;
+                }
 
-                    list = list.sort( function(a, b) {
-                            return (ordering[a] - ordering[b]) || a.localeCompare(b);
-                    });
+                list = list.sort( function(a, b) {
+                    return (ordering[a] - ordering[b]) || a.localeCompare(b);
+                });
                 return list;
             },
 
