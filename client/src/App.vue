@@ -188,7 +188,7 @@
 
                         <button 
                             class='medal-button' 
-                            v-if='!help && !medalMode' 
+                            v-if='!medalMode' 
                             v-on:click="medalMode = !medalMode"
                             :disabled="labelStatuses.filled.length < globalPositions.activeLabels.length || globalPositions.activeLabels.length == 0 || globalPositions.activeMedals == 0"
                             v-html="titles.medalButton"
@@ -230,7 +230,7 @@
 
                         <button 
                             class='medal-button' 
-                            v-if='!help && medalMode' 
+                            v-if='medalMode' 
                             v-on:click="medalMode = !medalMode"
                             v-html="titles.labelButton"
                         ></button>
@@ -373,7 +373,6 @@
                 return {
                     data: [],
                     suppliers: [],
-                    supplierBottles: [],
                     bottleTypes: [],
                     bottles: [],
                     supplier: null,
@@ -424,7 +423,6 @@
                             'count': 0
                         }
                     },
-                    help: false,
                     helpMessage: "",
                     bottlePreviewDisclaimer: "",
                     validLabelOptions: [],
@@ -489,6 +487,10 @@
                     this.bottleTypes = this.targetSort(this.bottleTypes, CONSTANTS.bottleSortTemplate);
                 } else {
                     this.stockCodeSearch = true;
+                    
+                    this.stockCodeOptions = [];
+                    this.stockCodeKey = {}
+
                     var bottleData;
                     var stockCodeStr;
                     var codeData;
