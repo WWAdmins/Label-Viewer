@@ -3,6 +3,8 @@
         "minLabelHeight": 18,
         "minLabelWidth": 12,
         "minHeightOffset": 15,
+        "maxHeight": 175,
+        "maxWidth": 230,
 
         "maxButtonHeight": 50,
         "minStripWidth": 18,
@@ -29,8 +31,6 @@
         "M1": "Medal",
         "M2": "Second medal"
     },
-
-    "labelSortTemplate": ["Front", "Second front", "Back", "Second back", "Medal", "Second medal"],
 
     "help": {
         "wrapAroundMessage": "Due to limitations of our labellers, we are not able to apply a back label while applying a wraparound style label to the front",
@@ -81,8 +81,6 @@
         "Burgundy (Prem/Grand etc)": "PBG"
     },
 
-    "bottleSortTemplate": ["Bordeaux", "Burgundy (Light/Trad etc)", "Burgundy (Prem/Grand etc)", "Riesling", "Sparkling", "Magnum"], 
-
     "titles": {
         "frontLabel": "FRONT",
         "backLabel": "BACK",
@@ -109,5 +107,12 @@
     "descriptions": {
         "between": "Recommended between <b><b>${min}mm</b></b> and <b><b>${max}mm</b></b>",
         "value": "Recommended <b><b>${value}mm</b></b>"
+    },
+
+    "sorts": {
+        "supplierSortTemplate": ["Visy Glass NZ", "Chandler Glass & Packaging", "I know my WineWorks stock code"],
+        "labelSortTemplate": ["Front", "Second front", "Back", "Second back", "Medal", "Second medal"],
+        "bottleSortTemplate": ["Bordeaux", "Burgundy (Light/Trad etc)", "Burgundy (Prem/Grand etc)", "Riesling", "Sparkling", "Magnum"]
+
     }
 }

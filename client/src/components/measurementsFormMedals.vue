@@ -396,11 +396,6 @@
 
 
             // Takes the provided user measurments and validates them against the currently selected spec
-            // If a field is blank, validation is skipped and it is considered valid, but it's css class is set to standard-input
-            // emits events for valid, invalid and orange zone (warning)
-            // Validation details are handeled by helper functions
-
-            // Takes the provided user measurments and validates them against the currently selected spec
             // Calculates current height offset using top of the highest label and medal overlap
             // If a field is blank, validation is skipped and it is considered valid, but it's css class is set to standard-input
             // emits events for valid or invalid
@@ -440,7 +435,7 @@
 
                 this.valid = this.validHeight && this.validWidth && this.validOverlap;
 
-                if (!(this.overlap && parseInt(this.overlap))) {
+                if (!(this.overlap && parseInt(this.overlap)) && this.overlap !== 0) {
                     this.heightOffset = '';
                 } else {
                     if (this.globalPositions.activeLabels.includes('F2')) {

@@ -327,6 +327,7 @@
             // Fetches the maximum possible height of the label using the type to specify which max height to use
             // If it is a primary label and a secondary label exists for that side, min label size and and are accounted for
             // If secondary label, primary label height and height offset are accounted for
+            // Ensures the max height is not above the absolute maximum for any bottle
             // type: {'warning', 'recommended'}
             // Returns: maxHeight
             getMaxHeight(type) {
@@ -349,6 +350,8 @@
                 } else {
                     maxHeight = this.bottleSpec[type].maxHeight;
                 }
+
+                maxHeight = Math.min(maxHeight, CONSTANTS.data.maxHeight);
 
                 return maxHeight;
             },

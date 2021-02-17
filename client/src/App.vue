@@ -471,7 +471,8 @@
                     this.data = dataImport;
 
                     this.suppliers = Object.keys(this.data);
-                    this.suppliers.push(CONSTANTS.titles.stockSearchOption)
+                    this.suppliers.push(CONSTANTS.titles.stockSearchOption);
+                    this.suppliers = this.targetSort(this.suppliers, CONSTANTS.sorts.supplierSortTemplate);
             },
 
             // When the supplier is selected:
@@ -484,7 +485,7 @@
                 if (supplierSelection != CONSTANTS.titles.stockSearchOption) {
                     this.stockCodeSearch = false;
                     this.bottleTypes = Object.keys(this.data[supplierSelection]);
-                    this.bottleTypes = this.targetSort(this.bottleTypes, CONSTANTS.bottleSortTemplate);
+                    this.bottleTypes = this.targetSort(this.bottleTypes, CONSTANTS.sorts.bottleSortTemplate);
                 } else {
                     this.stockCodeSearch = true;
                     
@@ -580,16 +581,17 @@
             // Sets bottle image
             // Calculates bottle circumference and adds it to bottle spec
             // Ensures the min application height is above the absolute minimum
+            // Ensures the max width is below the absolute maximum
             // All numeric fields are rounded. (mins are rounded down and max is rounded up)
             // Calculates "optimum" medal placement zone and sets the medal help message using this
             specPrep() {
                 this.bottleImgUrl = silhouettes[CONSTANTS.bottleCodes[this.bottleType] + "Image"];
-                if (this.bottleSpec.warning.minHeightOffset < CONSTANTS.data.minHeightOffset) {
-                    this.bottleSpec.warning.minHeightOffset = CONSTANTS.data.minHeightOffset;
-                }
-                if (this.bottleSpec.recommended.minHeightOffset < CONSTANTS.data.minHeightOffset) {
-                    this.bottleSpec.recommended.minHeightOffset = CONSTANTS.data.minHeightOffset;
-                }
+
+                this.bottleSpec.warning.minHeightOffset = Math.min(CONSTANTS.data.minHeightOffset, this.bottleSpec.warning.minHeightOffset);
+                this.bottleSpec.recommended.minHeightOffset = Math.min(CONSTANTS.data.minHeightOffset, this.bottleSpec.recommended.minHeightOffset);
+
+                this.bottleSpec.warning.maxWidth = Math.min(CONSTANTS.data.maxWidth, this.bottleSpec.warning.maxWidth);
+                this.bottleSpec.recommended.maxWidth = Math.min(CONSTANTS.data.maxWidth, this.bottleSpec.recommended.maxWidth);
 
                 // All spec variables are rounded as fractional mm are not improtatant to this context
                 // Rounding is always done in a direction to tighten constraints
@@ -681,7 +683,7 @@
                     this.validLabelOptions.push(CONSTANTS.labelNames.M2);
                 }
 
-                this.validLabelOptions = this.targetSort(this.validLabelOptions, CONSTANTS.labelSortTemplate);
+                this.validLabelOptions = this.targetSort(this.validLabelOptions, CONSTANTS.sorts.labelSortTemplate);
 
                 // Add label to active list
                 switch (label) {
