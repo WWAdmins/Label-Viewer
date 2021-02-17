@@ -131,24 +131,7 @@
                             while(this.queue.length > 0) {
                                 ID = this.queue.shift();
 
-                                if (this.labelId[1] == 2) {
-                                    const X1 = this.globalPositions[this.side][this.labelId[0]+'1'];
-                                    if (X1 != null) {
-                                        this.heightOffset = this.labelGap + X1.height + X1.heightOffset;
-                                    }
-                                } else {
-                                    this.heightOffset = this.applicationHeight;
-                                }
-
-                                if (ID == 'global') {
-                                    this.validate('props');
-
-                                    this.updateWidthDescription();
-                                    this.updateHeightDescription();
-                                    this.updateHeightOffsetDescription();
-                                }
-                                
-                                if (ID == 'F1') {
+                                if (ID == 'global' || ID == 'F1' || (ID == 'B1' && this.labelId == 'B2')) {
                                     this.validate('props');
 
                                     this.updateWidthDescription();
@@ -157,11 +140,6 @@
                                 } else if (this.side == 'back' && this.globalPositions.latest.side == 'front') {
                                     this.validate('props');
                                     this.updateWidthDescription();
-                                } else if (ID == 'B1' && this.labelId == 'B2') {
-                                    this.validate('props');
-                                    this.updateWidthDescription();
-                                    this.updateHeightDescription();
-                                    this.updateHeightOffsetDescription();
                                 }
                             }
                         }, 600);
