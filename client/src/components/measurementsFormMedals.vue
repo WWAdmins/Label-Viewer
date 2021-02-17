@@ -171,6 +171,9 @@
                 overlapDescription: "",
 
                 delayTimer: null,
+                delayWatcherTimer: null,
+                queue: [],
+
                 valid: true,
                 validHeight: true,
                 validWidth: true,
@@ -182,8 +185,6 @@
                 heightWarnClass: '',
                 widthWarnClass: '',
                 overlapWarnClass: '',
-
-                queue: [],
 
                 overlapMin: 0,
                 overlapMax: 0,
