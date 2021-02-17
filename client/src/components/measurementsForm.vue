@@ -213,17 +213,19 @@
             // When clear button is pressed
             // Clears inputs, sets all valid tags to true,
             // clears all warning strings, sets orange zone to false, sets all inputs to standard-input css
+            // Updates descriptions
             clearForm() {
-                // clear our form values
                 this.height = '';
                 this.applicationHeight = '';
                 this.labelGap = '';
                 this.heightOffset = 0;
                 this.width = '';
+
                 this.validHeight = true;
                 this.validHeightOffset = true;
                 this.validWidth = true;
                 this.valid = true;
+
                 this.warnHeight = null;
                 this.warnHeightOffset = null;
                 this.warnWidth = null;
@@ -243,7 +245,8 @@
             // On key press in input fields
             // Filters any key press that is not 0-9 or 'ArrowRight','ArrowLeft','Backspace', 'Tab'
             // (any filtered key presses are discarded)
-            // if key down is 'Tab', force update to fields without timeout (prevents updates being skipped by quick change of field resetting timeout)
+            // If key down is 'Tab', force update to fields without timeout (prevents updates being skipped by quick change of field resetting timeout)
+            // event: key press event
             keyDown(event) {
                 const validKeys = ['ArrowRight','ArrowLeft','Backspace', 'Tab'];
                 const keyRegex = /[0-9]/;
@@ -259,8 +262,9 @@
             },
             
             // Tiggered on keyup event in the form inputs. Delays action by 500ms to prevent unessacary calling while user is still typing
-            // Input is the field that has been modified, this function can be expanded for more input, but the validate should be called before the height offset 
-            // and width descriptions are updated as they check if the current height is valid while updating (see updateHeightOffsetDescription for more info)
+            // Note: validate should be called before the height offset description is updated as it checks if the current height 
+            // is valid while updating (see updateHeightOffsetDescription for more info)
+            // input: the input that the change has come from 
             inputChange(input) {
                 clearTimeout(this.delayTimer);
                 this.delayTimer = setTimeout(()=>{
@@ -274,7 +278,8 @@
 
 
             // Updates the display of the current recommended boundry values for max height
-            // The heightDescription must be displayed using a v-html directive for the formatting to display propperly (ie <label v-html='textVar'></label>)
+            // Calls getMaxhHeight
+            // Note: heightDescription should be displayed using a v-html directive for html formatting to display propperly (ie <label v-html='textVar'></label>)
             updateHeightDescription() {
                 if (this.bottleSpec == null) {
                     this.heightDescription = '';
@@ -292,8 +297,9 @@
 
 
             // Updates the display of the current recommended boundry values for max height offset
-            // The heightOffsetDescription must be displayed using a v-html directive for the formatting to display propperly (ie <label v-html='textVar'></label>)
+            // Note: heightOffsetDescription should be displayed using a v-html directive for html formatting to display propperly (ie <label v-html='textVar'></label>)
             // This description will only update if the height is valid due to the use of the height in calculating max height offset
+            // Calls: getmaxHeightOffset and getMinHeightOffset
             updateHeightOffsetDescription() {
                 if (this.bottleSpec == null || !this.validHeight) {
                     this.heightOffsetDescription = '';
@@ -320,6 +326,7 @@
 
             // Updates the display of the current recommended boundry values for width
             // The widthDescription must be displayed using a v-html directive for the formatting to display propperly (ie <label v-html='textVar'></label>)
+            // Calls: getMaxWidth
             updateWidthDescription() {
                 // Max width can vary with back and front label sizes
                 if (this.bottleSpec == null) {
@@ -332,9 +339,10 @@
 
 
             // Fetches the maximum possible height of the label using the type to specify which max height to use
-            // If it is a primary label and a secondarylabel exists for that side, min label size and and are accounted for
-            // IF secondary label, primary label height and height offset are accounted for
-            // Type: {'warning', 'recommended'}
+            // If it is a primary label and a secondary label exists for that side, min label size and and are accounted for
+            // If secondary label, primary label height and height offset are accounted for
+            // type: {'warning', 'recommended'}
+            // Returns: maxHeight
             getMaxHeight(type) {
                 var maxHeight;
                 if ((this.labelId == 'F1' && this.globalPositions.activeLabels.includes('F2')) || 
@@ -364,8 +372,9 @@
             // The max height offset takes the current label height entered by the user or the minimum label height into account (depending which is bigger)
             // If a primary and secondary label exists: 
                 // Secondary label accounts for primary labels current measurements
-                // Primary label accounts for minimum measurements of secondary label
-            // Type: {'warning', 'recommended'}
+                // Primary label accounts for minimum possible measurements of secondary label
+            // type: {'warning', 'recommended'}
+            // Returns: maxHeightOffset
             getmaxHeightOffset(type) {
                 var maxHeightOffset;
                 const X1 = this.globalPositions[this.side][this.labelId[0]+'1'];
@@ -394,9 +403,10 @@
             },
 
             // Gets the minimum height offset of the label for the given type
-            // Type: {'warning', 'recommended'}
             // If label is secondary the min height offset is the min vertical label gap
             // If label is primary the height offset is taken from the bottle spec
+            // type: {'warning', 'recommended'}
+            // Returns: minHeightOffset
             getMinHeightOffset(type) {
                 var minHeightOffset;
                 const X1 = this.globalPositions[this.side][this.labelId[0]+'1'];
@@ -412,43 +422,40 @@
             // Fecthes the maximum possible width of the label using type to specify which max width to fetch
             // Accounts for width of labels on the other side of the bottle
             // Accounts for slope at top of orange zone
-            // Wrap around definition is considered a maximum limit of the back label
+            // Wrap around definition is considered a maximum limit for the back label and additional front labels
             // When multiple constraints are all relavent (ie, constrained by another label and by height of label) the minimum value is taken
-            // Type: {'warning', 'recommended'}
+            // type: {'warning', 'recommended'}
+            // Returns: minimum max width from the appripreate options {sideAccountedMax, heightAccountedMax, this.bottleSpec.[type].maxWidth, wrapAroundBoundry}
             getMaxWidth(type) {
-                var heightAccountedMax = this.bottleSpec.warning.maxWidth;
+                
                 const wrapAroundBoundry = CONSTANTS.data.warpAroundDef * this.bottleSpec.circumference;
-                if (this.side == 'back' && this.globalPositions.front.maxWidth != null) { // If back label, account for front label width
-                    var sideAccountedMax;
-                    if (type == 'warning') {
-                        // account for slope section
-                        if (this.validateHeight && this.height != '') {
-                            const warningInfo = this.bottleSpec.warning;
-                            heightAccountedMax = ( (this.height - warningInfo.UpointY) * ( (warningInfo.VpointX - warningInfo.maxWidth)/(warningInfo.maxHeight - warningInfo.UpointY) ) ) + warningInfo.maxWidth;
-                        }
-                        
-                        sideAccountedMax = this.bottleSpec.circumference - (2 * CONSTANTS.data.minLabelGap.warning) - Math.round(this.globalPositions.front.maxWidth);
-                        
-                        return Math.min(sideAccountedMax, heightAccountedMax, this.bottleSpec.warning.maxWidth, wrapAroundBoundry);
 
+                // account for slope section
+                var heightAccountedMax;
+                if (this.validateHeight && this.height != '') {
+                    const warningInfo = this.bottleSpec.warning;
+                    heightAccountedMax = ( (this.height - warningInfo.UpointY) * ( (warningInfo.VpointX - warningInfo.maxWidth)/(warningInfo.maxHeight - warningInfo.UpointY) ) ) + warningInfo.maxWidth;
+                } else {
+                    heightAccountedMax = this.bottleSpec.warning.maxWidth;
+                }
+
+                if (this.side == 'back' && this.globalPositions.front.maxWidth != null) { // If back label, account for front label width
+                    const sideAccountedMax = this.bottleSpec.circumference - (2 * CONSTANTS.data.minLabelGap[type]) - Math.round(this.globalPositions.front.maxWidth);
+
+                    if (type == 'warning') {
+                        return Math.min(sideAccountedMax, heightAccountedMax, this.bottleSpec.warning.maxWidth, wrapAroundBoundry);
                     } else if (type == 'recommended') {
-                        sideAccountedMax = this.bottleSpec.circumference - (2 * CONSTANTS.data.minLabelGap.recommended) - Math.round(this.globalPositions.front.maxWidth);
                         return Math.min(sideAccountedMax, this.bottleSpec.recommended.maxWidth);
                     }
+
                 } else {        // If not back label or no front label yet
                     if (type == 'warning') {
-                        const warningInfo = this.bottleSpec.warning;
-                        // account for slope section
-                        if (this.validateHeight && this.height != '') {
-                            
-                            heightAccountedMax = ( (this.height - warningInfo.UpointY) * ( (warningInfo.VpointX - warningInfo.maxWidth)/(warningInfo.maxHeight - warningInfo.UpointY) ) ) + warningInfo.maxWidth;
-                        }
+                        
                         if (this.labelId != 'F1') {
                             return Math.min(heightAccountedMax, this.bottleSpec.warning.maxWidth, wrapAroundBoundry);
                         } else {
                             return Math.min(heightAccountedMax, this.bottleSpec.warning.maxWidth);
-                        }                       
-                        
+                        }
 
                     } else if (type == 'recommended') {
                         return this.bottleSpec.recommended.maxWidth;
@@ -457,7 +464,7 @@
             },
 
             // Set the provided input to the given setting's css class
-            // input: field to be changed {'height', 'heightOffset', 'width'}
+            // input: id of input to be changed {'height', 'heightOffset', 'width'}
             // setting: {'green', 'orange', 'red', 'standard'}
             setInputCss(input, setting) {
                 var inputId = this.labelId + '-input-' + input;
@@ -494,9 +501,11 @@
 
 
             // Takes the provided user measurments and validates them against the currently selected spec
+            // Calculates current height offset using appliation height of label gap
             // If a field is blank, validation is skipped and it is considered valid, but it's css class is set to standard-input
             // emits events for valid, invalid and orange zone (warning)
-            // Validation details are handeled by helper functions
+            // Calls: setInputCss
+            // Calls: validateHeight, validateHeightOffset and validateWidth
             validate(input) {
                 if (this.labelId[1] != 1 && this.globalPositions[this.side][this.labelId[0]+'1'] != null) {
                     this.heightOffset = this.labelGap + this.globalPositions[this.side][this.labelId[0]+'1'].height + this.globalPositions[this.side][this.labelId[0]+'1'].heightOffset;
@@ -553,7 +562,9 @@
                 }
             },
 
-            // Checks the validity of the height field and sets validHeight, changes css setting of input and triggers warnings depending on validity
+            // Checks the validity of the height field and sets validHeight
+            // Calls: setInputCss
+            // Triggers warnings depending on validity and sets apprepreate warning strings
             validateHeight() {
                 if (this.height < CONSTANTS.data.minLabelHeight) {  // too low
                     this.validHeight = false;
@@ -579,34 +590,30 @@
                 }
             },
 
-            // Checks the validity of the height field and sets validHeightOffset, changes css setting of input and triggers warnings depending on validity
+            // Checks the validity of the heightOffset and sets validHeightOffset
+            // If height is invalid, calls setInputCss with 'standard' style reference and dissables height offset warnings
+            // Calls: setInputCss
+            // Triggers warnings depending on validity and sets apprepreate warning strings
             validateHeightOffset() {
                 if (!this.validHeight) {
                     this.setInputCss('heightOffset', 'standard');
                     this.heightOffsetWarnClass = '';
                     return;
                 }
-                
-                var offset;
-                if (this.labelId[1] == 1) { // If this is a first label
-                    offset = this.heightOffset;
-                } else {    // If this is a second label
-                    offset = this.labelGap;
-                }
 
-                if (offset < this.getMinHeightOffset('warning')) { // too low
+                if (this.heightOffset < this.getMinHeightOffset('warning')) { // too low
                     this.validHeightOffset = false;
                     this.warnHeightOffset = CONSTANTS.warning.lowHeightOffsetWarning;
                     this.heightOffsetWarnClass = 'red';
                     this.setInputCss('heightOffset', 'red');
-                } else if ((offset > this.getmaxHeightOffset('recommended') && offset <= this.getmaxHeightOffset('warning')) ||
-                            (offset < this.getMinHeightOffset('recommended') && offset >= this.getMinHeightOffset('warning'))) { // warn
+                } else if ((this.heightOffset > this.getmaxHeightOffset('recommended') && this.heightOffset <= this.getmaxHeightOffset('warning')) ||
+                            (this.heightOffset < this.getMinHeightOffset('recommended') && this.heightOffset >= this.getMinHeightOffset('warning'))) { // warn
                     this.orangeZone = true;
                     this.validHeightOffset = true;
                     this.warnHeightOffset = CONSTANTS.warning.orangeZoneWarning;
                     this.heightOffsetWarnClass = 'orange';
                     this.setInputCss('heightOffset', 'orange');
-                } else if (offset > this.getmaxHeightOffset('warning')) { // too high
+                } else if (this.heightOffset > this.getmaxHeightOffset('warning')) { // too high
                     this.validHeightOffset = false;
                     this.warnHeightOffset = CONSTANTS.warning.highHeightOffsetWarning;
                     this.heightOffsetWarnClass = 'red';
@@ -619,7 +626,9 @@
                 }
             },
 
-            // Checks the validity of the width field and sets validHeightOffset, changes css setting of input and triggers warnings depending on validity
+            // Checks the validity of the width field and sets validWidth
+            // Calls: setInputCss
+            // Triggers warnings depending on validity and sets apprepreate warning strings
             validateWidth() {
                 if (this.width < CONSTANTS.data.minLabelWidth) { // too narrow
                     this.validWidth = false;
