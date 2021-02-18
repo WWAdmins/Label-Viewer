@@ -450,7 +450,7 @@
 
                 this.titles = CONSTANTS.titles;
 
-                const helpLink = `<a href=mailto:${CONSTANTS.help.helpLink} target="_blank" class='alert-link'>${CONSTANTS.help.helpLinkDisplay}</a>`;
+                const helpLink = `<a href="mailto:${CONSTANTS.help.helpLink}?subject=${CONSTANTS.help.helpEmailSubject}" target="_blank" class='alert-link'>${CONSTANTS.help.helpLinkDisplay}</a>`;
                 const guideLinkHere = `<a href=${CONSTANTS.help.userGuideLink} target="_blank" class='alert-link'>${CONSTANTS.help.userGuideLinkDisplay}</a>`;
                 const guideLinkGuide = `<a href=${CONSTANTS.help.userGuideLink} target="_blank" class='alert-link'>${CONSTANTS.help.guideDisclaimerDisplay}</a>`;
                 this.helpMessage = CONSTANTS.help.helpMessage.replace("[help link here]", helpLink).replace("[user guide link here]", guideLinkHere);

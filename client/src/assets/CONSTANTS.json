@@ -37,6 +37,7 @@
         "orangeZoneMessage": "The current label measurements are outside the recommended range for this bottle. This may result in inconsistent application, bubbling or wrinkles and associated issues with setup and slow run speeds.<hr>Members of the NZ Wine Packaging Forum may not accept any application issues with a label of this size.",
         "helpMessage": "Unsure of how to take your measurements? For height take the vertical distance from the highest to the lowest point of your label. For width take the horizontal distance from the furthest left point to the furthest right point.<hr>If your measurements are invalid and you wish to discuss why, feel free to contact us [help link here]<hr>Unsure how to use this site? Check out our comprehensive label guide [user guide link here]",
         "helpLink": "Labels.ml@wineworks.co.nz",
+        "helpEmailSubject": "Label Size Query",
         "helpLinkDisplay": "here",
         "userGuideLink": "https://wineworksgroup.sharepoint.com/:b:/g/ProdPlan/ERHtLnq29TVOuhHlUPYAfFIB8-TW5CQ9HKamq988nQUQFQ",
         "userGuideLinkDisplay": "here",
