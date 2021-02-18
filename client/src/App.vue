@@ -1398,7 +1398,7 @@ body{
 
 .medal-help {
     margin-left: 4%;
-    font-size: 93%;
+    font-size: 80%;
     white-space: pre-wrap;
 }
 
