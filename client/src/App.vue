@@ -587,8 +587,8 @@
             specPrep() {
                 this.bottleImgUrl = silhouettes[CONSTANTS.bottleCodes[this.bottleType] + "Image"];
 
-                this.bottleSpec.warning.minHeightOffset = Math.min(CONSTANTS.data.minHeightOffset, this.bottleSpec.warning.minHeightOffset);
-                this.bottleSpec.recommended.minHeightOffset = Math.min(CONSTANTS.data.minHeightOffset, this.bottleSpec.recommended.minHeightOffset);
+                this.bottleSpec.warning.minHeightOffset = Math.max(CONSTANTS.data.minHeightOffset, this.bottleSpec.warning.minHeightOffset);
+                this.bottleSpec.recommended.minHeightOffset = Math.max(CONSTANTS.data.minHeightOffset, this.bottleSpec.recommended.minHeightOffset);
 
                 this.bottleSpec.warning.maxWidth = Math.min(CONSTANTS.data.maxWidth, this.bottleSpec.warning.maxWidth);
                 this.bottleSpec.recommended.maxWidth = Math.min(CONSTANTS.data.maxWidth, this.bottleSpec.recommended.maxWidth);
